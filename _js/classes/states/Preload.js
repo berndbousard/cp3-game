@@ -3,7 +3,9 @@ export default class Preload extends Phaser.State {
 		console.log("preload");
 
 		// load assets
-		// this.load.image('name_image', 'assets/image.png');
+		this.load.image('playbutton', 'assets/playbutton.png');
+		this.load.image('cityWhite', 'assets/city_white.jpg');
+		this.load.image('cityBlack', 'assets/city_black.jpg');
 
 		this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
 

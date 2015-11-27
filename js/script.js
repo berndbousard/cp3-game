@@ -72,7 +72,7 @@
 /* 1 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -96,17 +96,19 @@
 		}
 
 		_createClass(Preload, [{
-			key: "preload",
+			key: 'preload',
 			value: function preload() {
 				console.log("preload");
 
 				// load assets
-				// this.load.image('name_image', 'assets/image.png');
+				this.load.image('playbutton', 'assets/playbutton.png');
+				this.load.image('cityWhite', 'assets/city_white.jpg');
+				this.load.image('cityBlack', 'assets/city_black.jpg');
 
 				this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
 			}
 		}, {
-			key: "onLoadComplete",
+			key: 'onLoadComplete',
 			value: function onLoadComplete() {
 				this.game.state.start('Menu');
 			}
@@ -121,7 +123,7 @@
 /* 2 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -145,21 +147,23 @@
 		}
 
 		_createClass(Menu, [{
-			key: "create",
+			key: 'create',
 			value: function create() {
 				console.log("menu");
-				/*
-	   this.titleGroup = this.game.add.group();
-	   	this.titleGroup.x = 30;
-	   this.titleGroup.y = 100;
-	   	this.startButton = this.game.add.button(
-	   	this.game.width/2, 300, 'startButton', this.startClick, this
-	   );
-	   	this.startButton.anchor.setTo(0.5,0.5);
-	   */
+
+				this.backgroundWhite = this.game.add.sprite(0, 0, 'cityWhite');
+				this.backgroundBlack = this.game.add.sprite(0, 500, 'cityBlack');
+
+				// flip de background
+				this.backgroundBlack.scale.y *= -1;
+
+				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 - 30, 'playbutton', this.startClick, this);
+
+				this.startButton.scale.setTo(0.5, 0.5);
+				this.startButton.anchor.setTo(0.5, 0.5);
 			}
 		}, {
-			key: "startClick",
+			key: 'startClick',
 			value: function startClick() {
 				this.game.state.start('Play');
 			}
