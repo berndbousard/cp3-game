@@ -42,11 +42,177 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	console.log('hello world 2');
+	var _Preload = __webpack_require__(1);
+
+	var _Preload2 = _interopRequireDefault(_Preload);
+
+	var _Menu = __webpack_require__(2);
+
+	var _Menu2 = _interopRequireDefault(_Menu);
+
+	var _Play = __webpack_require__(3);
+
+	var _Play2 = _interopRequireDefault(_Play);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	"use strict";
+
+	var game = new Phaser.Game(750, 500, Phaser.AUTO);
+	game.state.add('Preload', _Preload2.default, false);
+	game.state.add('Menu', _Menu2.default, false);
+	game.state.add('Play', _Play2.default, false);
+	game.state.start('Preload');
+
+/***/ },
+/* 1 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Preload = (function (_Phaser$State) {
+		_inherits(Preload, _Phaser$State);
+
+		function Preload() {
+			_classCallCheck(this, Preload);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(Preload).apply(this, arguments));
+		}
+
+		_createClass(Preload, [{
+			key: "preload",
+			value: function preload() {
+				console.log("preload");
+
+				// load assets
+				// this.load.image('name_image', 'assets/image.png');
+
+				this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
+			}
+		}, {
+			key: "onLoadComplete",
+			value: function onLoadComplete() {
+				this.game.state.start('Menu');
+			}
+		}]);
+
+		return Preload;
+	})(Phaser.State);
+
+	exports.default = Preload;
+
+/***/ },
+/* 2 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Menu = (function (_Phaser$State) {
+		_inherits(Menu, _Phaser$State);
+
+		function Menu() {
+			_classCallCheck(this, Menu);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(Menu).apply(this, arguments));
+		}
+
+		_createClass(Menu, [{
+			key: "create",
+			value: function create() {
+				console.log("menu");
+				/*
+	   this.titleGroup = this.game.add.group();
+	   	this.titleGroup.x = 30;
+	   this.titleGroup.y = 100;
+	   	this.startButton = this.game.add.button(
+	   	this.game.width/2, 300, 'startButton', this.startClick, this
+	   );
+	   	this.startButton.anchor.setTo(0.5,0.5);
+	   */
+			}
+		}, {
+			key: "startClick",
+			value: function startClick() {
+				this.game.state.start('Play');
+			}
+		}]);
+
+		return Menu;
+	})(Phaser.State);
+
+	exports.default = Menu;
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	// import Class from '../Class';
+
+	var Play = (function (_Phaser$State) {
+		_inherits(Play, _Phaser$State);
+
+		function Play() {
+			_classCallCheck(this, Play);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(Play).apply(this, arguments));
+		}
+
+		_createClass(Play, [{
+			key: "create",
+			value: function create() {
+				console.log("play");
+			}
+		}, {
+			key: "update",
+			value: function update() {}
+		}]);
+
+		return Play;
+	})(Phaser.State);
+
+	exports.default = Play;
 
 /***/ }
 /******/ ]);
