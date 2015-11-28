@@ -58,11 +58,11 @@
 
 	var _Play2 = _interopRequireDefault(_Play);
 
-	var _Leaderboard = __webpack_require__(5);
+	var _Leaderboard = __webpack_require__(6);
 
 	var _Leaderboard2 = _interopRequireDefault(_Leaderboard);
 
-	var _Info = __webpack_require__(6);
+	var _Info = __webpack_require__(7);
 
 	var _Info2 = _interopRequireDefault(_Info);
 
@@ -166,6 +166,8 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	// import BackgroundCity from '../objects/BackgroundCity';
+
 	var Menu = (function (_Phaser$State) {
 		_inherits(Menu, _Phaser$State);
 
@@ -185,17 +187,17 @@
 			value: function create() {
 
 				// Images
-				this.backgroundWhite = this.game.add.tileSprite(0, 0, 750, 500, 'cityWhite');
-				this.backgroundBlack = this.game.add.tileSprite(0, 500, 750, 500, 'cityBlack');
-				this.backgroundWhite.autoScroll(-50, 0);
+				this.backgroundBlack = this.game.add.tileSprite(0, 0, 750, 250, 'cityBlack');
 				this.backgroundBlack.autoScroll(-50, 0);
+
+				this.backgroundWhite = this.game.add.tileSprite(0, 500, 750, 250, 'cityWhite');
+				this.backgroundWhite.autoScroll(-50, 0);
+				this.backgroundWhite.scale.y *= -1; /* flip onderste stuk */
+
 				this.menuBackground = this.game.add.sprite(this.game.width / 2, this.game.height / 2, 'menuBackground');
 				this.menuBackground.anchor.setTo(.5, .5);
 
-				// Flip de background
-				this.backgroundBlack.scale.y *= -1;
-
-				// Button
+				// Buttons
 				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 + 150, 'startButton', this.startClickHandler, this);
 				this.startButton.anchor.setTo(0.5, 0.5);
 				this.leaderboardButton = this.game.add.button(this.game.width / 2 - 100, this.game.height / 2 + 150, 'leaderboardbutton', this.leaderboardClickHandler, this);
@@ -289,7 +291,7 @@
 		value: true
 	});
 
-	var _Player = __webpack_require__(8);
+	var _Player = __webpack_require__(5);
 
 	var _Player2 = _interopRequireDefault(_Player);
 
@@ -299,7 +301,7 @@
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // import Class from '../Class';
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var Play = (function (_Phaser$State) {
 		_inherits(Play, _Phaser$State);
@@ -319,13 +321,12 @@
 			key: 'create',
 			value: function create() {
 				// Images
-				this.backgroundWhite = this.game.add.tileSprite(0, 0, 750, 500, 'cityWhite');
-				this.backgroundBlack = this.game.add.tileSprite(0, 500, 750, 500, 'cityBlack');
-				this.backgroundWhite.autoScroll(-50, 0);
+				this.backgroundBlack = this.game.add.tileSprite(0, 0, 750, 250, 'cityBlack');
 				this.backgroundBlack.autoScroll(-50, 0);
 
-				// Flip de background
-				this.backgroundBlack.scale.y *= -1;
+				this.backgroundWhite = this.game.add.tileSprite(0, 500, 750, 250, 'cityWhite');
+				this.backgroundWhite.autoScroll(-50, 0);
+				this.backgroundWhite.scale.y *= -1; /* flip onderste stuk */
 
 				// player
 				this.player = new _Player2.default(this.game, 50, 450);
@@ -338,6 +339,7 @@
 			key: 'shutdown',
 			value: function shutdown() {
 				console.log('end play');
+				// kan ook destroyen enzo voor geheugenoptimalisatie
 			}
 		}]);
 
@@ -348,6 +350,40 @@
 
 /***/ },
 /* 5 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Player = (function (_Phaser$Sprite) {
+		_inherits(Player, _Phaser$Sprite);
+
+		function Player(game, x, y) {
+			_classCallCheck(this, Player);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Player).call(this, game, x, y, 'player_white'));
+
+			_this.animations.add('run');
+			_this.animations.play('run', 20, true);
+			return _this;
+		}
+
+		return Player;
+	})(Phaser.Sprite);
+
+	exports.default = Player;
+
+/***/ },
+/* 6 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -397,7 +433,7 @@
 	exports.default = Leaderboard;
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -408,7 +444,7 @@
 		value: true
 	});
 
-	var _Text = __webpack_require__(7);
+	var _Text = __webpack_require__(8);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
@@ -469,7 +505,7 @@
 	exports.default = Info;
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -497,40 +533,6 @@
 	})(Phaser.BitmapText);
 
 	exports.default = Text;
-
-/***/ },
-/* 8 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Player = (function (_Phaser$Sprite) {
-		_inherits(Player, _Phaser$Sprite);
-
-		function Player(game, x, y) {
-			_classCallCheck(this, Player);
-
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Player).call(this, game, x, y, 'player_white'));
-
-			_this.animations.add('run');
-			_this.animations.play('run', 20, true);
-			return _this;
-		}
-
-		return Player;
-	})(Phaser.Sprite);
-
-	exports.default = Player;
 
 /***/ }
 /******/ ]);

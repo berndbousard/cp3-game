@@ -1,4 +1,5 @@
 import Button from '../objects/Button';
+// import BackgroundCity from '../objects/BackgroundCity';
 
 export default class Menu extends Phaser.State {
 	preload(){
@@ -7,17 +8,17 @@ export default class Menu extends Phaser.State {
 	create(){
 		
 		// Images
-		this.backgroundWhite = this.game.add.tileSprite(0, 0, 750, 500, 'cityWhite');
-		this.backgroundBlack = this.game.add.tileSprite(0, 500, 750, 500, 'cityBlack');
-		this.backgroundWhite.autoScroll(-50, 0);
+		this.backgroundBlack = this.game.add.tileSprite(0, 0, 750, 250, 'cityBlack');
 		this.backgroundBlack.autoScroll(-50, 0);
+
+		this.backgroundWhite = this.game.add.tileSprite(0, 500, 750, 250, 'cityWhite');
+		this.backgroundWhite.autoScroll(-50, 0);
+		this.backgroundWhite.scale.y *= -1; /* flip onderste stuk */
+
 		this.menuBackground = this.game.add.sprite(this.game.width/2, this.game.height/2, 'menuBackground');
 		this.menuBackground.anchor.setTo(.5, .5);
 
-		// Flip de background
-		this.backgroundBlack.scale.y *= -1;
-
-		// Button
+		// Buttons
 		this.startButton = this.game.add.button(
 			this.game.width/2, this.game.height/2 + 150, 'startButton', this.startClickHandler, this
 		);
