@@ -58,6 +58,14 @@
 
 	var _Play2 = _interopRequireDefault(_Play);
 
+	var _Leaderboard = __webpack_require__(5);
+
+	var _Leaderboard2 = _interopRequireDefault(_Leaderboard);
+
+	var _Info = __webpack_require__(6);
+
+	var _Info2 = _interopRequireDefault(_Info);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var init = function init() {
@@ -65,6 +73,8 @@
 		game.state.add('Preload', _Preload2.default, true);
 		game.state.add('Menu', _Menu2.default, false);
 		game.state.add('Play', _Play2.default, false);
+		game.state.add('Leaderboard', _Leaderboard2.default, false);
+		game.state.add('Info', _Info2.default, false);
 	};
 
 	init();
@@ -102,10 +112,13 @@
 				console.log("start preload");
 
 				// load assets
-				this.load.image('playbutton', 'assets/playbutton.png');
-				this.load.image('cityWhite', 'assets/city_white.jpg');
-				this.load.image('cityBlack', 'assets/city_black.jpg');
-				this.load.image('menuBackground', 'assets/menu_background.png');
+				this.game.load.image('startButton', 'assets/startButton.png');
+				this.game.load.image('leaderboardbutton', 'assets/leaderboardButton.png');
+				this.game.load.image('infoButton', 'assets/instructionsButton.png');
+				this.game.load.image('cityWhite', 'assets/city_white.jpg');
+				this.game.load.image('cityBlack', 'assets/city_black.jpg');
+				this.game.load.image('menuBackground', 'assets/menu_background.png');
+				this.game.load.bitmapFont('gamefont', 'assets/font/gamefont/gamefont.png', 'assets/font/gamefont/gamefont.fnt');
 			}
 		}, {
 			key: 'create',
@@ -129,7 +142,7 @@
 
 /***/ },
 /* 2 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -138,6 +151,12 @@
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
+
+	var _Button = __webpack_require__(4);
+
+	var _Button2 = _interopRequireDefault(_Button);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -164,8 +183,10 @@
 			value: function create() {
 
 				// Images
-				this.backgroundWhite = this.game.add.sprite(0, 0, 'cityWhite');
-				this.backgroundBlack = this.game.add.sprite(0, 500, 'cityBlack');
+				this.backgroundWhite = this.game.add.tileSprite(0, 0, 750, 500, 'cityWhite');
+				this.backgroundBlack = this.game.add.tileSprite(0, 500, 750, 500, 'cityBlack');
+				this.backgroundWhite.autoScroll(-50, 0);
+				this.backgroundBlack.autoScroll(-50, 0);
 				this.menuBackground = this.game.add.sprite(this.game.width / 2, this.game.height / 2, 'menuBackground');
 				this.menuBackground.anchor.setTo(.5, .5);
 
@@ -173,9 +194,16 @@
 				this.backgroundBlack.scale.y *= -1;
 
 				// Button
-				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 + 30, 'playbutton', this.startClick, this);
-				this.startButton.scale.setTo(0.5, 0.5);
+				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 + 150, 'startButton', this.startClickHandler, this);
 				this.startButton.anchor.setTo(0.5, 0.5);
+				this.leaderboardButton = this.game.add.button(this.game.width / 2 - 100, this.game.height / 2 + 150, 'leaderboardbutton', this.leaderboardClickHandler, this);
+				this.leaderboardButton.anchor.setTo(0.5, 0.5);
+				this.infoButton = this.game.add.button(this.game.width / 2 + 100, this.game.height / 2 + 150, 'infoButton', this.infoClickHandler, this);
+				this.infoButton.anchor.setTo(0.5, 0.5);
+
+				// new Button(game, x, y, key, callback, callbackContext)
+				// this.startButtonTest = new Button(this.game, this.game.width/2 + 100, this.game.height/2 + 150, 'startButton', Button.startClickHandler, Button);
+				// this.game.add.existing(this.startButtonTest);
 			}
 		}, {
 			key: 'update',
@@ -186,9 +214,19 @@
 				console.log("end menu");
 			}
 		}, {
-			key: 'startClick',
-			value: function startClick() {
+			key: 'startClickHandler',
+			value: function startClickHandler() {
 				this.game.state.start('Play');
+			}
+		}, {
+			key: 'leaderboardClickHandler',
+			value: function leaderboardClickHandler() {
+				this.game.state.start('Leaderboard');
+			}
+		}, {
+			key: 'infoClickHandler',
+			value: function infoClickHandler() {
+				this.game.state.start('Info');
 			}
 		}]);
 
@@ -248,6 +286,198 @@
 	})(Phaser.State);
 
 	exports.default = Play;
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Button = (function (_Phaser$Button) {
+		_inherits(Button, _Phaser$Button);
+
+		function Button(game, x, y, key, callback, callbackContext) {
+			_classCallCheck(this, Button);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(Button).call(this, game, x, y, key, callback, callbackContext));
+		}
+
+		_createClass(Button, [{
+			key: 'startClickHandler',
+			value: function startClickHandler() {
+				// this.game.state.start('Play');
+				console.log('test');
+			}
+		}]);
+
+		return Button;
+	})(Phaser.Button);
+
+	exports.default = Button;
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Leaderboard = (function (_Phaser$State) {
+		_inherits(Leaderboard, _Phaser$State);
+
+		function Leaderboard() {
+			_classCallCheck(this, Leaderboard);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(Leaderboard).apply(this, arguments));
+		}
+
+		_createClass(Leaderboard, [{
+			key: 'preload',
+			value: function preload() {
+				console.log('start leaderboard');
+			}
+		}, {
+			key: 'create',
+			value: function create() {}
+		}, {
+			key: 'update',
+			value: function update() {}
+		}, {
+			key: 'shutdown',
+			value: function shutdown() {
+				console.log('end leaderboard');
+			}
+		}]);
+
+		return Leaderboard;
+	})(Phaser.State);
+
+	exports.default = Leaderboard;
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _Text = __webpack_require__(7);
+
+	var _Text2 = _interopRequireDefault(_Text);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Info = (function (_Phaser$State) {
+		_inherits(Info, _Phaser$State);
+
+		function Info() {
+			_classCallCheck(this, Info);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(Info).apply(this, arguments));
+		}
+
+		_createClass(Info, [{
+			key: 'preload',
+			value: function preload() {
+				console.log('start info');
+			}
+		}, {
+			key: 'create',
+			value: function create() {
+				// To create multi-line text insert \r, \n or \r\n escape codes into the text string.
+				// dit font heeft geen . tekens dus als je een punt typt komt er een error, geen punten dus ;)
+				// new BitmapText(game, x, y, font, text, size)`
+				var text = "het doel\nhet doel van het spel is van zo ver mogelijk te raken\ndit doe je door zoveel mogelijk enemies te ontwijken\n\ncontrols\nDoor de pijltjestoesten te gebruiken kan je\nwisselen tussen bovenaan of onderaan te lopen";
+				this.textBox = new _Text2.default(this.game, this.game.width / 2, this.game.height / 2, 'gamefont', text, 20);
+				this.textBox.anchor.setTo(.5, .5);
+				this.game.add.existing(this.textBox);
+
+				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 + 175, 'startButton', this.startClickHandler, this);
+				this.startButton.anchor.setTo(0.5, 0.5);
+			}
+		}, {
+			key: 'update',
+			value: function update() {}
+		}, {
+			key: 'shutdown',
+			value: function shutdown() {
+				console.log('end info');
+			}
+		}, {
+			key: 'startClickHandler',
+			value: function startClickHandler() {
+				this.game.state.start('Play');
+			}
+		}]);
+
+		return Info;
+	})(Phaser.State);
+
+	exports.default = Info;
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Text = (function (_Phaser$BitmapText) {
+		_inherits(Text, _Phaser$BitmapText);
+
+		function Text(game, x, y, font, text, size) {
+			_classCallCheck(this, Text);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(Text).call(this, game, x, y, font, text, size));
+		}
+
+		return Text;
+	})(Phaser.BitmapText);
+
+	exports.default = Text;
 
 /***/ }
 /******/ ]);
