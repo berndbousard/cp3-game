@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	var _Preload = __webpack_require__(1);
 
@@ -60,13 +60,14 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	"use strict";
+	var init = function init() {
+		var game = new Phaser.Game(750, 500, Phaser.AUTO);
+		game.state.add('Preload', _Preload2.default, true);
+		game.state.add('Menu', _Menu2.default, false);
+		game.state.add('Play', _Play2.default, false);
+	};
 
-	var game = new Phaser.Game(750, 500, Phaser.AUTO);
-	game.state.add('Preload', _Preload2.default, false);
-	game.state.add('Menu', _Menu2.default, false);
-	game.state.add('Play', _Play2.default, false);
-	game.state.start('Preload');
+	init();
 
 /***/ },
 /* 1 */
@@ -98,19 +99,26 @@
 		_createClass(Preload, [{
 			key: 'preload',
 			value: function preload() {
-				console.log("preload");
+				console.log("start preload");
 
 				// load assets
 				this.load.image('playbutton', 'assets/playbutton.png');
 				this.load.image('cityWhite', 'assets/city_white.jpg');
 				this.load.image('cityBlack', 'assets/city_black.jpg');
-
-				this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
+				this.load.image('menuBackground', 'assets/menu_background.png');
 			}
 		}, {
-			key: 'onLoadComplete',
-			value: function onLoadComplete() {
+			key: 'create',
+			value: function create() {
 				this.game.state.start('Menu');
+			}
+		}, {
+			key: 'update',
+			value: function update() {}
+		}, {
+			key: 'shutdown',
+			value: function shutdown() {
+				console.log('end preload');
 			}
 		}]);
 
@@ -147,20 +155,35 @@
 		}
 
 		_createClass(Menu, [{
+			key: 'preload',
+			value: function preload() {
+				console.log("start menu");
+			}
+		}, {
 			key: 'create',
 			value: function create() {
-				console.log("menu");
 
+				// Images
 				this.backgroundWhite = this.game.add.sprite(0, 0, 'cityWhite');
 				this.backgroundBlack = this.game.add.sprite(0, 500, 'cityBlack');
+				this.menuBackground = this.game.add.sprite(this.game.width / 2, this.game.height / 2, 'menuBackground');
+				this.menuBackground.anchor.setTo(.5, .5);
 
-				// flip de background
+				// Flip de background
 				this.backgroundBlack.scale.y *= -1;
 
-				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 - 30, 'playbutton', this.startClick, this);
-
+				// Button
+				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 + 30, 'playbutton', this.startClick, this);
 				this.startButton.scale.setTo(0.5, 0.5);
 				this.startButton.anchor.setTo(0.5, 0.5);
+			}
+		}, {
+			key: 'update',
+			value: function update() {}
+		}, {
+			key: 'shutdown',
+			value: function shutdown() {
+				console.log("end menu");
 			}
 		}, {
 			key: 'startClick',
@@ -178,7 +201,7 @@
 /* 3 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -204,13 +227,21 @@
 		}
 
 		_createClass(Play, [{
-			key: "create",
-			value: function create() {
-				console.log("play");
+			key: 'preload',
+			value: function preload() {
+				console.log('start play');
 			}
 		}, {
-			key: "update",
+			key: 'create',
+			value: function create() {}
+		}, {
+			key: 'update',
 			value: function update() {}
+		}, {
+			key: 'shutdown',
+			value: function shutdown() {
+				console.log('end play');
+			}
 		}]);
 
 		return Play;
