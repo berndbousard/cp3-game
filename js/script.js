@@ -158,6 +158,10 @@
 
 	var _Button2 = _interopRequireDefault(_Button);
 
+	var _BackgroundCity = __webpack_require__(9);
+
+	var _BackgroundCity2 = _interopRequireDefault(_BackgroundCity);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -165,8 +169,6 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	// import BackgroundCity from '../objects/BackgroundCity';
 
 	var Menu = (function (_Phaser$State) {
 		_inherits(Menu, _Phaser$State);
@@ -187,12 +189,15 @@
 			value: function create() {
 
 				// Images
-				this.backgroundBlack = this.game.add.tileSprite(0, 0, 750, 250, 'cityBlack');
-				this.backgroundBlack.autoScroll(-50, 0);
+				this.cityBlack = new _BackgroundCity2.default(this.game, 0, 0, 750, 250, 'cityBlack');
+				this.game.add.existing(this.cityBlack);
+				this.cityBlack.autoScroll(-50, 0);
 
-				this.backgroundWhite = this.game.add.tileSprite(0, 500, 750, 250, 'cityWhite');
-				this.backgroundWhite.autoScroll(-50, 0);
-				this.backgroundWhite.scale.y *= -1; /* flip onderste stuk */
+				this.cityWhite = new _BackgroundCity2.default(this.game, 0, 500, 750, 250, 'cityWhite');
+				this.game.add.existing(this.cityWhite);
+				this.cityWhite.autoScroll(-50, 0);
+
+				this.cityWhite.scale.y *= -1; /* flip onderste stuk */
 
 				this.menuBackground = this.game.add.sprite(this.game.width / 2, this.game.height / 2, 'menuBackground');
 				this.menuBackground.anchor.setTo(.5, .5);
@@ -295,6 +300,10 @@
 
 	var _Player2 = _interopRequireDefault(_Player);
 
+	var _BackgroundCity = __webpack_require__(9);
+
+	var _BackgroundCity2 = _interopRequireDefault(_BackgroundCity);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -320,26 +329,58 @@
 		}, {
 			key: 'create',
 			value: function create() {
+
+				// Declarations
+				this.keyArray = [];
+
 				// Images
-				this.backgroundBlack = this.game.add.tileSprite(0, 0, 750, 250, 'cityBlack');
-				this.backgroundBlack.autoScroll(-50, 0);
+				this.cityBlack = new _BackgroundCity2.default(this.game, 0, 0, 750, 250, 'cityBlack');
+				this.game.add.existing(this.cityBlack);
+				this.cityBlack.autoScroll(-120, 0);
 
-				this.backgroundWhite = this.game.add.tileSprite(0, 500, 750, 250, 'cityWhite');
-				this.backgroundWhite.autoScroll(-50, 0);
-				this.backgroundWhite.scale.y *= -1; /* flip onderste stuk */
+				this.cityWhite = new _BackgroundCity2.default(this.game, 0, 500, 750, 250, 'cityWhite');
+				this.game.add.existing(this.cityWhite);
+				this.cityWhite.autoScroll(-120, 0);
 
-				// player
-				this.player = new _Player2.default(this.game, 50, 450);
-				this.game.add.existing(this.player);
+				this.cityWhite.scale.y *= -1; /* flip onderste stuk */
+
+				// Player
+				this.playerBlack = new _Player2.default(this.game, 50, this.game.height / 2 - 23, 'player_black');
+				this.game.add.existing(this.playerBlack);
+				this.playerBlack.anchor.setTo(.5, .5);
+
+				this.playerWhite = new _Player2.default(this.game, -1000, this.game.height / 2 + 23, 'player_white');
+				this.game.add.existing(this.playerWhite);
+				this.playerWhite.anchor.setTo(.5, .5);
+
+				this.playerWhite.scale.y *= -1; /* flip onderste stuk */
+
+				// Set keys
+				this.keyArray[0] = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
+				this.keyArray[1] = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
 			}
 		}, {
 			key: 'update',
-			value: function update() {}
+			value: function update() {
+
+				if (this.keyArray[0].isDown) {
+					// up
+
+					this.playerBlack.x = 50;
+					this.playerWhite.x = -1000;
+				}
+
+				if (this.keyArray[1].isDown) {
+					// down
+
+					this.playerWhite.x = 50;
+					this.playerBlack.x = -1000;
+				}
+			}
 		}, {
 			key: 'shutdown',
 			value: function shutdown() {
 				console.log('end play');
-				// kan ook destroyen enzo voor geheugenoptimalisatie
 			}
 		}]);
 
@@ -367,10 +408,10 @@
 	var Player = (function (_Phaser$Sprite) {
 		_inherits(Player, _Phaser$Sprite);
 
-		function Player(game, x, y) {
+		function Player(game, x, y, key) {
 			_classCallCheck(this, Player);
 
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Player).call(this, game, x, y, 'player_white'));
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Player).call(this, game, x, y, key));
 
 			_this.animations.add('run');
 			_this.animations.play('run', 20, true);
@@ -533,6 +574,36 @@
 	})(Phaser.BitmapText);
 
 	exports.default = Text;
+
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var BackgroundCity = (function (_Phaser$TileSprite) {
+		_inherits(BackgroundCity, _Phaser$TileSprite);
+
+		function BackgroundCity(game, x, y, width, height, key) {
+			_classCallCheck(this, BackgroundCity);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(BackgroundCity).call(this, game, x, y, width, height, key));
+		}
+
+		return BackgroundCity;
+	})(Phaser.TileSprite);
+
+	exports.default = BackgroundCity;
 
 /***/ }
 /******/ ]);
