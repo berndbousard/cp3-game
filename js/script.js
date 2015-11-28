@@ -54,7 +54,7 @@
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
-	var _Play = __webpack_require__(3);
+	var _Play = __webpack_require__(4);
 
 	var _Play2 = _interopRequireDefault(_Play);
 
@@ -119,6 +119,8 @@
 				this.game.load.image('cityBlack', 'assets/city_black.jpg');
 				this.game.load.image('menuBackground', 'assets/menu_background.png');
 				this.game.load.bitmapFont('gamefont', 'assets/font/gamefont/gamefont.png', 'assets/font/gamefont/gamefont.fnt');
+				this.game.load.spritesheet('player_black', 'assets/player_black.png', 42, 44, 14);
+				this.game.load.spritesheet('player_white', 'assets/player_white.png', 42, 44, 14);
 			}
 		}, {
 			key: 'create',
@@ -152,7 +154,7 @@
 		value: true
 	});
 
-	var _Button = __webpack_require__(4);
+	var _Button = __webpack_require__(3);
 
 	var _Button2 = _interopRequireDefault(_Button);
 
@@ -253,58 +255,6 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	// import Class from '../Class';
-
-	var Play = (function (_Phaser$State) {
-		_inherits(Play, _Phaser$State);
-
-		function Play() {
-			_classCallCheck(this, Play);
-
-			return _possibleConstructorReturn(this, Object.getPrototypeOf(Play).apply(this, arguments));
-		}
-
-		_createClass(Play, [{
-			key: 'preload',
-			value: function preload() {
-				console.log('start play');
-			}
-		}, {
-			key: 'create',
-			value: function create() {}
-		}, {
-			key: 'update',
-			value: function update() {}
-		}, {
-			key: 'shutdown',
-			value: function shutdown() {
-				console.log('end play');
-			}
-		}]);
-
-		return Play;
-	})(Phaser.State);
-
-	exports.default = Play;
-
-/***/ },
-/* 4 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
 	var Button = (function (_Phaser$Button) {
 		_inherits(Button, _Phaser$Button);
 
@@ -326,6 +276,75 @@
 	})(Phaser.Button);
 
 	exports.default = Button;
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _Player = __webpack_require__(8);
+
+	var _Player2 = _interopRequireDefault(_Player);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // import Class from '../Class';
+
+	var Play = (function (_Phaser$State) {
+		_inherits(Play, _Phaser$State);
+
+		function Play() {
+			_classCallCheck(this, Play);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(Play).apply(this, arguments));
+		}
+
+		_createClass(Play, [{
+			key: 'preload',
+			value: function preload() {
+				console.log('start play');
+			}
+		}, {
+			key: 'create',
+			value: function create() {
+				// Images
+				this.backgroundWhite = this.game.add.tileSprite(0, 0, 750, 500, 'cityWhite');
+				this.backgroundBlack = this.game.add.tileSprite(0, 500, 750, 500, 'cityBlack');
+				this.backgroundWhite.autoScroll(-50, 0);
+				this.backgroundBlack.autoScroll(-50, 0);
+
+				// Flip de background
+				this.backgroundBlack.scale.y *= -1;
+
+				// player
+				this.player = new _Player2.default(this.game, 50, 450);
+				this.game.add.existing(this.player);
+			}
+		}, {
+			key: 'update',
+			value: function update() {}
+		}, {
+			key: 'shutdown',
+			value: function shutdown() {
+				console.log('end play');
+			}
+		}]);
+
+		return Play;
+	})(Phaser.State);
+
+	exports.default = Play;
 
 /***/ },
 /* 5 */
@@ -478,6 +497,40 @@
 	})(Phaser.BitmapText);
 
 	exports.default = Text;
+
+/***/ },
+/* 8 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Player = (function (_Phaser$Sprite) {
+		_inherits(Player, _Phaser$Sprite);
+
+		function Player(game, x, y) {
+			_classCallCheck(this, Player);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Player).call(this, game, x, y, 'player_white'));
+
+			_this.animations.add('run');
+			_this.animations.play('run', 20, true);
+			return _this;
+		}
+
+		return Player;
+	})(Phaser.Sprite);
+
+	exports.default = Player;
 
 /***/ }
 /******/ ]);
