@@ -33,7 +33,5 @@ export default class TestPlayer extends Phaser.Sprite {
 		if(this.body.position.y > this.game.height/2){
 			this.body.y -= 85;
 		}
-
-		this.game.debug.body.scale.y = -1;
 	}
 }
