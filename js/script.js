@@ -624,20 +624,18 @@
 				// console.log('player staat nu beneden');
 				// http://phaser.io/examples/v2/animation/change-texture-on-click
 				// Phaser.Sprite.loadTexture(key, frame, stopAnimation) : void;
-				this.scale.y = -1;
 				this.loadTexture('player_white', null, false);
 				if (this.body.position.y < this.game.height / 2) {
-					this.body.y += 85;
+					this.body.y += 45;
 				}
 			}
 		}, {
 			key: 'flipUp',
 			value: function flipUp() {
 				// console.log('player staat nu boven');
-				this.scale.y = 1;
 				this.loadTexture('player_black', null, false);
 				if (this.body.position.y > this.game.height / 2) {
-					this.body.y -= 85;
+					this.body.y -= 45;
 				}
 			}
 		}]);
