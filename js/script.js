@@ -469,13 +469,10 @@
 				//makkelijk om te meten
 
 				// collision
-				console.log('aantal coins ' + this.coins.children.length); //zo zie je hoeveel er in enemies group zitten, zit nog geen pooling op
-
+				console.log('aantal coins' + this.coins.children.length); //zo zie je hoeveel er in enemies group zitten, zit nog geen pooling op
 				this.enemies.forEach(function (oneEnemy) {
 					_this2.game.physics.arcade.collide(_this2.player, oneEnemy, _this2.enemyPlayerCollisionHandler, null, _this2);
 				});
-
-				console.log('aantal enemies ' + this.enemies.children.length);
 
 				this.coins.forEach(function (oneCoin) {
 					_this2.game.physics.arcade.collide(_this2.player, oneCoin, _this2.coinPlayerCollisionHandler, null, _this2);
@@ -500,7 +497,7 @@
 				}
 				// positioning
 				var x = this.game.rnd.integerInRange(750, 800);
-				var lot = Math.round(Math.random() * 1); // berekent of enemy boven of onder komt
+				var lot = Math.round(Math.random() * 1);
 				var y = undefined;
 				if (lot == 0) {
 					// boven
@@ -528,7 +525,6 @@
 			value: function spawnCoin() {
 				console.log('spawn een coin');
 				var coin = this.coins.getFirstExists(false);
-
 				if (!coin) {
 					coin = new _Coin2.default(this.game, 0, 0);
 				}
@@ -643,8 +639,6 @@
 				if (this.body.position.y > this.game.height / 2) {
 					this.body.y -= 85;
 				}
-
-				this.game.debug.body.scale.y = -1;
 			}
 		}]);
 
