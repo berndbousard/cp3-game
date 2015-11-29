@@ -54,15 +54,15 @@
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
-	var _Play = __webpack_require__(4);
+	var _Play = __webpack_require__(5);
 
 	var _Play2 = _interopRequireDefault(_Play);
 
-	var _Leaderboard = __webpack_require__(6);
+	var _Leaderboard = __webpack_require__(7);
 
 	var _Leaderboard2 = _interopRequireDefault(_Leaderboard);
 
-	var _Info = __webpack_require__(7);
+	var _Info = __webpack_require__(8);
 
 	var _Info2 = _interopRequireDefault(_Info);
 
@@ -121,6 +121,8 @@
 				this.game.load.bitmapFont('gamefont', 'assets/font/gamefont/gamefont.png', 'assets/font/gamefont/gamefont.fnt');
 				this.game.load.spritesheet('player_black', 'assets/player_black.png', 42, 44, 14);
 				this.game.load.spritesheet('player_white', 'assets/player_white.png', 42, 44, 14);
+				this.game.load.spritesheet('enemy_black', 'assets/enemy_black.png', 45, 45, 6);
+				this.game.load.spritesheet('enemy_white', 'assets/enemy_white.png', 45, 45, 6);
 			}
 		}, {
 			key: 'create',
@@ -158,9 +160,13 @@
 
 	var _Button2 = _interopRequireDefault(_Button);
 
-	var _BackgroundCity = __webpack_require__(9);
+	var _BackgroundCity = __webpack_require__(4);
 
 	var _BackgroundCity2 = _interopRequireDefault(_BackgroundCity);
+
+	var _MenuBackground = __webpack_require__(10);
+
+	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -191,22 +197,22 @@
 				// Images
 				this.cityBlack = new _BackgroundCity2.default(this.game, 0, 0, 750, 250, 'cityBlack');
 				this.game.add.existing(this.cityBlack);
-				this.cityBlack.autoScroll(-50, 0);
 
 				this.cityWhite = new _BackgroundCity2.default(this.game, 0, 500, 750, 250, 'cityWhite');
 				this.game.add.existing(this.cityWhite);
-				this.cityWhite.autoScroll(-50, 0);
 
 				this.cityWhite.scale.y *= -1; /* flip onderste stuk */
 
-				this.menuBackground = this.game.add.sprite(this.game.width / 2, this.game.height / 2, 'menuBackground');
-				this.menuBackground.anchor.setTo(.5, .5);
+				this.menuBackground = new _MenuBackground2.default(this.game, this.game.width / 2, this.game.height / 2);
+				this.game.add.existing(this.menuBackground);
 
 				// Buttons
 				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 + 150, 'startButton', this.startClickHandler, this);
 				this.startButton.anchor.setTo(0.5, 0.5);
+
 				this.leaderboardButton = this.game.add.button(this.game.width / 2 - 100, this.game.height / 2 + 150, 'leaderboardbutton', this.leaderboardClickHandler, this);
 				this.leaderboardButton.anchor.setTo(0.5, 0.5);
+
 				this.infoButton = this.game.add.button(this.game.width / 2 + 100, this.game.height / 2 + 150, 'infoButton', this.infoClickHandler, this);
 				this.infoButton.anchor.setTo(0.5, 0.5);
 
@@ -286,6 +292,39 @@
 
 /***/ },
 /* 4 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var BackgroundCity = (function (_Phaser$TileSprite) {
+		_inherits(BackgroundCity, _Phaser$TileSprite);
+
+		function BackgroundCity(game, x, y, width, height, key) {
+			_classCallCheck(this, BackgroundCity);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BackgroundCity).call(this, game, x, y, width, height, key));
+
+			_this.autoScroll(-120, 0);
+			return _this;
+		}
+
+		return BackgroundCity;
+	})(Phaser.TileSprite);
+
+	exports.default = BackgroundCity;
+
+/***/ },
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -296,13 +335,17 @@
 		value: true
 	});
 
-	var _Player = __webpack_require__(5);
+	var _Player = __webpack_require__(6);
 
 	var _Player2 = _interopRequireDefault(_Player);
 
-	var _BackgroundCity = __webpack_require__(9);
+	var _BackgroundCity = __webpack_require__(4);
 
 	var _BackgroundCity2 = _interopRequireDefault(_BackgroundCity);
+
+	var _Enemy = __webpack_require__(11);
+
+	var _Enemy2 = _interopRequireDefault(_Enemy);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -329,27 +372,28 @@
 		}, {
 			key: 'create',
 			value: function create() {
+				// physics
+				this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
 				// Declarations
 				this.keyArray = [];
+				this.side = 'up'; //Nu kunnen we weten of hij bovenaan of onderaan loopt
 
 				// Images
 				this.cityBlack = new _BackgroundCity2.default(this.game, 0, 0, 750, 250, 'cityBlack');
 				this.game.add.existing(this.cityBlack);
-				this.cityBlack.autoScroll(-120, 0);
 
 				this.cityWhite = new _BackgroundCity2.default(this.game, 0, 500, 750, 250, 'cityWhite');
 				this.game.add.existing(this.cityWhite);
-				this.cityWhite.autoScroll(-120, 0);
 
 				this.cityWhite.scale.y *= -1; /* flip onderste stuk */
 
 				// Player
-				this.playerBlack = new _Player2.default(this.game, 50, this.game.height / 2 - 23, 'player_black');
+				this.playerBlack = new _Player2.default(this.game, 50, this.game.height / 2 - 21, 'player_black');
 				this.game.add.existing(this.playerBlack);
 				this.playerBlack.anchor.setTo(.5, .5);
 
-				this.playerWhite = new _Player2.default(this.game, -1000, this.game.height / 2 + 23, 'player_white');
+				this.playerWhite = new _Player2.default(this.game, -1000, this.game.height / 2 + 21, 'player_white');
 				this.game.add.existing(this.playerWhite);
 				this.playerWhite.anchor.setTo(.5, .5);
 
@@ -358,16 +402,22 @@
 				// Set keys
 				this.keyArray[0] = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
 				this.keyArray[1] = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+
+				// enemy
+				this.enemies = this.game.add.group();
+				this.game.time.events.loop(Phaser.Timer.SECOND * 3, this.spawnEnemy, this);
 			}
 		}, {
 			key: 'update',
 			value: function update() {
+				var _this2 = this;
 
 				if (this.keyArray[0].isDown) {
 					// up
 
 					this.playerBlack.x = 50;
 					this.playerWhite.x = -1000;
+					this.side = 'up';
 				}
 
 				if (this.keyArray[1].isDown) {
@@ -375,12 +425,44 @@
 
 					this.playerWhite.x = 50;
 					this.playerBlack.x = -1000;
+					this.side = 'down';
 				}
+
+				// console.log(this.game.input.x, this.game.input.y);
+				//makkelijk om te meten
+
+				// collision
+				console.log(this.enemies.children.length); //zo zie je hoeveel er in enemies group zitten, zit nog geen pooling op
+				this.enemies.forEach(function (oneEnemy) {
+					_this2.game.physics.arcade.collide(_this2.playerBlack, oneEnemy, _this2.enemyPlayerCollisionHandler, null, _this2);
+				});
+
+				this.enemies.forEach(function (oneEnemy) {
+					_this2.game.physics.arcade.collide(_this2.playerWhite, oneEnemy, _this2.enemyPlayerCollisionHandler, null, _this2);
+				});
 			}
 		}, {
 			key: 'shutdown',
 			value: function shutdown() {
 				console.log('end play');
+			}
+
+			// eigen functies
+
+		}, {
+			key: 'spawnEnemy',
+			value: function spawnEnemy() {
+				console.log(this.side);
+				var enemy = this.enemies.getFirstExists(false);
+				if (!enemy) {
+					enemy = new _Enemy2.default(this.game, 725, 225, 'black');
+					this.enemies.add(enemy);
+				}
+			}
+		}, {
+			key: 'enemyPlayerCollisionHandler',
+			value: function enemyPlayerCollisionHandler() {
+				console.log('botsing');
 			}
 		}]);
 
@@ -390,7 +472,7 @@
 	exports.default = Play;
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -411,10 +493,16 @@
 		function Player(game, x, y, key) {
 			_classCallCheck(this, Player);
 
+			// collide
+
 			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Player).call(this, game, x, y, key));
 
+			_this.game.physics.arcade.enableBody(_this);
+
+			// animation
 			_this.animations.add('run');
 			_this.animations.play('run', 20, true);
+
 			return _this;
 		}
 
@@ -424,7 +512,7 @@
 	exports.default = Player;
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -474,7 +562,7 @@
 	exports.default = Leaderboard;
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -485,7 +573,7 @@
 		value: true
 	});
 
-	var _Text = __webpack_require__(8);
+	var _Text = __webpack_require__(9);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
@@ -546,7 +634,7 @@
 	exports.default = Info;
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -576,10 +664,10 @@
 	exports.default = Text;
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
@@ -591,19 +679,75 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var BackgroundCity = (function (_Phaser$TileSprite) {
-		_inherits(BackgroundCity, _Phaser$TileSprite);
+	var MenuBackground = (function (_Phaser$Sprite) {
+		_inherits(MenuBackground, _Phaser$Sprite);
 
-		function BackgroundCity(game, x, y, width, height, key) {
-			_classCallCheck(this, BackgroundCity);
+		function MenuBackground(game, x, y) {
+			_classCallCheck(this, MenuBackground);
 
-			return _possibleConstructorReturn(this, Object.getPrototypeOf(BackgroundCity).call(this, game, x, y, width, height, key));
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(MenuBackground).call(this, game, x, y, 'menuBackground'));
+
+			_this.anchor.setTo(.5, .5);
+			return _this;
 		}
 
-		return BackgroundCity;
-	})(Phaser.TileSprite);
+		return MenuBackground;
+	})(Phaser.Sprite);
 
-	exports.default = BackgroundCity;
+	exports.default = MenuBackground;
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Enemy = (function (_Phaser$Sprite) {
+		_inherits(Enemy, _Phaser$Sprite);
+
+		function Enemy(game, x, y, color) {
+			_classCallCheck(this, Enemy);
+
+			var key = undefined;
+			if (color == 'black') {
+				key = 'enemy_black';
+			} else if (color == 'white') {
+				key = 'enemy_white';
+			}
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Enemy).call(this, game, x, y, key));
+
+			_this.anchor.setTo(.5, .5);
+
+			// collide
+			_this.game.physics.arcade.enableBody(_this);
+
+			// pooling
+			_this.exists = true;
+
+			// animation
+			_this.animations.add('walk');
+			_this.animations.play('walk', 5, true);
+
+			// movement
+			_this.body.velocity.x = -250;
+			return _this;
+		}
+
+		return Enemy;
+	})(Phaser.Sprite);
+
+	exports.default = Enemy;
 
 /***/ }
 /******/ ]);
