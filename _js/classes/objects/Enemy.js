@@ -17,12 +17,15 @@ export default class Enemy extends Phaser.Sprite {
 
 		// animation
 		this.animations.add('walk');
-		this.animations.play('walk', 5, true);
+		this.animations.play('walk', 8, true);
 
 		// movement
 		this.body.velocity.x = -250;
 	}
 	update(){
 		this.game.debug.body(this);
+		if(this.body.position.x < 0 - this.width){
+			this.exists = false;
+		}
 	}
 }

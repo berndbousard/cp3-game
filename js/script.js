@@ -58,11 +58,11 @@
 
 	var _Play2 = _interopRequireDefault(_Play);
 
-	var _Leaderboard = __webpack_require__(12);
+	var _Leaderboard = __webpack_require__(11);
 
 	var _Leaderboard2 = _interopRequireDefault(_Leaderboard);
 
-	var _Info = __webpack_require__(13);
+	var _Info = __webpack_require__(12);
 
 	var _Info2 = _interopRequireDefault(_Info);
 
@@ -422,7 +422,7 @@
 				this.side = 'up'; //Nu kunnen we weten of hij bovenaan of onderaan loopt
 				this.game.score = 0;
 				this.game.distance = 0;
-				this.gameSpeed = .3; //variable die de snelheid van de game bepaalt. hoe groter het getal hoe sneller/moeilijker
+				this.gameSpeed = 1.5; //variable die de snelheid van de game bepaalt. hoe groter het getal hoe sneller/moeilijker. Beinvloed momenteel enkel spawnrate van enemy
 
 				// Images
 				this.cityBlack = new _BackgroundCity2.default(this.game, 0, 0, 750, 250, 'cityBlack');
@@ -442,13 +442,15 @@
 
 				// coins
 				this.coins = this.game.add.group();
-				this.coinTimer = this.game.time.events.loop(Phaser.Timer.SECOND / this.gameSpeed, this.spawnCoin, this);
+				this.coinTimer = this.game.time.events.loop(Phaser.Timer.SECOND * 5, this.spawnCoin, this);
 
-				// score + text
+				// distance score text
+				this.distanceTimer = this.game.time.events.loop(Phaser.Timer.SECOND / 1.2, this.increaseDistance, this);
 				this.distanceTextBox = new _Text2.default(this.game, this.game.width / 2, 50, 'gamefont', this.game.distance.toString() + ' km', 30);
 				this.game.add.existing(this.distanceTextBox);
 
-				this.scoreTextBox = new _Text2.default(this.game, this.game.width / 2 + 300, 50, 'gamefont', this.game.score.toString() + ' coins', 20);
+				// coins score text
+				this.scoreTextBox = new _Text2.default(this.game, this.game.width / 2 + 300, 50, 'gamefont', this.game.score + ' coins', 20);
 				this.game.add.existing(this.scoreTextBox);
 			}
 		}, {
@@ -463,17 +465,20 @@
 					this.player.flipUp();
 				}
 
-				console.log(this.game.input.x, this.game.input.y);
+				// console.log(this.game.input.x, this.game.input.y);
 				//makkelijk om te meten
 
 				// collision
-				//console.log(this.enemies.children.length); //zo zie je hoeveel er in enemies group zitten, zit nog geen pooling op
+				console.log('aantal coins' + this.coins.children.length); //zo zie je hoeveel er in enemies group zitten, zit nog geen pooling op
 				this.enemies.forEach(function (oneEnemy) {
 					_this2.game.physics.arcade.collide(_this2.player, oneEnemy, _this2.enemyPlayerCollisionHandler, null, _this2);
 				});
 
-				this.game.distance += .01;
-				this.distanceTextBox.setText(Math.floor(this.game.distance) + ' km');
+				this.coins.forEach(function (oneCoin) {
+					_this2.game.physics.arcade.collide(_this2.player, oneCoin, _this2.coinPlayerCollisionHandler, null, _this2);
+				});
+
+				console.log('score ' + this.game.score);
 			}
 		}, {
 			key: 'shutdown',
@@ -486,12 +491,53 @@
 		}, {
 			key: 'spawnEnemy',
 			value: function spawnEnemy() {
-				//console.log(this.side);
 				var enemy = this.enemies.getFirstExists(false);
 				if (!enemy) {
-					enemy = new _Enemy2.default(this.game, 725, 225, 'black');
-					this.enemies.add(enemy);
+					enemy = new _Enemy2.default(this.game, 0, 0, 'black');
 				}
+				// positioning
+				var x = this.game.rnd.integerInRange(750, 800);
+				var lot = Math.round(Math.random() * 1);
+				var y = undefined;
+				if (lot == 0) {
+					// boven
+					y = 225;
+					if (enemy.scale.y = -1) {
+						enemy.scale.y = 1;
+					}
+					enemy.loadTexture('enemy_black', null, false);
+				}
+				if (lot == 1) {
+					// onder
+					y = 275;
+					if (enemy.scale.y = 1) {
+						enemy.scale.y = -1;
+					}
+					enemy.loadTexture('enemy_white', null, false);
+				}
+				this.game.physics.arcade.enableBody(enemy);
+				enemy.reset(x, y);
+				enemy.body.velocity.x = -250;
+				this.enemies.add(enemy);
+			}
+		}, {
+			key: 'spawnCoin',
+			value: function spawnCoin() {
+				console.log('spawn een coin');
+				var coin = this.coins.getFirstExists(false);
+				if (!coin) {
+					coin = new _Coin2.default(this.game, 0, 0);
+				}
+
+				// positioning
+				var x = this.game.rnd.integerInRange(750, 800);
+				var lot = Math.round(Math.random() * 1);
+				var y = this.game.height / 2;
+
+				this.game.physics.arcade.enableBody(coin);
+				coin.reset(x, y);
+				coin.body.velocity.x = -100;
+				this.coins.add(coin);
 			}
 		}, {
 			key: 'enemyPlayerCollisionHandler',
@@ -503,15 +549,23 @@
 				player.destroy();
 			}
 		}, {
-			key: 'spawnCoin',
-			value: function spawnCoin() {
-				console.log('spawn een coin');
+			key: 'coinPlayerCollisionHandler',
+			value: function coinPlayerCollisionHandler(player, coin) {
+				coin.destroy();
+				this.game.score++;
+				var suffix = undefined;
+				if (this.game.score = 1) {
+					suffix = ' coin';
+				} else {
+					suffix = ' coins';
+				}
+				this.scoreTextBox.text = this.game.score + suffix;
 			}
 		}, {
-			key: 'collectCoin',
-			value: function collectCoin() {
-				this.game.score += 1;
-				this.scoreTextBox.setText(Math.floor(this.game.score) + ' coins');
+			key: 'increaseDistance',
+			value: function increaseDistance() {
+				this.game.distance++;
+				this.distanceTextBox.text = this.game.distance + ' km';
 			}
 		}]);
 
@@ -636,7 +690,7 @@
 
 			// animation
 			_this.animations.add('walk');
-			_this.animations.play('walk', 5, true);
+			_this.animations.play('walk', 8, true);
 
 			// movement
 			_this.body.velocity.x = -250;
@@ -647,6 +701,9 @@
 			key: 'update',
 			value: function update() {
 				this.game.debug.body(this);
+				if (this.body.position.x < 0 - this.width) {
+					this.exists = false;
+				}
 			}
 		}]);
 
@@ -694,6 +751,8 @@
 
 	'use strict';
 
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
@@ -710,8 +769,32 @@
 		function Coin(game, x, y) {
 			_classCallCheck(this, Coin);
 
-			return _possibleConstructorReturn(this, Object.getPrototypeOf(Coin).call(this, game, x, y, 'coin'));
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Coin).call(this, game, x, y, 'coin'));
+
+			_this.game.physics.arcade.enableBody(_this);
+			_this.anchor.setTo(.5, .5);
+
+			var amplitude = 200;
+
+			_this.position.y = _this.game.height / 2 - amplitude;
+			_this.body.velocity.x = -150;
+
+			// Phaser.Tween.to(properties(moet object zijn), duration, ease, autoStart, delay, repeat, yoyo) : Phaser.Tween;
+			_this.game.add.tween(_this).to({ y: _this.game.height / 2 + amplitude }, 5000, Phaser.Easing.Linear.In, true, 0, 1000, true);
+
+			_this.exists = true;
+			return _this;
 		}
+
+		_createClass(Coin, [{
+			key: 'update',
+			value: function update() {
+				this.game.debug.body(this);
+				if (this.body.position.x < 0 - this.width) {
+					this.exists = false;
+				}
+			}
+		}]);
 
 		return Coin;
 	})(Phaser.Sprite);
@@ -719,8 +802,7 @@
 	exports.default = Coin;
 
 /***/ },
-/* 11 */,
-/* 12 */
+/* 11 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -770,7 +852,7 @@
 	exports.default = Leaderboard;
 
 /***/ },
-/* 13 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
