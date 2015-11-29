@@ -63,7 +63,8 @@ export default class Play extends Phaser.State {
 		//makkelijk om te meten
 
 		// collision
-		console.log('aantal coins' + this.coins.children.length); //zo zie je hoeveel er in enemies group zitten, zit nog geen pooling op
+		console.log('aantal coins ' + this.coins.children.length); //zo zie je hoeveel er in enemies group zitten, zit nog geen pooling op
+		
 		this.enemies.forEach((oneEnemy) => {
 			this.game.physics.arcade.collide(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
 		});
@@ -86,7 +87,7 @@ export default class Play extends Phaser.State {
 		}
 		// positioning
 		let x = this.game.rnd.integerInRange(750, 800);
-		let lot = Math.round(Math.random()*1);
+		let lot = Math.round(Math.random()*1); // berekent of enemy boven of onder komt
 		let y;
 		if(lot == 0){
 			// boven
@@ -113,9 +114,11 @@ export default class Play extends Phaser.State {
 	spawnCoin(){
 		console.log('spawn een coin');
 		let coin = this.coins.getFirstExists(false);
+
 		if(!coin){
 			coin = new Coin(this.game, 0, 0);
 		}
+
 
 		// positioning
 		let x = this.game.rnd.integerInRange(750, 800);
@@ -137,10 +140,10 @@ export default class Play extends Phaser.State {
 	}
 
 	coinPlayerCollisionHandler(player, coin){
-		coin.destroy();
+		coin.kill();
 		this.game.score++;
 		let suffix;
-		if(this.game.score = 1){
+		if(this.game.score === 1){
 			suffix = ' coin';
 		}else{
 			suffix = ' coins';
