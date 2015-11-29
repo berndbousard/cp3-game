@@ -22,4 +22,7 @@ export default class Enemy extends Phaser.Sprite {
 		// movement
 		this.body.velocity.x = -250;
 	}
+	update(){
+		this.game.debug.body(this);
+	}
 }

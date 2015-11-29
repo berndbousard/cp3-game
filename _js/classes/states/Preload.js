@@ -14,6 +14,7 @@ export default class Preload extends Phaser.State {
 		this.game.load.spritesheet('player_white', 'assets/player_white.png', 42, 44, 14);
 		this.game.load.spritesheet('enemy_black', 'assets/enemy_black.png', 45, 45, 6);
 		this.game.load.spritesheet('enemy_white', 'assets/enemy_white.png', 45, 45, 6);
+		this.game.load.spritesheet('coin', 'assets/coin.png', 25, 25, 10);
 
 	}
 	create(){
