@@ -72,7 +72,7 @@ export default class Play extends Phaser.State {
 			this.game.physics.arcade.collide(this.player, oneCoin, this.coinPlayerCollisionHandler, null, this);
 		});
 
-		console.log('score ' + this.game.score);
+		// console.log('score ' + this.game.score);
 	}
 	shutdown(){
 		console.log('end play');
@@ -137,15 +137,18 @@ export default class Play extends Phaser.State {
 	}
 
 	coinPlayerCollisionHandler(player, coin){
-		coin.kill();
+		coin.exists = false;
 		this.game.score++;
-		let suffix;
-		if(this.game.score === 1){
-			suffix = ' coin';
-		}else{
-			suffix = ' coins';
-		}
+		let suffix = this.createSuffixForScore();
 		this.scoreTextBox.text = this.game.score + suffix;
+	}
+
+	createSuffixForScore(){
+		if(this.game.score === 1){
+			return ' coin';
+		}else{
+			return ' coins';
+		}
 	}
 
 	increaseDistance(){

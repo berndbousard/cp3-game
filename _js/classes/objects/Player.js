@@ -1,4 +1,4 @@
-export default class TestPlayer extends Phaser.Sprite {
+export default class Player extends Phaser.Sprite {
 	constructor(game, x, y){
 		super(game, x, y, 'player_black');
 

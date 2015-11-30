@@ -478,7 +478,7 @@
 					_this2.game.physics.arcade.collide(_this2.player, oneCoin, _this2.coinPlayerCollisionHandler, null, _this2);
 				});
 
-				console.log('score ' + this.game.score);
+				// console.log('score ' + this.game.score);
 			}
 		}, {
 			key: 'shutdown',
@@ -551,15 +551,19 @@
 		}, {
 			key: 'coinPlayerCollisionHandler',
 			value: function coinPlayerCollisionHandler(player, coin) {
-				coin.kill();
+				coin.exists = false;
 				this.game.score++;
-				var suffix = undefined;
-				if (this.game.score === 1) {
-					suffix = ' coin';
-				} else {
-					suffix = ' coins';
-				}
+				var suffix = this.createSuffixForScore();
 				this.scoreTextBox.text = this.game.score + suffix;
+			}
+		}, {
+			key: 'createSuffixForScore',
+			value: function createSuffixForScore() {
+				if (this.game.score === 1) {
+					return ' coin';
+				} else {
+					return ' coins';
+				}
 			}
 		}, {
 			key: 'increaseDistance',
@@ -592,15 +596,15 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var TestPlayer = (function (_Phaser$Sprite) {
-		_inherits(TestPlayer, _Phaser$Sprite);
+	var Player = (function (_Phaser$Sprite) {
+		_inherits(Player, _Phaser$Sprite);
 
-		function TestPlayer(game, x, y) {
-			_classCallCheck(this, TestPlayer);
+		function Player(game, x, y) {
+			_classCallCheck(this, Player);
 
 			// collide
 
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TestPlayer).call(this, game, x, y, 'player_black'));
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Player).call(this, game, x, y, 'player_black'));
 
 			_this.game.physics.arcade.enableBody(_this);
 			_this.body.immovable = true;
@@ -612,7 +616,7 @@
 			return _this;
 		}
 
-		_createClass(TestPlayer, [{
+		_createClass(Player, [{
 			key: 'update',
 			value: function update() {
 				// om de hitbox te zien
@@ -640,10 +644,10 @@
 			}
 		}]);
 
-		return TestPlayer;
+		return Player;
 	})(Phaser.Sprite);
 
-	exports.default = TestPlayer;
+	exports.default = Player;
 
 /***/ },
 /* 8 */
