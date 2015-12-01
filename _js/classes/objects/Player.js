@@ -21,15 +21,15 @@ export default class Player extends Phaser.Sprite {
 		// http://phaser.io/examples/v2/animation/change-texture-on-click
 		// Phaser.Sprite.loadTexture(key, frame, stopAnimation) : void;
 		this.loadTexture('player_white', null, false);
-		if(this.body.position.y < this.game.height/2){
-			this.body.y += 45;
-		}
+		//if(this.body.position.y < this.game.height/2){
+			this.body.y = this.game.height/2;
+		//}
 	}
 	flipUp(){
 		// console.log('player staat nu boven');
 		this.loadTexture('player_black', null, false);
-		if(this.body.position.y > this.game.height/2){
-			this.body.y -= 45;
-		}
+		//if(this.body.position.y > this.game.height/2){
+			this.body.y = (this.game.height/2) - 43;
+		//}
 	}
 }

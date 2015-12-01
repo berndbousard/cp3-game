@@ -2,14 +2,10 @@
 
 require_once "database/database.php";
 
-$sql = "SELECT * FROM `scores`
-		WHERE `id` = :id";
+$sql = 
+		"SELECT * FROM `scores` ORDER by `score` DESC LIMIT 5";
 $stmt = $pdo->prepare($sql);
-$stmt->bindValue(':id','id');
 $stmt->execute();
-$scores = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-foreach($scores as $score){
-}
+$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>

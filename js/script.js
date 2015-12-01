@@ -470,12 +470,16 @@
 
 				// collision
 				console.log('aantal coins' + this.coins.children.length); //zo zie je hoeveel er in enemies group zitten, zit nog geen pooling op
+				/*this.enemies.forEach((oneEnemy) => {
+	   	this.game.physics.arcade.collide(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
+	   });*/
+
 				this.enemies.forEach(function (oneEnemy) {
-					_this2.game.physics.arcade.collide(_this2.player, oneEnemy, _this2.enemyPlayerCollisionHandler, null, _this2);
+					_this2.game.physics.arcade.overlap(_this2.player, oneEnemy, _this2.enemyPlayerCollisionHandler, null, _this2);
 				});
 
 				this.coins.forEach(function (oneCoin) {
-					_this2.game.physics.arcade.collide(_this2.player, oneCoin, _this2.coinPlayerCollisionHandler, null, _this2);
+					_this2.game.physics.arcade.overlap(_this2.player, oneCoin, _this2.coinPlayerCollisionHandler, null, _this2);
 				});
 
 				// console.log('score ' + this.game.score);
@@ -629,18 +633,18 @@
 				// http://phaser.io/examples/v2/animation/change-texture-on-click
 				// Phaser.Sprite.loadTexture(key, frame, stopAnimation) : void;
 				this.loadTexture('player_white', null, false);
-				if (this.body.position.y < this.game.height / 2) {
-					this.body.y += 45;
-				}
+				//if(this.body.position.y < this.game.height/2){
+				this.body.y = this.game.height / 2;
+				//}
 			}
 		}, {
 			key: 'flipUp',
 			value: function flipUp() {
 				// console.log('player staat nu boven');
 				this.loadTexture('player_black', null, false);
-				if (this.body.position.y > this.game.height / 2) {
-					this.body.y -= 45;
-				}
+				//if(this.body.position.y > this.game.height/2){
+				this.body.y = this.game.height / 2 - 43;
+				//}
 			}
 		}]);
 
@@ -805,7 +809,7 @@
 
 /***/ },
 /* 11 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -814,6 +818,16 @@
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
+
+	var _BackgroundCity = __webpack_require__(4);
+
+	var _BackgroundCity2 = _interopRequireDefault(_BackgroundCity);
+
+	var _MenuBackground = __webpack_require__(5);
+
+	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -837,7 +851,28 @@
 			}
 		}, {
 			key: 'create',
-			value: function create() {}
+			value: function create() {
+
+				// Show/hide leaderboard
+				this.setVisibility = document.getElementById("scoretable");
+				this.setVisibility.style.visibility = "visible";
+
+				// Images
+				this.cityBlack = new _BackgroundCity2.default(this.game, 0, 0, 750, 250, 'cityBlack');
+				this.game.add.existing(this.cityBlack);
+
+				this.cityWhite = new _BackgroundCity2.default(this.game, 0, 500, 750, 250, 'cityWhite');
+				this.game.add.existing(this.cityWhite);
+
+				this.cityWhite.scale.y *= -1; /* flip onderste stuk */
+
+				this.menuBackground = new _MenuBackground2.default(this.game, this.game.width / 2, this.game.height / 2);
+				this.game.add.existing(this.menuBackground);
+
+				// Buttons
+				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 + 150, 'startButton', this.startClickHandler, this);
+				this.startButton.anchor.setTo(0.5, 0.5);
+			}
 		}, {
 			key: 'update',
 			value: function update() {}
@@ -845,6 +880,12 @@
 			key: 'shutdown',
 			value: function shutdown() {
 				console.log('end leaderboard');
+				this.setVisibility.style.visibility = "hidden";
+			}
+		}, {
+			key: 'startClickHandler',
+			value: function startClickHandler() {
+				this.game.state.start('Play');
 			}
 		}]);
 

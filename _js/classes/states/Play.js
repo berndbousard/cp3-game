@@ -64,12 +64,16 @@ export default class Play extends Phaser.State {
 
 		// collision
 		console.log('aantal coins' + this.coins.children.length); //zo zie je hoeveel er in enemies group zitten, zit nog geen pooling op
-		this.enemies.forEach((oneEnemy) => {
+		/*this.enemies.forEach((oneEnemy) => {
 			this.game.physics.arcade.collide(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
+		});*/
+
+		this.enemies.forEach((oneEnemy) => {
+			this.game.physics.arcade.overlap(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
 		});
 
 		this.coins.forEach((oneCoin) => {
-			this.game.physics.arcade.collide(this.player, oneCoin, this.coinPlayerCollisionHandler, null, this);
+			this.game.physics.arcade.overlap(this.player, oneCoin, this.coinPlayerCollisionHandler, null, this);
 		});
 
 		// console.log('score ' + this.game.score);
