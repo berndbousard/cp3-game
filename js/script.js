@@ -62,6 +62,10 @@
 
 	var _Leaderboard2 = _interopRequireDefault(_Leaderboard);
 
+	var _Gameover = __webpack_require__(13);
+
+	var _Gameover2 = _interopRequireDefault(_Gameover);
+
 	var _Info = __webpack_require__(12);
 
 	var _Info2 = _interopRequireDefault(_Info);
@@ -74,6 +78,7 @@
 		game.state.add('Menu', _Menu2.default, false);
 		game.state.add('Play', _Play2.default, false);
 		game.state.add('Leaderboard', _Leaderboard2.default, false);
+		game.state.add('Gameover', _Gameover2.default, false);
 		game.state.add('Info', _Info2.default, false);
 	};
 
@@ -551,6 +556,11 @@
 				this.cityWhite.autoScroll(0, 0);
 				this.enemyTimer.timer.destroy();
 				player.destroy();
+
+				console.log('dead');
+
+				this.game.state.start('Gameover');
+				//this.game.time.events.add(200, this.doGameover, this);
 			}
 		}, {
 			key: 'coinPlayerCollisionHandler',
@@ -559,6 +569,11 @@
 				this.game.score++;
 				var suffix = this.createSuffixForScore();
 				this.scoreTextBox.text = this.game.score + suffix;
+			}
+		}, {
+			key: 'doGameover',
+			value: function doGameover() {
+				this.game.state.start('Gameover');
 			}
 		}, {
 			key: 'createSuffixForScore',
@@ -574,6 +589,11 @@
 			value: function increaseDistance() {
 				this.game.distance++;
 				this.distanceTextBox.text = this.game.distance + ' km';
+			}
+		}, {
+			key: 'shutdown',
+			value: function shutdown() {
+				console.log('end play');
 			}
 		}]);
 
@@ -853,9 +873,9 @@
 			key: 'create',
 			value: function create() {
 
-				// Show/hide leaderboard
-				this.setVisibility = document.getElementById("scoretable");
-				this.setVisibility.style.visibility = "visible";
+				// Show/hide DOM elements
+				this.setVisibilityTable = document.getElementById("table");
+				this.setVisibilityTable.style.visibility = "visible";
 
 				// Images
 				this.cityBlack = new _BackgroundCity2.default(this.game, 0, 0, 750, 250, 'cityBlack');
@@ -880,7 +900,7 @@
 			key: 'shutdown',
 			value: function shutdown() {
 				console.log('end leaderboard');
-				this.setVisibility.style.visibility = "hidden";
+				this.setVisibilityTable.style.visibility = "hidden";
 			}
 		}, {
 			key: 'startClickHandler',
@@ -965,6 +985,141 @@
 	})(Phaser.State);
 
 	exports.default = Info;
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _BackgroundCity = __webpack_require__(4);
+
+	var _BackgroundCity2 = _interopRequireDefault(_BackgroundCity);
+
+	var _MenuBackground = __webpack_require__(5);
+
+	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
+
+	var _Text = __webpack_require__(9);
+
+	var _Text2 = _interopRequireDefault(_Text);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Gameover = (function (_Phaser$State) {
+		_inherits(Gameover, _Phaser$State);
+
+		function Gameover() {
+			_classCallCheck(this, Gameover);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(Gameover).apply(this, arguments));
+		}
+
+		_createClass(Gameover, [{
+			key: 'preload',
+			value: function preload() {
+				console.log('start gameover');
+			}
+		}, {
+			key: 'create',
+			value: function create() {
+
+				this.score = 1; /*  voorlopig heb ik dit zo genoemd, ter testing. Zodra we werkelijk
+	                   onze scores gebruiken moeten we een manier vinden om die uit de Play
+	                   state naar hier te brengen */
+				this.distance = 20;
+
+				// Show/hide leaderboard
+				this.setVisibilityInputName = document.getElementById("input-name");
+				this.submitElement = document.getElementById("submit");
+				this.inputElement = document.getElementById("text");
+				this.setVisibilityInputName.style.visibility = "visible";
+
+				// Images
+				this.cityBlack = new _BackgroundCity2.default(this.game, 0, 0, 750, 250, 'cityBlack');
+				this.game.add.existing(this.cityBlack);
+
+				this.cityWhite = new _BackgroundCity2.default(this.game, 0, 500, 750, 250, 'cityWhite');
+				this.game.add.existing(this.cityWhite);
+
+				this.cityWhite.scale.y *= -1; /* flip onderste stuk */
+
+				this.menuBackground = new _MenuBackground2.default(this.game, this.game.width / 2, this.game.height / 2);
+				this.game.add.existing(this.menuBackground);
+
+				// Buttons
+				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 + 150, 'startButton', this.startClickHandler, this);
+				this.startButton.anchor.setTo(0.5, 0.5);
+
+				// AJAX Call
+
+				this.submitElement.addEventListener('click', this.submitInputHandler);
+
+				// dit dient om enters op te vangen indien de gebruiker op enter duwt in het textveld, later te implementeren
+				// this.inputElement('keydown', this.keyHandler(event));
+			}
+		}, {
+			key: 'update',
+			value: function update() {}
+		}, {
+			key: 'shutdown',
+			value: function shutdown() {
+				console.log('end gameover');
+				this.setVisibilityInputName.style.visibility = "hidden";
+			}
+		}, {
+			key: 'submitInputHandler',
+			value: function submitInputHandler(e) {
+
+				e.preventDefault();
+
+				console.log("Time for some AJAX baby");
+
+				var req = new XMLHttpRequest();
+
+				var PageToSendTo = 'php/postscores.php?';
+				var Variable1 = "score=1";
+				var Variable2 = "&distance=2";
+				var UrlToSend = PageToSendTo + Variable1 + Variable2;
+
+				req.open("POST", UrlToSend);
+				req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
+				req.send();
+			}
+			/*keyHandler(e){
+	  	switch(e.keyCode){
+	  		case "13":
+	  		e.preventDefault();
+	  		console.log("hoera");
+	  		//this.submitInputHandler(e));
+	  		break;
+	  	}
+	  }*/
+
+		}, {
+			key: 'startClickHandler',
+			value: function startClickHandler() {
+				// dit is nog niet optimaal (geen idee waarom, needs bugfixing)
+				this.game.state.start('Play');
+			}
+		}]);
+
+		return Gameover;
+	})(Phaser.State);
+
+	exports.default = Gameover;
 
 /***/ }
 /******/ ]);

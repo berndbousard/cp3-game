@@ -11,7 +11,7 @@
 		require_once "php/getscores.php";
 		require_once "php/postscores.php";
 	?>
-	<table id="scoretable">
+	<table id="table">
 		<tr>
 			<th class="score">Score</th>
 			<th>Name</th>
@@ -25,6 +25,11 @@
 			}
 		?>
 	</table>
+
+	<form action="php/postscores.php?score=1&amp;distance=2" method="post" class="hidden" id="input-name">
+		<input type="text" name="name" placeholder="username" id="text"></input>
+		<input type="submit" name="action" value="post score" id="submit"/>
+	</form>
 	<script src="js/vendors/phaser.min.js"></script>
 	<script src="js/script.js"></script>
 </body>

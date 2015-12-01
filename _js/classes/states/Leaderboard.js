@@ -7,9 +7,9 @@ export default class Leaderboard extends Phaser.State {
 	}
 	create(){
 
-		// Show/hide leaderboard
-		this.setVisibility = document.getElementById("scoretable");
-		this.setVisibility.style.visibility = "visible";
+		// Show/hide DOM elements
+		this.setVisibilityTable = document.getElementById("table");
+		this.setVisibilityTable.style.visibility = "visible";
 
 		// Images
 		this.cityBlack = new BackgroundCity(this.game, 0, 0, 750, 250, 'cityBlack');
@@ -32,7 +32,7 @@ export default class Leaderboard extends Phaser.State {
 	}
 	shutdown(){
 		console.log('end leaderboard');
-		this.setVisibility.style.visibility = "hidden";
+		this.setVisibilityTable.style.visibility = "hidden";
 	}
 	startClickHandler() {
 		this.game.state.start('Play');

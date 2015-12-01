@@ -138,6 +138,11 @@ export default class Play extends Phaser.State {
 		this.cityWhite.autoScroll(0, 0);
 		this.enemyTimer.timer.destroy();
 		player.destroy();
+
+		console.log('dead');
+
+		this.game.state.start('Gameover');
+		//this.game.time.events.add(200, this.doGameover, this);
 	}
 
 	coinPlayerCollisionHandler(player, coin){
@@ -147,6 +152,10 @@ export default class Play extends Phaser.State {
 		this.scoreTextBox.text = this.game.score + suffix;
 	}
 
+	doGameover(){
+		this.game.state.start('Gameover');
+	}
+
 	createSuffixForScore(){
 		if(this.game.score === 1){
 			return ' coin';
@@ -154,9 +163,11 @@ export default class Play extends Phaser.State {
 			return ' coins';
 		}
 	}
-
 	increaseDistance(){
 		this.game.distance++;
 		this.distanceTextBox.text = this.game.distance + ' km';
+	}
+	shutdown(){
+		console.log('end play');
 	}
 }
