@@ -62,11 +62,11 @@
 
 	var _Leaderboard2 = _interopRequireDefault(_Leaderboard);
 
-	var _Gameover = __webpack_require__(13);
+	var _Gameover = __webpack_require__(12);
 
 	var _Gameover2 = _interopRequireDefault(_Gameover);
 
-	var _Info = __webpack_require__(12);
+	var _Info = __webpack_require__(13);
 
 	var _Info2 = _interopRequireDefault(_Info);
 
@@ -425,9 +425,9 @@
 				// Declarations
 				this.cursors = this.game.input.keyboard.createCursorKeys();
 				this.side = 'up'; //Nu kunnen we weten of hij bovenaan of onderaan loopt
-				this.game.score = 0;
-				this.game.distance = 0;
-				this.gameSpeed = 1.5; //variable die de snelheid van de game bepaalt. hoe groter het getal hoe sneller/moeilijker. Beinvloed momenteel enkel spawnrate van enemy
+				this.game.state.score = 0;
+				this.game.state.distance = 0;
+				this.gameSpeed = 1; //variable die de snelheid van de game bepaalt. hoe groter het getal hoe sneller/moeilijker. Beinvloed momenteel enkel spawnrate van enemy
 
 				// Images
 				this.cityBlack = new _BackgroundCity2.default(this.game, 0, 0, 750, 250, 'cityBlack');
@@ -444,6 +444,7 @@
 				// enemy
 				this.enemies = this.game.add.group();
 				this.enemyTimer = this.game.time.events.loop(Phaser.Timer.SECOND / this.gameSpeed, this.spawnEnemy, this);
+				console.log(this.enemyTimer);
 
 				// coins
 				this.coins = this.game.add.group();
@@ -451,11 +452,11 @@
 
 				// distance score text
 				this.distanceTimer = this.game.time.events.loop(Phaser.Timer.SECOND / 1.2, this.increaseDistance, this);
-				this.distanceTextBox = new _Text2.default(this.game, this.game.width / 2, 50, 'gamefont', this.game.distance.toString() + ' km', 30);
+				this.distanceTextBox = new _Text2.default(this.game, this.game.width / 2, 50, 'gamefont', this.game.state.distance.toString() + ' km', 30);
 				this.game.add.existing(this.distanceTextBox);
 
 				// coins score text
-				this.scoreTextBox = new _Text2.default(this.game, this.game.width / 2 + 300, 50, 'gamefont', this.game.score + ' coins', 20);
+				this.scoreTextBox = new _Text2.default(this.game, this.game.width / 2 + 300, 50, 'gamefont', this.game.state.score + ' coins', 20);
 				this.game.add.existing(this.scoreTextBox);
 			}
 		}, {
@@ -474,7 +475,7 @@
 				//makkelijk om te meten
 
 				// collision
-				console.log('aantal coins' + this.coins.children.length); //zo zie je hoeveel er in enemies group zitten, zit nog geen pooling op
+				//console.log('aantal coins' + this.coins.children.length); //zo zie je hoeveel er in enemies group zitten, zit nog geen pooling op
 				/*this.enemies.forEach((oneEnemy) => {
 	   	this.game.physics.arcade.collide(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
 	   });*/
@@ -487,7 +488,8 @@
 					_this2.game.physics.arcade.overlap(_this2.player, oneCoin, _this2.coinPlayerCollisionHandler, null, _this2);
 				});
 
-				// console.log('score ' + this.game.score);
+				// console.log('score ' + this.game.state.score);
+				// console.log(this.gameSpeed);
 			}
 		}, {
 			key: 'shutdown',
@@ -532,7 +534,7 @@
 		}, {
 			key: 'spawnCoin',
 			value: function spawnCoin() {
-				console.log('spawn een coin');
+				// console.log('spawn een coin');
 				var coin = this.coins.getFirstExists(false);
 				if (!coin) {
 					coin = new _Coin2.default(this.game, 0, 0);
@@ -566,9 +568,9 @@
 			key: 'coinPlayerCollisionHandler',
 			value: function coinPlayerCollisionHandler(player, coin) {
 				coin.exists = false;
-				this.game.score++;
+				this.game.state.score++;
 				var suffix = this.createSuffixForScore();
-				this.scoreTextBox.text = this.game.score + suffix;
+				this.scoreTextBox.text = this.game.state.score + suffix;
 			}
 		}, {
 			key: 'doGameover',
@@ -578,7 +580,7 @@
 		}, {
 			key: 'createSuffixForScore',
 			value: function createSuffixForScore() {
-				if (this.game.score === 1) {
+				if (this.game.state.score === 1) {
 					return ' coin';
 				} else {
 					return ' coins';
@@ -587,8 +589,14 @@
 		}, {
 			key: 'increaseDistance',
 			value: function increaseDistance() {
-				this.game.distance++;
-				this.distanceTextBox.text = this.game.distance + ' km';
+				this.game.state.distance++;
+				this.distanceTextBox.text = this.game.state.distance + ' km';
+				if (this.game.state.distance % 2 === 0) {
+					this.gameSpeed += .1;
+					console.log(this.gameSpeed);
+					this.enemyTimer.tick = Phaser.Timer.SECOND / this.gameSpeed;
+					console.log(this.enemyTimer);
+				}
 			}
 		}, {
 			key: 'shutdown',
@@ -757,10 +765,10 @@
 	var Text = (function (_Phaser$BitmapText) {
 		_inherits(Text, _Phaser$BitmapText);
 
-		function Text(game, x, y, font, text, size) {
+		function Text(game, x, y, font, text, size, align) {
 			_classCallCheck(this, Text);
 
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Text).call(this, game, x, y, font, text, size));
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Text).call(this, game, x, y, font, text, size, align));
 
 			_this.anchor.setTo(.5, .5);
 			return _this;
@@ -855,6 +863,8 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var leaderboardTabel = undefined;
+
 	var Leaderboard = (function (_Phaser$State) {
 		_inherits(Leaderboard, _Phaser$State);
 
@@ -874,8 +884,8 @@
 			value: function create() {
 
 				// Show/hide DOM elements
-				this.setVisibilityTable = document.getElementById("table");
-				this.setVisibilityTable.style.visibility = "visible";
+				leaderboardTabel = document.getElementById("table");
+				leaderboardTabel.style.visibility = "visible";
 
 				// Images
 				this.cityBlack = new _BackgroundCity2.default(this.game, 0, 0, 750, 250, 'cityBlack');
@@ -900,7 +910,7 @@
 			key: 'shutdown',
 			value: function shutdown() {
 				console.log('end leaderboard');
-				this.setVisibilityTable.style.visibility = "hidden";
+				leaderboardTabel.style.visibility = "hidden";
 			}
 		}, {
 			key: 'startClickHandler',
@@ -916,6 +926,172 @@
 
 /***/ },
 /* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _BackgroundCity = __webpack_require__(4);
+
+	var _BackgroundCity2 = _interopRequireDefault(_BackgroundCity);
+
+	var _MenuBackground = __webpack_require__(5);
+
+	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
+
+	var _Text = __webpack_require__(9);
+
+	var _Text2 = _interopRequireDefault(_Text);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var leaderboard = undefined;
+	var leaderboardNameInput = undefined;
+	var leaderboardSubmit = undefined;
+
+	var Gameover = (function (_Phaser$State) {
+		_inherits(Gameover, _Phaser$State);
+
+		function Gameover() {
+			_classCallCheck(this, Gameover);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(Gameover).apply(this, arguments));
+		}
+
+		_createClass(Gameover, [{
+			key: 'preload',
+			value: function preload() {
+				console.log('start gameover');
+			}
+		}, {
+			key: 'create',
+			value: function create() {
+				var _this2 = this;
+
+				// Waarden zijn in play opgeslaan in this.game.state.score/distance
+				this.score = this.game.state.score;
+				this.distance = this.game.state.distance;
+
+				// Show/hide leaderboard
+				leaderboard = document.getElementById('form');
+				leaderboardNameInput = document.getElementById("text");
+				leaderboardSubmit = document.getElementById("submit");
+				this.showElement(leaderboard);
+
+				// Images
+				this.cityBlack = new _BackgroundCity2.default(this.game, 0, 0, 750, 250, 'cityBlack');
+				this.game.add.existing(this.cityBlack);
+
+				this.cityWhite = new _BackgroundCity2.default(this.game, 0, 500, 750, 250, 'cityWhite');
+				this.game.add.existing(this.cityWhite);
+
+				this.cityWhite.scale.y *= -1; /* flip onderste stuk */
+
+				this.menuBackground = new _MenuBackground2.default(this.game, this.game.width / 2, this.game.height / 2);
+				this.game.add.existing(this.menuBackground);
+
+				// Buttons
+				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 + 150, 'startButton', this.startClickHandler, this);
+				this.startButton.anchor.setTo(0.5, 0.5);
+
+				// score and distance
+				this.visibleScore = new _Text2.default(this.game, this.game.width / 2 - 50, 200, 'gamefont', 'Your score\n' + this.score.toString(), 20, 'center');
+				this.game.add.existing(this.visibleScore);
+				this.visibleDistance = new _Text2.default(this.game, this.game.width / 2 + 80, 200, 'gamefont', 'You ran\n' + this.distance.toString() + ' km', 20, 'center');
+				this.game.add.existing(this.visibleDistance);
+
+				// AJAX Call
+				leaderboardSubmit.addEventListener('click', function (e) {
+					e.preventDefault();
+					if (!_this2.isEmpty(leaderboardNameInput)) {
+						var score = _this2.score;
+						var distance = _this2.distance;
+						_this2.submitInputHandler(score, distance, leaderboardNameInput.value);
+					}
+				});
+
+				// dit dient om enters op te vangen indien de gebruiker op enter duwt in het textveld, later te implementeren
+				// this.inputElement('keydown', this.keyHandler(event));
+			}
+		}, {
+			key: 'update',
+			value: function update() {
+				// console.log(this.score, this.distance);
+			}
+		}, {
+			key: 'shutdown',
+			value: function shutdown() {
+				console.log('end gameover');
+				this.hideElement(leaderboard);
+			}
+		}, {
+			key: 'submitInputHandler',
+			value: function submitInputHandler(score, distance, name) {
+
+				console.log("AJAX called");
+
+				var req = new XMLHttpRequest();
+
+				var url = 'php/postscores.php' + '?name=' + name + '?score=' + score + '?distance=' + distance;
+				console.log(url);
+
+				req.open("POST", url);
+				req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
+				req.send();
+			}
+			/*keyHandler(e){
+	  	switch(e.keyCode){
+	  		case "13":
+	  		e.preventDefault();
+	  		console.log("hoera");
+	  		//this.submitInputHandler(e));
+	  		break;
+	  	}
+	  }*/
+
+		}, {
+			key: 'startClickHandler',
+			value: function startClickHandler() {
+				// dit is nog niet optimaal (geen idee waarom, needs bugfixing)
+				this.game.state.start('Play');
+			}
+		}, {
+			key: 'isEmpty',
+			value: function isEmpty(input) {
+				// Als de lengte gelijk is aan 0, returnt dit true;
+				// Checht gewoon of het empty is of niet
+				return input.value.length === 0;
+			}
+		}, {
+			key: 'hideElement',
+			value: function hideElement(el) {
+				el.style.visibility = 'hidden';
+			}
+		}, {
+			key: 'showElement',
+			value: function showElement(el) {
+				el.style.visibility = 'visible';
+			}
+		}]);
+
+		return Gameover;
+	})(Phaser.State);
+
+	exports.default = Gameover;
+
+/***/ },
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -985,141 +1161,6 @@
 	})(Phaser.State);
 
 	exports.default = Info;
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _BackgroundCity = __webpack_require__(4);
-
-	var _BackgroundCity2 = _interopRequireDefault(_BackgroundCity);
-
-	var _MenuBackground = __webpack_require__(5);
-
-	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
-
-	var _Text = __webpack_require__(9);
-
-	var _Text2 = _interopRequireDefault(_Text);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Gameover = (function (_Phaser$State) {
-		_inherits(Gameover, _Phaser$State);
-
-		function Gameover() {
-			_classCallCheck(this, Gameover);
-
-			return _possibleConstructorReturn(this, Object.getPrototypeOf(Gameover).apply(this, arguments));
-		}
-
-		_createClass(Gameover, [{
-			key: 'preload',
-			value: function preload() {
-				console.log('start gameover');
-			}
-		}, {
-			key: 'create',
-			value: function create() {
-
-				this.score = 1; /*  voorlopig heb ik dit zo genoemd, ter testing. Zodra we werkelijk
-	                   onze scores gebruiken moeten we een manier vinden om die uit de Play
-	                   state naar hier te brengen */
-				this.distance = 20;
-
-				// Show/hide leaderboard
-				this.setVisibilityInputName = document.getElementById("input-name");
-				this.submitElement = document.getElementById("submit");
-				this.inputElement = document.getElementById("text");
-				this.setVisibilityInputName.style.visibility = "visible";
-
-				// Images
-				this.cityBlack = new _BackgroundCity2.default(this.game, 0, 0, 750, 250, 'cityBlack');
-				this.game.add.existing(this.cityBlack);
-
-				this.cityWhite = new _BackgroundCity2.default(this.game, 0, 500, 750, 250, 'cityWhite');
-				this.game.add.existing(this.cityWhite);
-
-				this.cityWhite.scale.y *= -1; /* flip onderste stuk */
-
-				this.menuBackground = new _MenuBackground2.default(this.game, this.game.width / 2, this.game.height / 2);
-				this.game.add.existing(this.menuBackground);
-
-				// Buttons
-				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 + 150, 'startButton', this.startClickHandler, this);
-				this.startButton.anchor.setTo(0.5, 0.5);
-
-				// AJAX Call
-
-				this.submitElement.addEventListener('click', this.submitInputHandler);
-
-				// dit dient om enters op te vangen indien de gebruiker op enter duwt in het textveld, later te implementeren
-				// this.inputElement('keydown', this.keyHandler(event));
-			}
-		}, {
-			key: 'update',
-			value: function update() {}
-		}, {
-			key: 'shutdown',
-			value: function shutdown() {
-				console.log('end gameover');
-				this.setVisibilityInputName.style.visibility = "hidden";
-			}
-		}, {
-			key: 'submitInputHandler',
-			value: function submitInputHandler(e) {
-
-				e.preventDefault();
-
-				console.log("Time for some AJAX baby");
-
-				var req = new XMLHttpRequest();
-
-				var PageToSendTo = 'php/postscores.php?';
-				var Variable1 = "score=1";
-				var Variable2 = "&distance=2";
-				var UrlToSend = PageToSendTo + Variable1 + Variable2;
-
-				req.open("POST", UrlToSend);
-				req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
-				req.send();
-			}
-			/*keyHandler(e){
-	  	switch(e.keyCode){
-	  		case "13":
-	  		e.preventDefault();
-	  		console.log("hoera");
-	  		//this.submitInputHandler(e));
-	  		break;
-	  	}
-	  }*/
-
-		}, {
-			key: 'startClickHandler',
-			value: function startClickHandler() {
-				// dit is nog niet optimaal (geen idee waarom, needs bugfixing)
-				this.game.state.start('Play');
-			}
-		}]);
-
-		return Gameover;
-	})(Phaser.State);
-
-	exports.default = Gameover;
 
 /***/ }
 /******/ ]);

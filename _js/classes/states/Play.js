@@ -15,9 +15,9 @@ export default class Play extends Phaser.State {
 		// Declarations
 		this.cursors = this.game.input.keyboard.createCursorKeys();
 		this.side = 'up'; //Nu kunnen we weten of hij bovenaan of onderaan loopt
-		this.game.score = 0;
-		this.game.distance = 0;
-		this.gameSpeed = 1.5; //variable die de snelheid van de game bepaalt. hoe groter het getal hoe sneller/moeilijker. Beinvloed momenteel enkel spawnrate van enemy
+		this.game.state.score = 0;
+		this.game.state.distance = 0;
+		this.gameSpeed = 1; //variable die de snelheid van de game bepaalt. hoe groter het getal hoe sneller/moeilijker. Beinvloed momenteel enkel spawnrate van enemy
 
 
 		// Images
@@ -35,6 +35,7 @@ export default class Play extends Phaser.State {
 		// enemy
 		this.enemies = this.game.add.group();
 		this.enemyTimer = this.game.time.events.loop(Phaser.Timer.SECOND / this.gameSpeed, this.spawnEnemy, this);
+		console.log(this.enemyTimer);
 
 		// coins
 		this.coins = this.game.add.group();
@@ -42,11 +43,11 @@ export default class Play extends Phaser.State {
 
 		// distance score text
 		this.distanceTimer = this.game.time.events.loop(Phaser.Timer.SECOND / 1.2, this.increaseDistance, this);
-		this.distanceTextBox = new Text(this.game, this.game.width/2, 50, 'gamefont', this.game.distance.toString() + ' km', 30);
+		this.distanceTextBox = new Text(this.game, this.game.width/2, 50, 'gamefont', this.game.state.distance.toString() + ' km', 30);
 		this.game.add.existing(this.distanceTextBox);
 
 		// coins score text
-		this.scoreTextBox = new Text(this.game, this.game.width/2 + 300, 50, 'gamefont', this.game.score + ' coins', 20);
+		this.scoreTextBox = new Text(this.game, this.game.width/2 + 300, 50, 'gamefont', this.game.state.score + ' coins', 20);
 		this.game.add.existing(this.scoreTextBox);
 
 	}
@@ -63,7 +64,7 @@ export default class Play extends Phaser.State {
 		//makkelijk om te meten
 
 		// collision
-		console.log('aantal coins' + this.coins.children.length); //zo zie je hoeveel er in enemies group zitten, zit nog geen pooling op
+		//console.log('aantal coins' + this.coins.children.length); //zo zie je hoeveel er in enemies group zitten, zit nog geen pooling op
 		/*this.enemies.forEach((oneEnemy) => {
 			this.game.physics.arcade.collide(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
 		});*/
@@ -76,7 +77,8 @@ export default class Play extends Phaser.State {
 			this.game.physics.arcade.overlap(this.player, oneCoin, this.coinPlayerCollisionHandler, null, this);
 		});
 
-		// console.log('score ' + this.game.score);
+		// console.log('score ' + this.game.state.score);
+		// console.log(this.gameSpeed);
 	}
 	shutdown(){
 		console.log('end play');
@@ -115,7 +117,7 @@ export default class Play extends Phaser.State {
 	}
 
 	spawnCoin(){
-		console.log('spawn een coin');
+		// console.log('spawn een coin');
 		let coin = this.coins.getFirstExists(false);
 		if(!coin){
 			coin = new Coin(this.game, 0, 0);
@@ -147,9 +149,9 @@ export default class Play extends Phaser.State {
 
 	coinPlayerCollisionHandler(player, coin){
 		coin.exists = false;
-		this.game.score++;
+		this.game.state.score++;
 		let suffix = this.createSuffixForScore();
-		this.scoreTextBox.text = this.game.score + suffix;
+		this.scoreTextBox.text = this.game.state.score + suffix;
 	}
 
 	doGameover(){
@@ -157,15 +159,21 @@ export default class Play extends Phaser.State {
 	}
 
 	createSuffixForScore(){
-		if(this.game.score === 1){
+		if(this.game.state.score === 1){
 			return ' coin';
 		}else{
 			return ' coins';
 		}
 	}
 	increaseDistance(){
-		this.game.distance++;
-		this.distanceTextBox.text = this.game.distance + ' km';
+		this.game.state.distance++;
+		this.distanceTextBox.text = this.game.state.distance + ' km';
+		if(this.game.state.distance%2 === 0){
+			this.gameSpeed += .1;
+			console.log(this.gameSpeed);
+			this.enemyTimer.tick = Phaser.Timer.SECOND / this.gameSpeed;
+			console.log(this.enemyTimer);
+		}
 	}
 	shutdown(){
 		console.log('end play');

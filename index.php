@@ -26,7 +26,7 @@
 		?>
 	</table>
 
-	<form action="php/postscores.php?score=1&amp;distance=2" method="post" class="hidden" id="input-name">
+	<form action="php/postscores.php" method="POST" class="hidden" id="form">
 		<input type="text" name="name" placeholder="username" id="text"></input>
 		<input type="submit" name="action" value="post score" id="submit"/>
 	</form>

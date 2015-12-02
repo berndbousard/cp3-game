@@ -47,7 +47,9 @@ th {
 	padding-right: 20px;
 }
 
-#input-name {
+#form {
+	visibility: hidden;
+	
 	z-index: 99;
 	position: absolute;
 
@@ -59,7 +61,7 @@ th {
 	top: 50%;
 }
 
-#input-name input[type="text"] {
+#form input[type="text"] {
 	width: 150px;
 	padding: 0px 10px;
 	height: 25px;
@@ -68,7 +70,7 @@ th {
 	font-family: "Font";
 }
 
-#input-name input[type="submit"] {
+#form input[type="submit"] {
 	position: relative;
 	top: -6px;
 	width: 25px;

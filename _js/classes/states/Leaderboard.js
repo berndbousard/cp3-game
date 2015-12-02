@@ -1,6 +1,8 @@
 import BackgroundCity from '../objects/BackgroundCity';
 import MenuBackground from '../objects/MenuBackground';
 
+let leaderboardTabel;
+
 export default class Leaderboard extends Phaser.State {
 	preload(){
 		console.log('start leaderboard');
@@ -8,8 +10,8 @@ export default class Leaderboard extends Phaser.State {
 	create(){
 
 		// Show/hide DOM elements
-		this.setVisibilityTable = document.getElementById("table");
-		this.setVisibilityTable.style.visibility = "visible";
+		leaderboardTabel = document.getElementById("table");
+		leaderboardTabel.style.visibility = "visible";
 
 		// Images
 		this.cityBlack = new BackgroundCity(this.game, 0, 0, 750, 250, 'cityBlack');
@@ -32,7 +34,7 @@ export default class Leaderboard extends Phaser.State {
 	}
 	shutdown(){
 		console.log('end leaderboard');
-		this.setVisibilityTable.style.visibility = "hidden";
+		leaderboardTabel.style.visibility = "hidden";
 	}
 	startClickHandler() {
 		this.game.state.start('Play');
