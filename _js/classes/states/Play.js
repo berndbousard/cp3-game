@@ -17,8 +17,8 @@ export default class Play extends Phaser.State {
 		this.side = 'up'; //Nu kunnen we weten of hij bovenaan of onderaan loopt
 		this.game.state.score = 0;
 		this.game.state.distance = 0;
-		this.gameSpeed = 1; //variable die de snelheid van de game bepaalt. hoe groter het getal hoe sneller/moeilijker. Beinvloed momenteel enkel spawnrate van enemy
-
+		this.gameSpeed = .95; //variable die de snelheid van de game bepaalt. hoe groter het getal hoe sneller/moeilijker. Beinvloed momenteel enkel spawnrate van enemy
+		this.delay = Phaser.Timer.SECOND * 2;
 
 		// Images
 		this.cityBlack = new BackgroundCity(this.game, 0, 0, 750, 250, 'cityBlack');
@@ -34,7 +34,7 @@ export default class Play extends Phaser.State {
 
 		// enemy
 		this.enemies = this.game.add.group();
-		this.enemyTimer = this.game.time.events.loop(Phaser.Timer.SECOND / this.gameSpeed, this.spawnEnemy, this);
+		this.enemyTimer = this.game.time.events.loop(this.delay, this.spawnEnemy, this);
 		console.log(this.enemyTimer);
 
 		// coins
@@ -169,10 +169,11 @@ export default class Play extends Phaser.State {
 		this.game.state.distance++;
 		this.distanceTextBox.text = this.game.state.distance + ' km';
 		if(this.game.state.distance%2 === 0){
-			this.gameSpeed += .1;
-			console.log(this.gameSpeed);
-			this.enemyTimer.tick = Phaser.Timer.SECOND / this.gameSpeed;
-			console.log(this.enemyTimer);
+			let delay = this.enemyTimer.delay * this.gameSpeed;
+			// console.log(this.gameSpeed);
+			// this.enemyTimer.tick = 1449055971970 - (Phaser.Timer.SECOND / this.gameSpeed);
+			this.enemyTimer.delay = delay;
+			// console.log(this.enemyTimer.delay);
 		}
 	}
 	shutdown(){
