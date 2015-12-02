@@ -1016,6 +1016,9 @@
 					}
 				});
 
+				// moeten iets vinden om leaderboard te tonen na complete
+				// this.submitInputHandler.addEventListener('complete', showLeaderboard);
+
 				// dit dient om enters op te vangen indien de gebruiker op enter duwt in het textveld, later te implementeren
 				// this.inputElement('keydown', this.keyHandler(event));
 			}
@@ -1047,6 +1050,12 @@
 				req.open("POST", url);
 				req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
 				req.send();
+			}
+		}, {
+			key: 'showLeaderboard',
+			value: function showLeaderboard() {
+				console.log("trying to show the leaderboard");
+				this.game.state.start('Leaderboard');
 			}
 			/*keyHandler(e){
 	  	switch(e.keyCode){
