@@ -58,15 +58,15 @@
 
 	var _Play2 = _interopRequireDefault(_Play);
 
-	var _Leaderboard = __webpack_require__(11);
+	var _Leaderboard = __webpack_require__(13);
 
 	var _Leaderboard2 = _interopRequireDefault(_Leaderboard);
 
-	var _Gameover = __webpack_require__(12);
+	var _Gameover = __webpack_require__(14);
 
 	var _Gameover2 = _interopRequireDefault(_Gameover);
 
-	var _Info = __webpack_require__(13);
+	var _Info = __webpack_require__(15);
 
 	var _Info2 = _interopRequireDefault(_Info);
 
@@ -123,12 +123,19 @@
 				this.game.load.image('cityWhite', 'assets/city_white.jpg');
 				this.game.load.image('cityBlack', 'assets/city_black.jpg');
 				this.game.load.image('menuBackground', 'assets/menu_background.png');
+				this.game.load.image('bullet', 'assets/bullet.png');
+
 				this.game.load.bitmapFont('gamefont', 'assets/font/gamefont/gamefont.png', 'assets/font/gamefont/gamefont.fnt');
+
 				this.game.load.spritesheet('player_black', 'assets/player_black.png', 42, 44, 14);
 				this.game.load.spritesheet('player_white', 'assets/player_white.png', 42, 44, 14);
 				this.game.load.spritesheet('enemy_black', 'assets/enemy_black.png', 45, 45, 6);
 				this.game.load.spritesheet('enemy_white', 'assets/enemy_white.png', 45, 45, 6);
 				this.game.load.spritesheet('coin', 'assets/coin.png', 25, 25, 10);
+
+				this.game.load.audio('change_side', 'assets/sound/change_side.mp3');
+				this.game.load.audio('coin', 'assets/sound/coin.mp3');
+				this.game.load.audio('enemy_hit', 'assets/sound/enemy_hit.wav');
 			}
 		}, {
 			key: 'create',
@@ -394,6 +401,18 @@
 
 	var _Coin2 = _interopRequireDefault(_Coin);
 
+	var _Sound = __webpack_require__(11);
+
+	var _Sound2 = _interopRequireDefault(_Sound);
+
+	var _BulletGroup = __webpack_require__(16);
+
+	var _BulletGroup2 = _interopRequireDefault(_BulletGroup);
+
+	var _Keyboard = __webpack_require__(17);
+
+	var _Keyboard2 = _interopRequireDefault(_Keyboard);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -419,14 +438,27 @@
 		}, {
 			key: 'create',
 			value: function create() {
+				this.flipSound = new _Sound2.default(this.game, 'change_side');
+				this.coinSound = new _Sound2.default(this.game, 'coin');
+				this.enemyHitSound = new _Sound2.default(this.game, 'enemy_hit');
+
 				// physics
 				this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
-				// Declarations
+				// controls
 				this.cursors = this.game.input.keyboard.createCursorKeys();
+				// this.keys = this.game.input.keyboard.addKeys({
+				// 	'SPACEBAR': Phaser.Keyboard.SPACEBAR
+				// });
+				this.spacebar = this.game.input.keyboard.addKey(32);
+				this.spacebar.onDown.add(this.spaceBarHandler, this);
+				// this.
+
+				// Declarations
 				this.side = 'up'; //Nu kunnen we weten of hij bovenaan of onderaan loopt
 				this.game.state.score = 0;
 				this.game.state.distance = 0;
+				this.game.state.bullets = 5;
 				this.gameSpeed = .95; //variable die de snelheid van de game bepaalt. hoe groter het getal hoe sneller/moeilijker. Beinvloed momenteel enkel spawnrate van enemy
 				this.delay = Phaser.Timer.SECOND * 2;
 
@@ -439,13 +471,12 @@
 				this.cityWhite.scale.y *= -1; /* flip onderste stuk */
 
 				// Player
-				this.player = new _Player2.default(this.game, 50, this.game.height / 2 - 43);
+				this.player = new _Player2.default(this.game, 50, this.game.height / 2 - 43, this.flipSound);
 				this.game.add.existing(this.player);
 
 				// enemy
 				this.enemies = this.game.add.group();
 				this.enemyTimer = this.game.time.events.loop(this.delay, this.spawnEnemy, this);
-				console.log(this.enemyTimer);
 
 				// coins
 				this.coins = this.game.add.group();
@@ -457,8 +488,15 @@
 				this.game.add.existing(this.distanceTextBox);
 
 				// coins score text
-				this.scoreTextBox = new _Text2.default(this.game, this.game.width / 2 + 300, 50, 'gamefont', this.game.state.score + ' coins', 20);
+				this.scoreTextBox = new _Text2.default(this.game, this.game.width / 2 + 300, 50, 'gamefont', this.game.state.score + '\ncoins', 20, 'center');
 				this.game.add.existing(this.scoreTextBox);
+
+				// bullets score text
+				this.bulletTextBox = new _Text2.default(this.game, this.game.width / 2 - 300, 50, 'gamefont', this.game.state.bullets + '\nbullets', 20, 'center');
+				this.game.add.existing(this.bulletTextBox);
+
+				// bullets
+				this.bullets = this.game.add.group();
 			}
 		}, {
 			key: 'update',
@@ -472,6 +510,8 @@
 					this.player.flipUp();
 				}
 
+				// console.log(this.game.state.bullets);
+
 				// console.log(this.game.input.x, this.game.input.y);
 				// makkelijk om te meten
 
@@ -484,16 +524,24 @@
 				});
 
 				this.coins.forEach(function (oneCoin) {
-					_this2.game.physics.arcade.overlap(_this2.player, oneCoin, _this2.coinPlayerCollisionHandler, null, _this2);
+					_this2.game.physics.arcade.collide(_this2.player, oneCoin, _this2.coinPlayerCollisionHandler, null, _this2);
 				});
 
-				// console.log('score ' + this.game.state.score);
-				// console.log(this.gameSpeed);
+				this.bullets.forEach(function (oneBullet) {
+					_this2.enemies.forEach(function (oneEnemy) {
+						_this2.game.physics.arcade.collide(oneBullet, oneEnemy, _this2.enemyBulletCollisionHandler, null, _this2);
+					});
+				});
+
+				console.log(this.coins.length);
 			}
 		}, {
 			key: 'shutdown',
 			value: function shutdown() {
 				console.log('end play');
+				this.cityBlack.autoScroll(0, 0);
+				this.cityWhite.autoScroll(0, 0);
+				this.enemyTimer.timer.destroy();
 			}
 
 			// eigen functies
@@ -553,28 +601,25 @@
 			key: 'enemyPlayerCollisionHandler',
 			value: function enemyPlayerCollisionHandler(player, enemy) {
 				enemy.destroy();
-				this.cityBlack.autoScroll(0, 0);
-				this.cityWhite.autoScroll(0, 0);
-				this.enemyTimer.timer.destroy();
 				player.destroy();
-
-				console.log('dead');
-
 				this.game.state.start('Gameover');
-				//this.game.time.events.add(200, this.doGameover, this);
 			}
 		}, {
 			key: 'coinPlayerCollisionHandler',
 			value: function coinPlayerCollisionHandler(player, coin) {
 				coin.exists = false;
 				this.game.state.score++;
+				this.game.state.bullets += 5;
 				var suffix = this.createSuffixForScore();
 				this.scoreTextBox.text = this.game.state.score + suffix;
+				this.coinSound.play();
 			}
 		}, {
-			key: 'doGameover',
-			value: function doGameover() {
-				this.game.state.start('Gameover');
+			key: 'enemyBulletCollisionHandler',
+			value: function enemyBulletCollisionHandler(bullet, enemy) {
+				enemy.destroy();
+				bullet.destroy();
+				this.enemyHitSound.play();
 			}
 		}, {
 			key: 'createSuffixForScore',
@@ -598,6 +643,25 @@
 					// console.log(this.enemyTimer.delay);
 				}
 			}
+		}, {
+			key: 'spaceBarHandler',
+			value: function spaceBarHandler() {
+				// shoot
+				console.log('schoot');
+				if (this.game.state.bullets >= 1) {
+					var bullet = this.bullets.getFirstExists(false);
+					if (!bullet) {
+						bullet = new _BulletGroup2.default(this.game, this.bullets, this.player.x, this.player.y);
+					}
+					var x = this.player.body.x - 10;
+					var y = this.player.body.y - 105;
+					// console.log(x, y);
+					bullet.reset(x, y);
+					this.game.state.bullets--;
+					this.bulletTextBox.text = this.game.state.bullets + '\nbullets';
+					// console.log('shoot');
+				}
+			}
 		}]);
 
 		return Play;
@@ -607,7 +671,7 @@
 
 /***/ },
 /* 7 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -616,6 +680,12 @@
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
+
+	var _Bullet = __webpack_require__(12);
+
+	var _Bullet2 = _interopRequireDefault(_Bullet);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -626,7 +696,7 @@
 	var Player = (function (_Phaser$Sprite) {
 		_inherits(Player, _Phaser$Sprite);
 
-		function Player(game, x, y) {
+		function Player(game, x, y, flipSound) {
 			_classCallCheck(this, Player);
 
 			// collide
@@ -636,6 +706,9 @@
 			_this.game.physics.arcade.enableBody(_this);
 			_this.body.immovable = true;
 			_this.body.allowGravity = false;
+
+			// sound
+			_this.flipSound = flipSound;
 
 			// animation
 			_this.animations.add('run');
@@ -656,18 +729,33 @@
 				// http://phaser.io/examples/v2/animation/change-texture-on-click
 				// Phaser.Sprite.loadTexture(key, frame, stopAnimation) : void;
 				this.loadTexture('player_white', null, false);
-				//if(this.body.position.y < this.game.height/2){
+				// if(this.body.position.y < this.game.height/2){
 				this.body.y = this.game.height / 2;
-				//}
+				this.flipSound.play();
+				// }
 			}
 		}, {
 			key: 'flipUp',
 			value: function flipUp() {
 				// console.log('player staat nu boven');
 				this.loadTexture('player_black', null, false);
-				//if(this.body.position.y > this.game.height/2){
+				// if(this.body.position.y > this.game.height/2){
 				this.body.y = this.game.height / 2 - 43;
-				//}
+				this.flipSound.play();
+				// }
+			}
+		}, {
+			key: 'shoot',
+			value: function shoot(game, bullets) {
+				if (this.enoughBullets(bullets)) {
+					var bullet = new _Bullet2.default(game, this.body.x, this.body.y);
+					game.add.existing(bullet);
+				}
+			}
+		}, {
+			key: 'enoughBullets',
+			value: function enoughBullets(bullets) {
+				return bullets > 0;
 			}
 		}]);
 
@@ -801,12 +889,16 @@
 			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Coin).call(this, game, x, y, 'coin'));
 
 			_this.game.physics.arcade.enableBody(_this);
+
 			_this.anchor.setTo(.5, .5);
 
 			var amplitude = 200;
 
 			_this.position.y = _this.game.height / 2 - amplitude;
 			_this.body.velocity.x = -150;
+
+			_this.animations.add('rotate');
+			_this.animations.play('rotate', 15, true);
 
 			// Phaser.Tween.to(properties(moet object zijn), duration, ease, autoStart, delay, repeat, yoyo) : Phaser.Tween;
 			_this.game.add.tween(_this).to({ y: _this.game.height / 2 + amplitude }, 5000, Phaser.Easing.Linear.In, true, 0, 1000, true);
@@ -832,6 +924,84 @@
 
 /***/ },
 /* 11 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Sound = (function (_Phaser$Sound) {
+		_inherits(Sound, _Phaser$Sound);
+
+		function Sound(game, key, volume, loop) {
+			_classCallCheck(this, Sound);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(Sound).call(this, game, key, 1, false));
+		}
+
+		return Sound;
+	})(Phaser.Sound);
+
+	exports.default = Sound;
+
+/***/ },
+/* 12 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Bullet = (function (_Phaser$Sprite) {
+		_inherits(Bullet, _Phaser$Sprite);
+
+		function Bullet(game, x, y) {
+			_classCallCheck(this, Bullet);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Bullet).call(this, game, x, y, 'bullet'));
+			// new Group(game, parent, name, addToStage, enableBody, physicsBodyType)
+
+			_this.anchor.setTo(.5, .5);
+
+			_this.game.physics.arcade.enableBody(_this);
+
+			_this.body.allowGravity = false;
+			_this.body.immovable = true;
+			return _this;
+		}
+
+		_createClass(Bullet, [{
+			key: 'update',
+			value: function update() {
+				this.game.debug.body(this);
+			}
+		}]);
+
+		return Bullet;
+	})(Phaser.Sprite);
+
+	exports.default = Bullet;
+
+/***/ },
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -920,7 +1090,7 @@
 	exports.default = Leaderboard;
 
 /***/ },
-/* 12 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -954,6 +1124,7 @@
 	var leaderboard = undefined;
 	var leaderboardNameInput = undefined;
 	var leaderboardSubmit = undefined;
+	var confirm = undefined;
 
 	var Gameover = (function (_Phaser$State) {
 		_inherits(Gameover, _Phaser$State);
@@ -982,6 +1153,7 @@
 				leaderboard = document.getElementById('form');
 				leaderboardNameInput = document.getElementById("text");
 				leaderboardSubmit = document.getElementById("submit");
+				confirm = document.querySelector('.confirm');
 				this.showElement(leaderboard);
 
 				// Images
@@ -1043,13 +1215,17 @@
 				console.log("AJAX called");
 
 				var req = new XMLHttpRequest();
-
 				var url = 'php/postscores.php' + '?name=' + name + '&score=' + score + '&distance=' + distance;
-				console.log(url);
-
 				req.open("POST", url);
 				req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
 				req.send();
+				req.open('GET', url);
+				req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
+				req.send();
+
+				this.showElement(confirm);
+				this.hideElement(leaderboardNameInput);
+				this.hideElement(leaderboardSubmit);
 			}
 		}, {
 			key: 'showLeaderboard',
@@ -1057,20 +1233,12 @@
 				console.log("trying to show the leaderboard");
 				this.game.state.start('Leaderboard');
 			}
-			/*keyHandler(e){
-	  	switch(e.keyCode){
-	  		case "13": // enter
-	  		e.preventDefault();
-	  		this.submitInputHandler(e));
-	  		break;
-	  	}
-	  }*/
-
 		}, {
 			key: 'startClickHandler',
 			value: function startClickHandler() {
 				// dit is nog niet optimaal (geen idee waarom, needs bugfixing)
-				this.game.state.start('Play');
+				this.hideElement(confirm);
+				this.changeState('Play');
 			}
 		}, {
 			key: 'isEmpty',
@@ -1089,6 +1257,11 @@
 			value: function showElement(el) {
 				el.style.visibility = 'visible';
 			}
+		}, {
+			key: 'changeState',
+			value: function changeState(state) {
+				this.game.state.start(state);
+			}
 		}]);
 
 		return Gameover;
@@ -1097,7 +1270,7 @@
 	exports.default = Gameover;
 
 /***/ },
-/* 13 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1167,6 +1340,100 @@
 	})(Phaser.State);
 
 	exports.default = Info;
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _Bullet = __webpack_require__(12);
+
+	var _Bullet2 = _interopRequireDefault(_Bullet);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var BulletGroup = (function (_Phaser$Group) {
+		_inherits(BulletGroup, _Phaser$Group);
+
+		function BulletGroup(game, parent, x, y) {
+			_classCallCheck(this, BulletGroup);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BulletGroup).call(this, game, parent));
+
+			_this.bullet = new _Bullet2.default(_this.game, 0, 0);
+			_this.bullet.anchor.setTo(.5, .5);
+			_this.add(_this.bullet);
+
+			_this.setAll('body.velocity.x', 200);
+
+			_this.exists = true;
+			return _this;
+		}
+
+		_createClass(BulletGroup, [{
+			key: 'update',
+			value: function update() {
+				this.game.debug.body(this);
+			}
+		}, {
+			key: 'reset',
+			value: function reset(x, y) {
+				this.bullet.position.x = x;
+				this.bullet.position.y = y;
+
+				this.x = x;
+				this.y = y;
+				this.exists = true;
+			}
+		}]);
+
+		return BulletGroup;
+	})(Phaser.Group);
+
+	exports.default = BulletGroup;
+
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Keyboard = (function (_Phaser$Key) {
+		_inherits(Keyboard, _Phaser$Key);
+
+		function Keyboard(game, keycode) {
+			_classCallCheck(this, Keyboard);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(Keyboard).call(this, game, keycode));
+		}
+
+		return Keyboard;
+	})(Phaser.Key);
+
+	exports.default = Keyboard;
 
 /***/ }
 /******/ ]);

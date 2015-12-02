@@ -30,6 +30,7 @@
 		<input type="text" name="name" placeholder="username" id="text" maxlength="10"></input>
 		<input type="submit" name="action" value="post score" id="submit"/>
 	</form>
+	<span class="confirm">Score saved!</span>
 	<script src="js/vendors/phaser.min.js"></script>
 	<script src="js/script.js"></script>
 </body>

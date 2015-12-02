@@ -5,6 +5,7 @@ import Text from '../objects/Text';
 let leaderboard;
 let leaderboardNameInput;
 let leaderboardSubmit;
+let confirm;
 
 
 export default class Gameover extends Phaser.State {
@@ -22,6 +23,7 @@ export default class Gameover extends Phaser.State {
 		leaderboard = document.getElementById('form');
 		leaderboardNameInput = document.getElementById("text");
 		leaderboardSubmit = document.getElementById("submit");
+		confirm = document.querySelector('.confirm');
 		this.showElement(leaderboard);
 
 		// Images
@@ -70,7 +72,7 @@ export default class Gameover extends Phaser.State {
 	}
 	shutdown(){
 		console.log('end gameover');
-		this.hideElement(leaderboard)
+		this.hideElement(leaderboard);
 	}
 
 	// eigen functies
@@ -79,30 +81,27 @@ export default class Gameover extends Phaser.State {
 		console.log("AJAX called");
 
 		let req = new XMLHttpRequest();
-
 		let url = 'php/postscores.php' + '?name=' + name + '&score=' + score + '&distance=' + distance;
-		console.log(url);
-
 		req.open("POST", url);
 		req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
 		req.send();
+		req.open('GET', url);
+		req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
+		req.send();
 
+		this.showElement(confirm);
+		this.hideElement(leaderboardNameInput);
+		this.hideElement(leaderboardSubmit);
 	}
 	showLeaderboard(){
 		console.log("trying to show the leaderboard");
 		this.game.state.start('Leaderboard');
 	}
-	/*keyHandler(e){
-		switch(e.keyCode){
-			case "13": // enter
-			e.preventDefault();
-			this.submitInputHandler(e));
-			break;
-		}
-	}*/
+
 	startClickHandler() {
 		// dit is nog niet optimaal (geen idee waarom, needs bugfixing)
-		this.game.state.start('Play');
+		this.hideElement(confirm);
+		this.changeState('Play');
 	}
 
 	isEmpty(input){
@@ -117,5 +116,9 @@ export default class Gameover extends Phaser.State {
 
 	showElement(el){
 		el.style.visibility = 'visible';
+	}
+
+	changeState(state){
+		this.game.state.start(state);
 	}
 }

@@ -1,3 +1,10 @@
+@font-face {
+	font-family: "Font";
+	src : url('../assets/font/gamefont/font.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
 body, html {
 	height: 99%;
 }
@@ -7,10 +14,13 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	flex-direction: column;
 	background-color: black;
 }
 canvas {
 	border: 2px solid white;
+	width: 750px;
+	height: 500px;
 }
 
 #table, #input-name {
@@ -88,9 +98,12 @@ input:focus {
 	-moz-outline: none;
 }
 
-@font-face {
-	font-family : "Font";
-	src : url('../assets/font/gamefont/font.ttf') format('truetype');
-	font-weight : normal;
-	font-style : normal;
+.confirm {
+	font-family: "Font";
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	font-size: 1.5em;
+	text-align: center;
+	visibility: hidden;
 }

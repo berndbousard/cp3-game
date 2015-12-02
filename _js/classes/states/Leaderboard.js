@@ -27,7 +27,7 @@ export default class Leaderboard extends Phaser.State {
 
 		// Buttons
 		this.startButton = this.game.add.button(
-			this.game.width/2,this.game.height/2 + 150,'startButton',this.startClickHandler,this);
+			this.game.width/2,this.game.height/2 + 150,'startButton', this.startClickHandler,this);
 		this.startButton.anchor.setTo(0.5,0.5);
 	}
 	update(){
