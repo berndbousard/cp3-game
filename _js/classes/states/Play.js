@@ -112,7 +112,7 @@ export default class Play extends Phaser.State {
 		console.log('end play');
 		this.cityBlack.autoScroll(0, 0);
 		this.cityWhite.autoScroll(0, 0);
-		this.enemyTimer.timer.destroy();
+		// this.enemyTimer.timer.destroy();
 	}
 
 	// eigen functies
@@ -174,9 +174,10 @@ export default class Play extends Phaser.State {
 	coinPlayerCollisionHandler(player, coin){
 		coin.exists = false;
 		this.game.state.score++;
-		this.game.state.bullets+=5;
+		this.game.state.bullets += 5;
+		this.bulletTextBox.text = this.game.state.bullets + '\nbullets';
 		let suffix = this.createSuffixForScore();
-		this.scoreTextBox.text = this.game.state.score + suffix;
+		this.updateScore(suffix);
 		this.coinSound.play();
 	}
 
@@ -196,7 +197,7 @@ export default class Play extends Phaser.State {
 
 	increaseDistance(){
 		this.game.state.distance++;
-		this.distanceTextBox.text = this.game.state.distance + ' km';
+		this.updateDistance();
 		if(this.game.state.distance%2 === 0){
 			let delay = this.enemyTimer.delay * this.gameSpeed;
 			// console.log(this.gameSpeed);
@@ -222,5 +223,11 @@ export default class Play extends Phaser.State {
 			this.bulletTextBox.text = this.game.state.bullets + '\nbullets';
 			// console.log('shoot');
 		}
+	}
+	updateScore(suffix){
+		this.scoreTextBox.text = this.game.state.score + suffix;
+	}
+	updateDistance(){
+		this.distanceTextBox.text = this.game.state.distance + ' km';
 	}
 }
