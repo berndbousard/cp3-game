@@ -61,16 +61,14 @@ export default class Play extends Phaser.State {
 		}
 
 		// console.log(this.game.input.x, this.game.input.y);
-		//makkelijk om te meten
+		// makkelijk om te meten
 
 		// collision
-		//console.log('aantal coins' + this.coins.children.length); //zo zie je hoeveel er in enemies group zitten, zit nog geen pooling op
-		/*this.enemies.forEach((oneEnemy) => {
-			this.game.physics.arcade.collide(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
-		});*/
+		// console.log('aantal coins' + this.coins.children.length); //zo zie je hoeveel er in enemies group zitten, zit nog geen pooling op
 
 		this.enemies.forEach((oneEnemy) => {
 			this.game.physics.arcade.overlap(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
+			this.game.physics.arcade.collide(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
 		});
 
 		this.coins.forEach((oneCoin) => {
@@ -175,8 +173,5 @@ export default class Play extends Phaser.State {
 			this.enemyTimer.delay = delay;
 			// console.log(this.enemyTimer.delay);
 		}
-	}
-	shutdown(){
-		console.log('end play');
 	}
 }

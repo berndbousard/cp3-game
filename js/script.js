@@ -473,16 +473,14 @@
 				}
 
 				// console.log(this.game.input.x, this.game.input.y);
-				//makkelijk om te meten
+				// makkelijk om te meten
 
 				// collision
-				//console.log('aantal coins' + this.coins.children.length); //zo zie je hoeveel er in enemies group zitten, zit nog geen pooling op
-				/*this.enemies.forEach((oneEnemy) => {
-	   	this.game.physics.arcade.collide(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
-	   });*/
+				// console.log('aantal coins' + this.coins.children.length); //zo zie je hoeveel er in enemies group zitten, zit nog geen pooling op
 
 				this.enemies.forEach(function (oneEnemy) {
 					_this2.game.physics.arcade.overlap(_this2.player, oneEnemy, _this2.enemyPlayerCollisionHandler, null, _this2);
+					_this2.game.physics.arcade.collide(_this2.player, oneEnemy, _this2.enemyPlayerCollisionHandler, null, _this2);
 				});
 
 				this.coins.forEach(function (oneCoin) {
@@ -599,11 +597,6 @@
 					this.enemyTimer.delay = delay;
 					// console.log(this.enemyTimer.delay);
 				}
-			}
-		}, {
-			key: 'shutdown',
-			value: function shutdown() {
-				console.log('end play');
 			}
 		}]);
 
@@ -1037,6 +1030,9 @@
 				console.log('end gameover');
 				this.hideElement(leaderboard);
 			}
+
+			// eigen functies
+
 		}, {
 			key: 'submitInputHandler',
 			value: function submitInputHandler(score, distance, name) {
@@ -1045,7 +1041,7 @@
 
 				var req = new XMLHttpRequest();
 
-				var url = 'php/postscores.php' + '?name=' + name + '?score=' + score + '?distance=' + distance;
+				var url = 'php/postscores.php' + '?name=' + name + '&score=' + score + '&distance=' + distance;
 				console.log(url);
 
 				req.open("POST", url);
@@ -1054,10 +1050,9 @@
 			}
 			/*keyHandler(e){
 	  	switch(e.keyCode){
-	  		case "13":
+	  		case "13": // enter
 	  		e.preventDefault();
-	  		console.log("hoera");
-	  		//this.submitInputHandler(e));
+	  		this.submitInputHandler(e));
 	  		break;
 	  	}
 	  }*/

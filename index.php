@@ -27,7 +27,7 @@
 	</table>
 
 	<form action="php/postscores.php" method="POST" class="hidden" id="form">
-		<input type="text" name="name" placeholder="username" id="text"></input>
+		<input type="text" name="name" placeholder="username" id="text" maxlength="10"></input>
 		<input type="submit" name="action" value="post score" id="submit"/>
 	</form>
 	<script src="js/vendors/phaser.min.js"></script>

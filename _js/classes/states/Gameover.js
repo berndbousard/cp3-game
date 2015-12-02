@@ -69,13 +69,15 @@ export default class Gameover extends Phaser.State {
 		console.log('end gameover');
 		this.hideElement(leaderboard)
 	}
+
+	// eigen functies
 	submitInputHandler(score, distance, name){
 
 		console.log("AJAX called");
 
 		let req = new XMLHttpRequest();
 
-		let url = 'php/postscores.php' + '?name=' + name + '?score=' + score + '?distance=' + distance;
+		let url = 'php/postscores.php' + '?name=' + name + '&score=' + score + '&distance=' + distance;
 		console.log(url);
 
 		req.open("POST", url);
@@ -85,10 +87,9 @@ export default class Gameover extends Phaser.State {
 	}
 	/*keyHandler(e){
 		switch(e.keyCode){
-			case "13":
+			case "13": // enter
 			e.preventDefault();
-			console.log("hoera");
-			//this.submitInputHandler(e));
+			this.submitInputHandler(e));
 			break;
 		}
 	}*/
