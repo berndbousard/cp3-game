@@ -10,10 +10,7 @@ export default class Leaderboard extends Phaser.State {
 	}
 	create(){
 
-		// Show/hide DOM elements
-		// leaderboardTabel = document.getElementById("table");
-		// confirm = document.querySelector('.confirm');
-		// leaderboardTabel.style.visibility = "visible";
+		// Build table with results
 		this.getJSON('http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=getScores');
 
 		// Images
@@ -27,23 +24,41 @@ export default class Leaderboard extends Phaser.State {
 		this.startButton = this.game.add.button(
 			this.game.width/2,this.game.height/2 + 150,'startButton', this.startClickHandler,this);
 		this.startButton.anchor.setTo(0.5,0.5);
+
 	}
 	update(){
 	}
 	shutdown(){
 		console.log('end leaderboard');
 		Utils.hideElement(leaderboardTabel);
-
-		// this.hideElement(confirm);
 	}
+
+	// eigen functies
 	buildLeaderboard(scores){
+
 		let userScores = scores;
 		leaderboardTabel = document.createElement('table');
 		leaderboardTabel.id = 'table';
+
+		let topRowTr = document.createElement('tr');
+		let topRowThForScore = document.createElement('th');
+		let topRowThForDistance = document.createElement('th');
+		let topRowThForName = document.createElement('th');
+
+		topRowThForScore.innerText = "score";
+		topRowThForName.innerText = "name";
+		topRowThForDistance.innerText = "distance";
+
+		topRowThForScore.classList.add('score');
+
+		topRowTr.appendChild(topRowThForScore);
+		topRowTr.appendChild(topRowThForName);
+		topRowTr.appendChild(topRowThForDistance);
+
+		leaderboardTabel.appendChild(topRowTr);
 		
 		userScores.forEach((data) => {
 			let tr = document.createElement('tr');
-			
 
 			let nameHTML = document.createElement('td');
 			let scoreHTML = document.createElement('td');
@@ -54,45 +69,27 @@ export default class Leaderboard extends Phaser.State {
 			scoreHTML.classList.add('score');
 			distanceHTML.innerText = data.distance;
 
-
-			tr.appendChild(nameHTML);
 			tr.appendChild(scoreHTML);
+			tr.appendChild(nameHTML);
 			tr.appendChild(distanceHTML);
 			leaderboardTabel.appendChild(tr);
 		});
-		console.log(leaderboardTabel);
+
 		document.querySelector('body').appendChild(leaderboardTabel);
 		Utils.showElement(leaderboardTabel);
-		// let data;
-		// let req = new XMLHttpRequest();
-		// 	req.addEventListener('load', function(){
-		// 		let data = req.response;
-
-		// 		let leaderboardTabel = document.createElement('table');
-		// 		leaderboardTabel.id = 'table';
-
-		// 		console.log(req.response);
-		// 	});
-		// 	req.open('GET', 'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=getScores');
-		// 	req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
-		// 	req.send();
-
 
 	}
 
 	getJSON(url){
-		fetch(url)
-			.then((response) => {
-				return response.json();
-			})
-			.then((response) => {
-				this.buildLeaderboard(response);
-			})
-	}
 
-	// buildLeaderboard(data){
-	// 	console.log(data);
-	// }
+		fetch(url)
+		.then((response) => {
+			return response.json();
+		})
+		.then((response) => {
+			this.buildLeaderboard(response);
+		});
+	}
 
 	startClickHandler() {
 		this.game.state.start('Play');

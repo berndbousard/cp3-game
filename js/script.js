@@ -1179,10 +1179,7 @@
 			key: 'create',
 			value: function create() {
 
-				// Show/hide DOM elements
-				// leaderboardTabel = document.getElementById("table");
-				// confirm = document.querySelector('.confirm');
-				// leaderboardTabel.style.visibility = "visible";
+				// Build table with results
 				this.getJSON('http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=getScores');
 
 				// Images
@@ -1204,15 +1201,34 @@
 			value: function shutdown() {
 				console.log('end leaderboard');
 				Utils.hideElement(leaderboardTabel);
-
-				// this.hideElement(confirm);
 			}
+
+			// eigen functies
+
 		}, {
 			key: 'buildLeaderboard',
 			value: function buildLeaderboard(scores) {
+
 				var userScores = scores;
 				leaderboardTabel = document.createElement('table');
 				leaderboardTabel.id = 'table';
+
+				var topRowTr = document.createElement('tr');
+				var topRowThForScore = document.createElement('th');
+				var topRowThForDistance = document.createElement('th');
+				var topRowThForName = document.createElement('th');
+
+				topRowThForScore.innerText = "score";
+				topRowThForName.innerText = "name";
+				topRowThForDistance.innerText = "distance";
+
+				topRowThForScore.classList.add('score');
+
+				topRowTr.appendChild(topRowThForScore);
+				topRowTr.appendChild(topRowThForName);
+				topRowTr.appendChild(topRowThForDistance);
+
+				leaderboardTabel.appendChild(topRowTr);
 
 				userScores.forEach(function (data) {
 					var tr = document.createElement('tr');
@@ -1226,27 +1242,14 @@
 					scoreHTML.classList.add('score');
 					distanceHTML.innerText = data.distance;
 
-					tr.appendChild(nameHTML);
 					tr.appendChild(scoreHTML);
+					tr.appendChild(nameHTML);
 					tr.appendChild(distanceHTML);
 					leaderboardTabel.appendChild(tr);
 				});
-				console.log(leaderboardTabel);
+
 				document.querySelector('body').appendChild(leaderboardTabel);
 				Utils.showElement(leaderboardTabel);
-				// let data;
-				// let req = new XMLHttpRequest();
-				// 	req.addEventListener('load', function(){
-				// 		let data = req.response;
-
-				// 		let leaderboardTabel = document.createElement('table');
-				// 		leaderboardTabel.id = 'table';
-
-				// 		console.log(req.response);
-				// 	});
-				// 	req.open('GET', 'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=getScores');
-				// 	req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
-				// 	req.send();
 			}
 		}, {
 			key: 'getJSON',
@@ -1259,11 +1262,6 @@
 					_this2.buildLeaderboard(response);
 				});
 			}
-
-			// buildLeaderboard(data){
-			// 	console.log(data);
-			// }
-
 		}, {
 			key: 'startClickHandler',
 			value: function startClickHandler() {
@@ -1300,6 +1298,12 @@
 
 	var _Text2 = _interopRequireDefault(_Text);
 
+	var _Utils = __webpack_require__(15);
+
+	var Utils = _interopRequireWildcard(_Utils);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1308,10 +1312,10 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var leaderboard = undefined;
+	var confirm = undefined;
+	var inputField = undefined;
 	var leaderboardNameInput = undefined;
 	var leaderboardSubmit = undefined;
-	var confirm = undefined;
 
 	var Gameover = (function (_Phaser$State) {
 		_inherits(Gameover, _Phaser$State);
@@ -1335,13 +1339,6 @@
 				this.score = this.game.state.score;
 				this.distance = this.game.state.distance;
 
-				// Show/hide leaderboard
-				leaderboard = document.getElementById('form');
-				leaderboardNameInput = document.getElementById("text");
-				leaderboardSubmit = document.getElementById("submit");
-				confirm = document.querySelector('.confirm');
-				//this.showElement(leaderboard);
-
 				// Images
 				this.city = new _BackgroundCity2.default(this.game, 0, 0, 750, 500, 'city');
 				this.game.add.existing(this.city);
@@ -1359,36 +1356,58 @@
 				this.visibleDistance = new _Text2.default(this.game, this.game.width / 2 + 80, 200, 'gamefont', 'You ran\n' + this.distance.toString() + ' km', 20, 'center');
 				this.game.add.existing(this.visibleDistance);
 
-				// AJAX Call
-				/*leaderboardSubmit.addEventListener('click', e => {
-	   	e.preventDefault();
-	   	if(!this.isEmpty(leaderboardNameInput)){
-	   		let score = this.score;
-	   		let distance = this.distance;
-	   		this.submitInputHandler(score, distance, leaderboardNameInput.value);
-	   	}
-	   });*/
+				// create input field, prepare it for ajax
+				this.createInputField();
 
-				// moeten iets vinden om leaderboard te tonen na complete
-				// this.submitInputHandler.addEventListener('complete', showLeaderboard);
+				leaderboardNameInput = document.getElementById("text");
+				leaderboardSubmit = document.getElementById("submit");
+				//confirm = document.querySelector('.confirm');
+
+				// AJAX
+				this.doAjax();
 
 				// dit dient om enters op te vangen indien de gebruiker op enter duwt in het textveld, later te implementeren
 				// this.inputElement('keydown', this.keyHandler(event));
 			}
 		}, {
 			key: 'update',
-			value: function update() {
-				// console.log(this.score, this.distance);
-			}
+			value: function update() {}
 		}, {
 			key: 'shutdown',
 			value: function shutdown() {
 				console.log('end gameover');
-				//this.hideElement(leaderboard);
 			}
+		}, {
+			key: 'createInputField',
+			value: function createInputField() {
 
-			// eigen functies
+				inputField = document.createElement('form');
+				inputField.setAttribute('action', 'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=postScores');
 
+				inputField.setAttribute('class', 'hidden');
+				inputField.id = 'form';
+
+				var inputFieldText = document.createElement('input');
+				inputFieldText.setAttribute('type', 'text');
+				inputFieldText.setAttribute('name', 'name');
+				inputFieldText.setAttribute('placeholder', 'username');
+				inputFieldText.setAttribute('maxlength', '10');
+				inputFieldText.id = 'text';
+
+				var inputFieldSubmit = document.createElement('input');
+				inputFieldSubmit.setAttribute('type', 'submit');
+				inputFieldSubmit.setAttribute('name', 'action');
+				inputFieldSubmit.setAttribute('value', 'post score');
+				inputFieldSubmit.id = 'submit';
+
+				inputField.appendChild(inputFieldText);
+				inputField.appendChild(inputFieldSubmit);
+
+				//console.log(inputField);
+
+				document.querySelector('body').appendChild(inputField);
+				Utils.showElement(inputField);
+			}
 		}, {
 			key: 'submitInputHandler',
 			value: function submitInputHandler(score, distance, name) {
@@ -1396,12 +1415,12 @@
 				console.log("AJAX called");
 
 				var req = new XMLHttpRequest();
-				var url = 'php/postscores.php' + '?name=' + name + '&score=' + score + '&distance=' + distance;
+				var url = 'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=postScores' + '&name=' + name + '&score=' + score + '&distance=' + distance;
 				req.open("POST", url);
 				req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
 				req.send();
 
-				req.open('GET', url);
+				req.open("GET", url);
 				req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
 				req.send();
 
@@ -1409,29 +1428,28 @@
 
 				this.game.state.start('Leaderboard');
 
-				this.showElement(confirm);
-				this.hideElement(leaderboardNameInput);
-				this.hideElement(leaderboardSubmit);
+				//Utils.showElement(confirm);
+				Utils.hideElement(inputField);
 			}
 		}, {
-			key: 'showLeaderboard',
-			value: function showLeaderboard() {
-				console.log("trying to show the leaderboard");
-				//this.game.state.start('Leaderboard');
+			key: 'doAjax',
+			value: function doAjax() {
+				var _this2 = this;
+
+				leaderboardSubmit.addEventListener('click', function (e) {
+					e.preventDefault();
+					if (!Utils.isEmpty(leaderboardNameInput)) {
+						var score = _this2.score;
+						var distance = _this2.distance;
+						_this2.submitInputHandler(score, distance, leaderboardNameInput.value);
+					}
+				});
 			}
 		}, {
 			key: 'startClickHandler',
 			value: function startClickHandler() {
-				// dit is nog niet optimaal (geen idee waarom, needs bugfixing)
-				this.hideElement(confirm);
+				Utils.hideElement(inputField);
 				this.changeState('Play');
-			}
-		}, {
-			key: 'isEmpty',
-			value: function isEmpty(input) {
-				// Als de lengte gelijk is aan 0, returnt dit true;
-				// Checht gewoon of het empty is of niet
-				return input.value.length === 0;
 			}
 		}, {
 			key: 'changeState',

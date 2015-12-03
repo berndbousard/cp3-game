@@ -6,21 +6,6 @@
 	<link rel="stylesheet" type="text/css" href="css/screen.css">
 </head>
 <body>
-	<!-- <table id="table">
-		<tr>
-			<th class="score">Score</th>
-			<th>Name</th>
-		</tr>
-		<?php
-			foreach($results as $result){
-				echo "<tr>";
-				echo "<td class="."score".">" . $result['score'] . "</td>";
-				echo "<td>" . $result['name'] . "</td>";
-				echo "</tr>";
-			}
-		?>
-	</table> -->
-
 	<!-- <form action="php/postscores.php" method="POST" class="hidden" id="form">
 		<input type="text" name="name" placeholder="username" id="text" maxlength="10"></input>
 		<input type="submit" name="action" value="post score" id="submit"/>

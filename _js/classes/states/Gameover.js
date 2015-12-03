@@ -1,11 +1,12 @@
 import BackgroundCity from '../objects/BackgroundCity';
 import MenuBackground from '../objects/MenuBackground';
 import Text from '../objects/Text';
+import * as Utils from '../objects/Utils';
 
-let leaderboard;
+let confirm;
+let inputField;
 let leaderboardNameInput;
 let leaderboardSubmit;
-let confirm;
 
 
 export default class Gameover extends Phaser.State {
@@ -17,14 +18,6 @@ export default class Gameover extends Phaser.State {
 		// Waarden zijn in play opgeslaan in this.game.state.score/distance
 		this.score = this.game.state.score;
 		this.distance = this.game.state.distance;
-
-
-		// Show/hide leaderboard
-		leaderboard = document.getElementById('form');
-		leaderboardNameInput = document.getElementById("text");
-		leaderboardSubmit = document.getElementById("submit");
-		confirm = document.querySelector('.confirm');
-		//this.showElement(leaderboard);
 
 		// Images
 		this.city = new BackgroundCity(this.game, 0, 0, 750, 500, 'city');
@@ -44,44 +37,69 @@ export default class Gameover extends Phaser.State {
 		this.visibleDistance = new Text(this.game, this.game.width/2 + 80, 200, 'gamefont', 'You ran\n' + this.distance.toString() + ' km', 20, 'center');
 		this.game.add.existing(this.visibleDistance);
 
+		// create input field, prepare it for ajax
+		this.createInputField();
 
-		// AJAX Call
-		/*leaderboardSubmit.addEventListener('click', e => {
-			e.preventDefault();
-			if(!this.isEmpty(leaderboardNameInput)){
-				let score = this.score;
-				let distance = this.distance;
-				this.submitInputHandler(score, distance, leaderboardNameInput.value);
-			}
-		});*/
+		leaderboardNameInput = document.getElementById("text");
+		leaderboardSubmit = document.getElementById("submit");
+		//confirm = document.querySelector('.confirm');
 
-		// moeten iets vinden om leaderboard te tonen na complete
-		// this.submitInputHandler.addEventListener('complete', showLeaderboard);
+		// AJAX
+		this.doAjax();
 
 		// dit dient om enters op te vangen indien de gebruiker op enter duwt in het textveld, later te implementeren
 		// this.inputElement('keydown', this.keyHandler(event));
 
 	}
 	update(){
-		// console.log(this.score, this.distance);
 	}
 	shutdown(){
 		console.log('end gameover');
-		//this.hideElement(leaderboard);
 	}
 
-	// eigen functies
+	createInputField(){
+
+		inputField = document.createElement('form');
+		inputField.setAttribute('action', 
+			'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=postScores');
+
+		inputField.setAttribute('class', 'hidden');
+		inputField.id = 'form';
+
+		let inputFieldText = document.createElement('input');
+		inputFieldText.setAttribute('type', 'text');
+		inputFieldText.setAttribute('name', 'name');
+		inputFieldText.setAttribute('placeholder', 'username');
+		inputFieldText.setAttribute('maxlength', '10');
+		inputFieldText.id = 'text';
+
+		let inputFieldSubmit = document.createElement('input');
+		inputFieldSubmit.setAttribute('type', 'submit');
+		inputFieldSubmit.setAttribute('name', 'action');
+		inputFieldSubmit.setAttribute('value', 'post score');
+		inputFieldSubmit.id = 'submit';
+
+
+		inputField.appendChild(inputFieldText);
+		inputField.appendChild(inputFieldSubmit);
+
+		//console.log(inputField);
+
+		document.querySelector('body').appendChild(inputField);
+		Utils.showElement(inputField);
+	}
+
 	submitInputHandler(score, distance, name){
 
 		console.log("AJAX called");
 
 		let req = new XMLHttpRequest();
-		let url = 'php/postscores.php' + '?name=' + name + '&score=' + score + '&distance=' + distance;
+		let url = 'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=postScores' + '&name=' + name + '&score=' + score + '&distance=' + distance;
 		req.open("POST", url);
 		req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
 		req.send();
 
-		req.open('GET', url);
+		req.open("GET", url);
 		req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
 		req.send();
 
@@ -89,25 +107,23 @@ export default class Gameover extends Phaser.State {
 
 		this.game.state.start('Leaderboard');
 
-		this.showElement(confirm);
-		this.hideElement(leaderboardNameInput);
-		this.hideElement(leaderboardSubmit);
-	}
-	showLeaderboard(){
-		console.log("trying to show the leaderboard");
-		//this.game.state.start('Leaderboard');
+		//Utils.showElement(confirm);
+		Utils.hideElement(inputField);
 	}
 
+	doAjax(){
+		leaderboardSubmit.addEventListener('click', e => {
+			e.preventDefault();
+			if(!Utils.isEmpty(leaderboardNameInput)){
+				let score = this.score;
+				let distance = this.distance;
+				this.submitInputHandler(score, distance, leaderboardNameInput.value);
+			}
+		});
+	}
 	startClickHandler() {
-		// dit is nog niet optimaal (geen idee waarom, needs bugfixing)
-		this.hideElement(confirm);
+		Utils.hideElement(inputField);
 		this.changeState('Play');
-	}
-
-	isEmpty(input){
-		// Als de lengte gelijk is aan 0, returnt dit true;
-		// Checht gewoon of het empty is of niet
-		return input.value.length === 0;
 	}
 	changeState(state){
 		this.game.state.start(state);
