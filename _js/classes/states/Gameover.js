@@ -85,9 +85,14 @@ export default class Gameover extends Phaser.State {
 		req.open("POST", url);
 		req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
 		req.send();
+
 		req.open('GET', url);
 		req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
 		req.send();
+
+		console.log("get done");
+
+		this.game.state.start('Leaderboard');
 
 		this.showElement(confirm);
 		this.hideElement(leaderboardNameInput);
@@ -95,7 +100,7 @@ export default class Gameover extends Phaser.State {
 	}
 	showLeaderboard(){
 		console.log("trying to show the leaderboard");
-		this.game.state.start('Leaderboard');
+		//this.game.state.start('Leaderboard');
 	}
 
 	startClickHandler() {

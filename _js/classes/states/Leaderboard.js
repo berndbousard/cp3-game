@@ -2,6 +2,7 @@ import BackgroundCity from '../objects/BackgroundCity';
 import MenuBackground from '../objects/MenuBackground';
 
 let leaderboardTabel;
+let confirm;
 
 export default class Leaderboard extends Phaser.State {
 	preload(){
@@ -11,6 +12,7 @@ export default class Leaderboard extends Phaser.State {
 
 		// Show/hide DOM elements
 		leaderboardTabel = document.getElementById("table");
+		confirm = document.querySelector('.confirm');
 		leaderboardTabel.style.visibility = "visible";
 
 		// Images
@@ -35,8 +37,12 @@ export default class Leaderboard extends Phaser.State {
 	shutdown(){
 		console.log('end leaderboard');
 		leaderboardTabel.style.visibility = "hidden";
+		this.hideElement(confirm);
 	}
 	startClickHandler() {
 		this.game.state.start('Play');
+	}
+	hideElement(el){
+		el.style.visibility = 'hidden';
 	}
 }
