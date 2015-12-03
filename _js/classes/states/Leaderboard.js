@@ -1,8 +1,8 @@
 import BackgroundCity from '../objects/BackgroundCity';
 import MenuBackground from '../objects/MenuBackground';
+import * as Utils from '../objects/Utils';
 
-// let leaderboardTabel;
-// let confirm;
+let leaderboardTabel;
 
 export default class Leaderboard extends Phaser.State {
 	preload(){
@@ -14,7 +14,7 @@ export default class Leaderboard extends Phaser.State {
 		// leaderboardTabel = document.getElementById("table");
 		// confirm = document.querySelector('.confirm');
 		// leaderboardTabel.style.visibility = "visible";
-		this.getScores();
+		this.getJSON('http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=getScores');
 
 		// Images
 		this.cityBlack = new BackgroundCity(this.game, 0, 0, 750, 250, 'cityBlack');
@@ -37,31 +37,69 @@ export default class Leaderboard extends Phaser.State {
 	}
 	shutdown(){
 		console.log('end leaderboard');
-		leaderboardTabel.style.visibility = "hidden";
+		Utils.hideElement(leaderboardTabel);
+
 		// this.hideElement(confirm);
 	}
-	getScores(){
+	buildLeaderboard(scores){
+		let userScores = scores;
+		leaderboardTabel = document.createElement('table');
+		leaderboardTabel.id = 'table';
+		
+		userScores.forEach((data) => {
+			let tr = document.createElement('tr');
+			
 
-		var req = new XMLHttpRequest();
-			req.addEventListener('load', function(){
-			console.log(req.responseText);	
-				// var result = document.createElement('div');
-				// result.innerHTML = req.responseText;
-		
-				// var new_result = result.querySelector('.result');
-				// var old_result = document.querySelector('.result');
-				// old_result.parentNode.replaceChild(new_result, old_result);
-		
-			});
-			req.open('GET', 'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=getScores');
-			req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
-			req.send();
+			let nameHTML = document.createElement('td');
+			let scoreHTML = document.createElement('td');
+			let distanceHTML = document.createElement('td');
+
+			nameHTML.innerText = data.name;
+			scoreHTML.innerText = data.score;
+			scoreHTML.classList.add('score');
+			distanceHTML.innerText = data.distance;
+
+
+			tr.appendChild(nameHTML);
+			tr.appendChild(scoreHTML);
+			tr.appendChild(distanceHTML);
+			leaderboardTabel.appendChild(tr);
+		});
+		console.log(leaderboardTabel);
+		document.querySelector('body').appendChild(leaderboardTabel);
+		Utils.showElement(leaderboardTabel);
+		// let data;
+		// let req = new XMLHttpRequest();
+		// 	req.addEventListener('load', function(){
+		// 		let data = req.response;
+
+		// 		let leaderboardTabel = document.createElement('table');
+		// 		leaderboardTabel.id = 'table';
+
+		// 		console.log(req.response);
+		// 	});
+		// 	req.open('GET', 'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=getScores');
+		// 	req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
+		// 	req.send();
+
+
 	}
+
+	getJSON(url){
+		fetch(url)
+			.then((response) => {
+				return response.json();
+			})
+			.then((response) => {
+				this.buildLeaderboard(response);
+			})
+	}
+
+	// buildLeaderboard(data){
+	// 	console.log(data);
+	// }
 
 	startClickHandler() {
 		this.game.state.start('Play');
-	}
-	hideElement(el){
-		el.style.visibility = 'hidden';
 	}
 }

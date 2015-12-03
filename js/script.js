@@ -1156,6 +1156,12 @@
 
 	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
 
+	var _Utils = __webpack_require__(15);
+
+	var Utils = _interopRequireWildcard(_Utils);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1164,8 +1170,7 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	// let leaderboardTabel;
-	// let confirm;
+	var leaderboardTabel = undefined;
 
 	var Leaderboard = (function (_Phaser$State) {
 		_inherits(Leaderboard, _Phaser$State);
@@ -1189,7 +1194,7 @@
 				// leaderboardTabel = document.getElementById("table");
 				// confirm = document.querySelector('.confirm');
 				// leaderboardTabel.style.visibility = "visible";
-				this.getScores();
+				this.getJSON('http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=getScores');
 
 				// Images
 				this.cityBlack = new _BackgroundCity2.default(this.game, 0, 0, 750, 250, 'cityBlack');
@@ -1214,36 +1219,71 @@
 			key: 'shutdown',
 			value: function shutdown() {
 				console.log('end leaderboard');
-				leaderboardTabel.style.visibility = "hidden";
+				Utils.hideElement(leaderboardTabel);
+
 				// this.hideElement(confirm);
 			}
 		}, {
-			key: 'getScores',
-			value: function getScores() {
+			key: 'buildLeaderboard',
+			value: function buildLeaderboard(scores) {
+				var userScores = scores;
+				leaderboardTabel = document.createElement('table');
+				leaderboardTabel.id = 'table';
 
-				var req = new XMLHttpRequest();
-				req.addEventListener('load', function () {
-					console.log(req.responseText);
-					// var result = document.createElement('div');
-					// result.innerHTML = req.responseText;
+				userScores.forEach(function (data) {
+					var tr = document.createElement('tr');
 
-					// var new_result = result.querySelector('.result');
-					// var old_result = document.querySelector('.result');
-					// old_result.parentNode.replaceChild(new_result, old_result);
+					var nameHTML = document.createElement('td');
+					var scoreHTML = document.createElement('td');
+					var distanceHTML = document.createElement('td');
+
+					nameHTML.innerText = data.name;
+					scoreHTML.innerText = data.score;
+					scoreHTML.classList.add('score');
+					distanceHTML.innerText = data.distance;
+
+					tr.appendChild(nameHTML);
+					tr.appendChild(scoreHTML);
+					tr.appendChild(distanceHTML);
+					leaderboardTabel.appendChild(tr);
 				});
-				req.open('GET', 'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=getScores');
-				req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
-				req.send();
+				console.log(leaderboardTabel);
+				document.querySelector('body').appendChild(leaderboardTabel);
+				Utils.showElement(leaderboardTabel);
+				// let data;
+				// let req = new XMLHttpRequest();
+				// 	req.addEventListener('load', function(){
+				// 		let data = req.response;
+
+				// 		let leaderboardTabel = document.createElement('table');
+				// 		leaderboardTabel.id = 'table';
+
+				// 		console.log(req.response);
+				// 	});
+				// 	req.open('GET', 'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=getScores');
+				// 	req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
+				// 	req.send();
 			}
+		}, {
+			key: 'getJSON',
+			value: function getJSON(url) {
+				var _this2 = this;
+
+				fetch(url).then(function (response) {
+					return response.json();
+				}).then(function (response) {
+					_this2.buildLeaderboard(response);
+				});
+			}
+
+			// buildLeaderboard(data){
+			// 	console.log(data);
+			// }
+
 		}, {
 			key: 'startClickHandler',
 			value: function startClickHandler() {
 				this.game.state.start('Play');
-			}
-		}, {
-			key: 'hideElement',
-			value: function hideElement(el) {
-				el.style.visibility = 'hidden';
 			}
 		}]);
 
