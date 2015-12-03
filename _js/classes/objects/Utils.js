@@ -1,3 +1,3 @@
-export const changeState () => {
-	console.log('dit is een util test');
+export const changeState = () => {
+	return 'dit is een util test';
 }

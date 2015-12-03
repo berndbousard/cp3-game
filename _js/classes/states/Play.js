@@ -6,7 +6,7 @@ import Coin from '../objects/Coin';
 import Sound from '../objects/Sound';
 import BulletGroup from '../objects/BulletGroup';
 import Keyboard from '../objects/Keyboard';
-// import * from 'Utils';
+import * as Utils from '../objects/Utils';
 
 export default class Play extends Phaser.State {
 	preload(){
@@ -74,7 +74,7 @@ export default class Play extends Phaser.State {
 		// bullets
 		this.bullets = this.game.add.group();
 
-		// console.log(Utils.changeState);
+		console.log(Utils.changeState());
 
 	}
 	update(){
@@ -100,7 +100,7 @@ export default class Play extends Phaser.State {
 		});
 
 		this.coins.forEach((oneCoin) => {
-			this.game.physics.arcade.collide(this.player, oneCoin, this.coinPlayerCollisionHandler, null, this);
+			this.game.physics.arcade.overlap(this.player, oneCoin, this.coinPlayerCollisionHandler, null, this);
 		});
 
 		this.bullets.forEach((oneBullet) => {
