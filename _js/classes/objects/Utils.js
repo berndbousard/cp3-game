@@ -1,5 +1,5 @@
-export const changeState = (state) => {
-	this.game.state.start(state);
+export const changeState = (game, state) => {
+	game.state.start(state);
 }
 
 export const showElement = (el) => {

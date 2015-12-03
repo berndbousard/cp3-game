@@ -73,9 +73,6 @@ export default class Play extends Phaser.State {
 
 		// bullets
 		this.bullets = this.game.add.group();
-
-		console.log(Utils.changeState());
-
 	}
 	update(){
 

@@ -503,8 +503,6 @@
 
 				// bullets
 				this.bullets = this.game.add.group();
-
-				console.log(Utils.changeState());
 			}
 		}, {
 			key: 'update',
@@ -1122,8 +1120,20 @@
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
-	var changeState = exports.changeState = function changeState() {
-		return 'dit is een util test';
+	var changeState = exports.changeState = function changeState(game, state) {
+		game.state.start(state);
+	};
+
+	var showElement = exports.showElement = function showElement(el) {
+		el.style.visibility = 'visible';
+	};
+
+	var hideElement = exports.hideElement = function hideElement(el) {
+		el.style.visibility = 'hidden';
+	};
+
+	var isEmpty = exports.isEmpty = function isEmpty(input) {
+		return input.value.length === 0;
 	};
 
 /***/ },
@@ -1154,8 +1164,8 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var leaderboardTabel = undefined;
-	var confirm = undefined;
+	// let leaderboardTabel;
+	// let confirm;
 
 	var Leaderboard = (function (_Phaser$State) {
 		_inherits(Leaderboard, _Phaser$State);
@@ -1176,9 +1186,10 @@
 			value: function create() {
 
 				// Show/hide DOM elements
-				leaderboardTabel = document.getElementById("table");
-				confirm = document.querySelector('.confirm');
-				leaderboardTabel.style.visibility = "visible";
+				// leaderboardTabel = document.getElementById("table");
+				// confirm = document.querySelector('.confirm');
+				// leaderboardTabel.style.visibility = "visible";
+				this.getScores();
 
 				// Images
 				this.cityBlack = new _BackgroundCity2.default(this.game, 0, 0, 750, 250, 'cityBlack');
@@ -1204,7 +1215,25 @@
 			value: function shutdown() {
 				console.log('end leaderboard');
 				leaderboardTabel.style.visibility = "hidden";
-				this.hideElement(confirm);
+				// this.hideElement(confirm);
+			}
+		}, {
+			key: 'getScores',
+			value: function getScores() {
+
+				var req = new XMLHttpRequest();
+				req.addEventListener('load', function () {
+					console.log(req.responseText);
+					// var result = document.createElement('div');
+					// result.innerHTML = req.responseText;
+
+					// var new_result = result.querySelector('.result');
+					// var old_result = document.querySelector('.result');
+					// old_result.parentNode.replaceChild(new_result, old_result);
+				});
+				req.open('GET', 'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=getScores');
+				req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
+				req.send();
 			}
 		}, {
 			key: 'startClickHandler',

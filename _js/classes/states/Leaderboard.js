@@ -1,8 +1,8 @@
 import BackgroundCity from '../objects/BackgroundCity';
 import MenuBackground from '../objects/MenuBackground';
 
-let leaderboardTabel;
-let confirm;
+// let leaderboardTabel;
+// let confirm;
 
 export default class Leaderboard extends Phaser.State {
 	preload(){
@@ -11,9 +11,10 @@ export default class Leaderboard extends Phaser.State {
 	create(){
 
 		// Show/hide DOM elements
-		leaderboardTabel = document.getElementById("table");
-		confirm = document.querySelector('.confirm');
-		leaderboardTabel.style.visibility = "visible";
+		// leaderboardTabel = document.getElementById("table");
+		// confirm = document.querySelector('.confirm');
+		// leaderboardTabel.style.visibility = "visible";
+		this.getScores();
 
 		// Images
 		this.cityBlack = new BackgroundCity(this.game, 0, 0, 750, 250, 'cityBlack');
@@ -37,8 +38,26 @@ export default class Leaderboard extends Phaser.State {
 	shutdown(){
 		console.log('end leaderboard');
 		leaderboardTabel.style.visibility = "hidden";
-		this.hideElement(confirm);
+		// this.hideElement(confirm);
 	}
+	getScores(){
+
+		var req = new XMLHttpRequest();
+			req.addEventListener('load', function(){
+			console.log(req.responseText);	
+				// var result = document.createElement('div');
+				// result.innerHTML = req.responseText;
+		
+				// var new_result = result.querySelector('.result');
+				// var old_result = document.querySelector('.result');
+				// old_result.parentNode.replaceChild(new_result, old_result);
+		
+			});
+			req.open('GET', 'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=getScores');
+			req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
+			req.send();
+	}
+
 	startClickHandler() {
 		this.game.state.start('Play');
 	}
