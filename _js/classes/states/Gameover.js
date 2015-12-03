@@ -98,14 +98,20 @@ export default class Gameover extends Phaser.State {
 		req.open("POST", url);
 		req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
 		req.send();
-
-		req.open("GET", url);
-		req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
-		req.send();
-
-		console.log("get done");
-
+		console.log(req.readyState);
+		if(req.onload){
+			console.log('loaded');
+		}
 		this.game.state.start('Leaderboard');
+
+
+		// req.open("GET", url);
+		// req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
+		// req.send();
+
+		// console.log("get done");
+
+		
 
 		//Utils.showElement(confirm);
 		Utils.hideElement(inputField);
@@ -115,9 +121,10 @@ export default class Gameover extends Phaser.State {
 		leaderboardSubmit.addEventListener('click', e => {
 			e.preventDefault();
 			if(!Utils.isEmpty(leaderboardNameInput)){
-				let score = this.score;
-				let distance = this.distance;
-				this.submitInputHandler(score, distance, leaderboardNameInput.value);
+				let score = this.game.state.score;
+				let distance = this.game.state.distance;
+				let name = leaderboardNameInput.value;
+				this.submitInputHandler(score, distance, name);
 			}
 		});
 	}

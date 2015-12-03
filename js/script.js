@@ -1260,6 +1260,8 @@
 					return response.json();
 				}).then(function (response) {
 					_this2.buildLeaderboard(response);
+				}).catch(function (error) {
+					console.log('no scores yet');
 				});
 			}
 		}, {
@@ -1419,14 +1421,17 @@
 				req.open("POST", url);
 				req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
 				req.send();
-
-				req.open("GET", url);
-				req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
-				req.send();
-
-				console.log("get done");
-
+				console.log(req.readyState);
+				if (req.onload) {
+					console.log('loaded');
+				}
 				this.game.state.start('Leaderboard');
+
+				// req.open("GET", url);
+				// req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
+				// req.send();
+
+				// console.log("get done");
 
 				//Utils.showElement(confirm);
 				Utils.hideElement(inputField);
@@ -1439,9 +1444,10 @@
 				leaderboardSubmit.addEventListener('click', function (e) {
 					e.preventDefault();
 					if (!Utils.isEmpty(leaderboardNameInput)) {
-						var score = _this2.score;
-						var distance = _this2.distance;
-						_this2.submitInputHandler(score, distance, leaderboardNameInput.value);
+						var score = _this2.game.state.score;
+						var distance = _this2.game.state.distance;
+						var name = leaderboardNameInput.value;
+						_this2.submitInputHandler(score, distance, name);
 					}
 				});
 			}

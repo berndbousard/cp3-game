@@ -88,6 +88,9 @@ export default class Leaderboard extends Phaser.State {
 		})
 		.then((response) => {
 			this.buildLeaderboard(response);
+		})
+		.catch((error) => {
+			console.log('no scores yet');
 		});
 	}
 
