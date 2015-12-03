@@ -24,16 +24,11 @@ export default class Gameover extends Phaser.State {
 		leaderboardNameInput = document.getElementById("text");
 		leaderboardSubmit = document.getElementById("submit");
 		confirm = document.querySelector('.confirm');
-		this.showElement(leaderboard);
+		//this.showElement(leaderboard);
 
 		// Images
-		this.cityBlack = new BackgroundCity(this.game, 0, 0, 750, 250, 'cityBlack');
-		this.game.add.existing(this.cityBlack);
-
-		this.cityWhite = new BackgroundCity(this.game, 0, 500, 750, 250, 'cityWhite');
-		this.game.add.existing(this.cityWhite);
-
-		this.cityWhite.scale.y *= -1; /* flip onderste stuk */
+		this.city = new BackgroundCity(this.game, 0, 0, 750, 500, 'city');
+		this.game.add.existing(this.city);
 
 		this.menuBackground = new MenuBackground(this.game, this.game.width/2, this.game.height/2);
 		this.game.add.existing(this.menuBackground);
@@ -51,14 +46,14 @@ export default class Gameover extends Phaser.State {
 
 
 		// AJAX Call
-		leaderboardSubmit.addEventListener('click', e => {
+		/*leaderboardSubmit.addEventListener('click', e => {
 			e.preventDefault();
 			if(!this.isEmpty(leaderboardNameInput)){
 				let score = this.score;
 				let distance = this.distance;
 				this.submitInputHandler(score, distance, leaderboardNameInput.value);
 			}
-		});
+		});*/
 
 		// moeten iets vinden om leaderboard te tonen na complete
 		// this.submitInputHandler.addEventListener('complete', showLeaderboard);
@@ -72,7 +67,7 @@ export default class Gameover extends Phaser.State {
 	}
 	shutdown(){
 		console.log('end gameover');
-		this.hideElement(leaderboard);
+		//this.hideElement(leaderboard);
 	}
 
 	// eigen functies
@@ -114,15 +109,6 @@ export default class Gameover extends Phaser.State {
 		// Checht gewoon of het empty is of niet
 		return input.value.length === 0;
 	}
-
-	hideElement(el){
-		el.style.visibility = 'hidden';
-	}
-
-	showElement(el){
-		el.style.visibility = 'visible';
-	}
-
 	changeState(state){
 		this.game.state.start(state);
 	}

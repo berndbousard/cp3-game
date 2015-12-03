@@ -120,8 +120,7 @@
 				this.game.load.image('startButton', 'assets/startButton.png');
 				this.game.load.image('leaderboardbutton', 'assets/leaderboardButton.png');
 				this.game.load.image('infoButton', 'assets/instructionsButton.png');
-				this.game.load.image('cityWhite', 'assets/city_white.jpg');
-				this.game.load.image('cityBlack', 'assets/city_black.jpg');
+				this.game.load.image('city', 'assets/city.jpg');
 				this.game.load.image('menuBackground', 'assets/menu_background.png');
 				this.game.load.image('bullet', 'assets/bullet.png');
 
@@ -208,13 +207,8 @@
 			value: function create() {
 
 				// Images
-				this.cityBlack = new _BackgroundCity2.default(this.game, 0, 0, 750, 250, 'cityBlack');
-				this.game.add.existing(this.cityBlack);
-
-				this.cityWhite = new _BackgroundCity2.default(this.game, 0, 500, 750, 250, 'cityWhite');
-				this.game.add.existing(this.cityWhite);
-
-				this.cityWhite.scale.y *= -1; /* flip onderste stuk */
+				this.city = new _BackgroundCity2.default(this.game, 0, 0, 750, 500, 'city');
+				this.game.add.existing(this.city);
 
 				this.menuBackground = new _MenuBackground2.default(this.game, this.game.width / 2, this.game.height / 2);
 				this.game.add.existing(this.menuBackground);
@@ -469,12 +463,8 @@
 				this.delay = Phaser.Timer.SECOND * 2;
 
 				// Images
-				this.cityBlack = new _BackgroundCity2.default(this.game, 0, 0, 750, 250, 'cityBlack');
-				this.game.add.existing(this.cityBlack);
-
-				this.cityWhite = new _BackgroundCity2.default(this.game, 0, 500, 750, 250, 'cityWhite');
-				this.game.add.existing(this.cityWhite);
-				this.cityWhite.scale.y *= -1; /* flip onderste stuk */
+				this.city = new _BackgroundCity2.default(this.game, 0, 0, 750, 500, 'city');
+				this.game.add.existing(this.city);
 
 				// Player
 				this.player = new _Player2.default(this.game, 50, this.game.height / 2 - 43, this.flipSound);
@@ -545,8 +535,7 @@
 			key: 'shutdown',
 			value: function shutdown() {
 				console.log('end play');
-				this.cityBlack.autoScroll(0, 0);
-				this.cityWhite.autoScroll(0, 0);
+				this.city.autoScroll(0, 0);
 				// this.enemyTimer.timer.destroy();
 			}
 
@@ -1197,13 +1186,8 @@
 				this.getJSON('http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=getScores');
 
 				// Images
-				this.cityBlack = new _BackgroundCity2.default(this.game, 0, 0, 750, 250, 'cityBlack');
-				this.game.add.existing(this.cityBlack);
-
-				this.cityWhite = new _BackgroundCity2.default(this.game, 0, 500, 750, 250, 'cityWhite');
-				this.game.add.existing(this.cityWhite);
-
-				this.cityWhite.scale.y *= -1; /* flip onderste stuk */
+				this.city = new _BackgroundCity2.default(this.game, 0, 0, 750, 500, 'city');
+				this.game.add.existing(this.city);
 
 				this.menuBackground = new _MenuBackground2.default(this.game, this.game.width / 2, this.game.height / 2);
 				this.game.add.existing(this.menuBackground);
@@ -1346,7 +1330,6 @@
 		}, {
 			key: 'create',
 			value: function create() {
-				var _this2 = this;
 
 				// Waarden zijn in play opgeslaan in this.game.state.score/distance
 				this.score = this.game.state.score;
@@ -1357,16 +1340,11 @@
 				leaderboardNameInput = document.getElementById("text");
 				leaderboardSubmit = document.getElementById("submit");
 				confirm = document.querySelector('.confirm');
-				this.showElement(leaderboard);
+				//this.showElement(leaderboard);
 
 				// Images
-				this.cityBlack = new _BackgroundCity2.default(this.game, 0, 0, 750, 250, 'cityBlack');
-				this.game.add.existing(this.cityBlack);
-
-				this.cityWhite = new _BackgroundCity2.default(this.game, 0, 500, 750, 250, 'cityWhite');
-				this.game.add.existing(this.cityWhite);
-
-				this.cityWhite.scale.y *= -1; /* flip onderste stuk */
+				this.city = new _BackgroundCity2.default(this.game, 0, 0, 750, 500, 'city');
+				this.game.add.existing(this.city);
 
 				this.menuBackground = new _MenuBackground2.default(this.game, this.game.width / 2, this.game.height / 2);
 				this.game.add.existing(this.menuBackground);
@@ -1382,14 +1360,14 @@
 				this.game.add.existing(this.visibleDistance);
 
 				// AJAX Call
-				leaderboardSubmit.addEventListener('click', function (e) {
-					e.preventDefault();
-					if (!_this2.isEmpty(leaderboardNameInput)) {
-						var score = _this2.score;
-						var distance = _this2.distance;
-						_this2.submitInputHandler(score, distance, leaderboardNameInput.value);
-					}
-				});
+				/*leaderboardSubmit.addEventListener('click', e => {
+	   	e.preventDefault();
+	   	if(!this.isEmpty(leaderboardNameInput)){
+	   		let score = this.score;
+	   		let distance = this.distance;
+	   		this.submitInputHandler(score, distance, leaderboardNameInput.value);
+	   	}
+	   });*/
 
 				// moeten iets vinden om leaderboard te tonen na complete
 				// this.submitInputHandler.addEventListener('complete', showLeaderboard);
@@ -1406,7 +1384,7 @@
 			key: 'shutdown',
 			value: function shutdown() {
 				console.log('end gameover');
-				this.hideElement(leaderboard);
+				//this.hideElement(leaderboard);
 			}
 
 			// eigen functies
@@ -1454,16 +1432,6 @@
 				// Als de lengte gelijk is aan 0, returnt dit true;
 				// Checht gewoon of het empty is of niet
 				return input.value.length === 0;
-			}
-		}, {
-			key: 'hideElement',
-			value: function hideElement(el) {
-				el.style.visibility = 'hidden';
-			}
-		}, {
-			key: 'showElement',
-			value: function showElement(el) {
-				el.style.visibility = 'visible';
 			}
 		}, {
 			key: 'changeState',

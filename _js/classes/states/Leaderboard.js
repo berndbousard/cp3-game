@@ -17,13 +17,8 @@ export default class Leaderboard extends Phaser.State {
 		this.getJSON('http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=getScores');
 
 		// Images
-		this.cityBlack = new BackgroundCity(this.game, 0, 0, 750, 250, 'cityBlack');
-		this.game.add.existing(this.cityBlack);
-
-		this.cityWhite = new BackgroundCity(this.game, 0, 500, 750, 250, 'cityWhite');
-		this.game.add.existing(this.cityWhite);
-
-		this.cityWhite.scale.y *= -1; /* flip onderste stuk */
+		this.city = new BackgroundCity(this.game, 0, 0, 750, 500, 'city');
+		this.game.add.existing(this.city);
 
 		this.menuBackground = new MenuBackground(this.game, this.game.width/2, this.game.height/2);
 		this.game.add.existing(this.menuBackground);

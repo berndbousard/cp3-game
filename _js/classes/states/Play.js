@@ -39,12 +39,8 @@ export default class Play extends Phaser.State {
 		this.delay = Phaser.Timer.SECOND * 2;
 
 		// Images
-		this.cityBlack = new BackgroundCity(this.game, 0, 0, 750, 250, 'cityBlack');
-		this.game.add.existing(this.cityBlack);
-
-		this.cityWhite = new BackgroundCity(this.game, 0, 500, 750, 250, 'cityWhite');
-		this.game.add.existing(this.cityWhite);
-		this.cityWhite.scale.y *= -1; /* flip onderste stuk */
+		this.city = new BackgroundCity(this.game, 0, 0, 750, 500, 'city');
+		this.game.add.existing(this.city);
 
 		// Player
 		this.player = new Player(this.game, 50, this.game.height/2 - 43, this.flipSound);
@@ -110,8 +106,7 @@ export default class Play extends Phaser.State {
 	}
 	shutdown(){
 		console.log('end play');
-		this.cityBlack.autoScroll(0, 0);
-		this.cityWhite.autoScroll(0, 0);
+		this.city.autoScroll(0, 0);
 		// this.enemyTimer.timer.destroy();
 	}
 
