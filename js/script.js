@@ -58,15 +58,15 @@
 
 	var _Play2 = _interopRequireDefault(_Play);
 
-	var _Leaderboard = __webpack_require__(15);
+	var _Leaderboard = __webpack_require__(16);
 
 	var _Leaderboard2 = _interopRequireDefault(_Leaderboard);
 
-	var _Gameover = __webpack_require__(16);
+	var _Gameover = __webpack_require__(17);
 
 	var _Gameover2 = _interopRequireDefault(_Gameover);
 
-	var _Info = __webpack_require__(17);
+	var _Info = __webpack_require__(18);
 
 	var _Info2 = _interopRequireDefault(_Info);
 
@@ -413,7 +413,7 @@
 
 	var _Keyboard2 = _interopRequireDefault(_Keyboard);
 
-	var _Utils = __webpack_require__(18);
+	var _Utils = __webpack_require__(15);
 
 	var Utils = _interopRequireWildcard(_Utils);
 
@@ -1115,6 +1115,19 @@
 
 /***/ },
 /* 15 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	var changeState = exports.changeState = function changeState() {
+		return 'dit is een util test';
+	};
+
+/***/ },
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1142,6 +1155,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var leaderboardTabel = undefined;
+	var confirm = undefined;
 
 	var Leaderboard = (function (_Phaser$State) {
 		_inherits(Leaderboard, _Phaser$State);
@@ -1163,6 +1177,7 @@
 
 				// Show/hide DOM elements
 				leaderboardTabel = document.getElementById("table");
+				confirm = document.querySelector('.confirm');
 				leaderboardTabel.style.visibility = "visible";
 
 				// Images
@@ -1189,11 +1204,17 @@
 			value: function shutdown() {
 				console.log('end leaderboard');
 				leaderboardTabel.style.visibility = "hidden";
+				this.hideElement(confirm);
 			}
 		}, {
 			key: 'startClickHandler',
 			value: function startClickHandler() {
 				this.game.state.start('Play');
+			}
+		}, {
+			key: 'hideElement',
+			value: function hideElement(el) {
+				el.style.visibility = 'hidden';
 			}
 		}]);
 
@@ -1203,7 +1224,7 @@
 	exports.default = Leaderboard;
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1332,9 +1353,14 @@
 				req.open("POST", url);
 				req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
 				req.send();
+
 				req.open('GET', url);
 				req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
 				req.send();
+
+				console.log("get done");
+
+				this.game.state.start('Leaderboard');
 
 				this.showElement(confirm);
 				this.hideElement(leaderboardNameInput);
@@ -1344,7 +1370,7 @@
 			key: 'showLeaderboard',
 			value: function showLeaderboard() {
 				console.log("trying to show the leaderboard");
-				this.game.state.start('Leaderboard');
+				//this.game.state.start('Leaderboard');
 			}
 		}, {
 			key: 'startClickHandler',
@@ -1383,7 +1409,7 @@
 	exports.default = Gameover;
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1453,19 +1479,6 @@
 	})(Phaser.State);
 
 	exports.default = Info;
-
-/***/ },
-/* 18 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	var changeState = exports.changeState = function changeState() {
-		return 'dit is een util test';
-	};
 
 /***/ }
 /******/ ]);
