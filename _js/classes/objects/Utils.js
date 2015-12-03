@@ -1,3 +1,15 @@
-export const changeState = () => {
-	return 'dit is een util test';
+export const changeState = (state) => {
+	this.game.state.start(state);
+}
+
+export const showElement = (el) => {
+	el.style.visibility = 'visible';
+}
+
+export const hideElement = (el) => {
+	el.style.visibility = 'hidden';
+}
+
+export const isEmpty = (input) => {
+	return input.value.length === 0;
 }
