@@ -6,6 +6,7 @@ import Coin from '../objects/Coin';
 import Sound from '../objects/Sound';
 import BulletGroup from '../objects/BulletGroup';
 import Keyboard from '../objects/Keyboard';
+// import * from 'Utils';
 
 export default class Play extends Phaser.State {
 	preload(){
@@ -72,6 +73,8 @@ export default class Play extends Phaser.State {
 
 		// bullets
 		this.bullets = this.game.add.group();
+
+		// console.log(Utils.changeState);
 
 	}
 	update(){
