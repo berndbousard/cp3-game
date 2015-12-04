@@ -81,20 +81,19 @@ export default class Leaderboard extends Phaser.State {
 	}
 
 	getJSON(url){
-
 		fetch(url)
-		.then((response) => {
-			return response.json();
-		})
-		.then((response) => {
-			this.buildLeaderboard(response);
-		})
-		.catch((error) => {
-			console.log('no scores yet');
-		});
+			.then((response) => {
+				return response.json();
+			})
+			.then((response) => {
+				this.buildLeaderboard(response);
+			})
+			.catch((error) => {
+				console.log('no scores yet');
+			});
 	}
 
 	startClickHandler() {
-		this.game.state.start('Play');
+		Utils.changeState(this.game, 'Play');
 	}
 }

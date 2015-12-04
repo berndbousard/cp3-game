@@ -2,6 +2,7 @@ import BackgroundCity from '../objects/BackgroundCity';
 import MenuBackground from '../objects/MenuBackground';
 import Text from '../objects/Text';
 import * as Utils from '../objects/Utils';
+import Data from '../objects/Data';
 
 let confirm;
 let inputField;
@@ -16,8 +17,9 @@ export default class Gameover extends Phaser.State {
 	create(){
 
 		// Waarden zijn in play opgeslaan in this.game.state.score/distance
-		this.score = this.game.state.score;
-		this.distance = this.game.state.distance;
+		// Data.score = 0;
+		// Data.distance = 0;
+		// this.game.data.bullets = 5;
 
 		// Images
 		this.city = new BackgroundCity(this.game, 0, 0, 750, 500, 'city');
@@ -32,9 +34,9 @@ export default class Gameover extends Phaser.State {
 		this.startButton.anchor.setTo(0.5,0.5);
 
 		// score and distance
-		this.visibleScore = new Text(this.game, this.game.width/2 - 50, 200, 'gamefont', 'Your score\n' + this.score.toString(), 20, 'center');
+		this.visibleScore = new Text(this.game, this.game.width/2 - 50, 200, 'gamefont', 'Your score\n' + Data.score, 20, 'center');
 		this.game.add.existing(this.visibleScore);
-		this.visibleDistance = new Text(this.game, this.game.width/2 + 80, 200, 'gamefont', 'You ran\n' + this.distance.toString() + ' km', 20, 'center');
+		this.visibleDistance = new Text(this.game, this.game.width/2 + 80, 200, 'gamefont', 'You ran\n' + Data.distance + ' km', 20, 'center');
 		this.game.add.existing(this.visibleDistance);
 
 		// create input field, prepare it for ajax
@@ -98,18 +100,7 @@ export default class Gameover extends Phaser.State {
 		req.open("POST", url);
 		req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
 		req.send();
-		console.log(req.readyState);
-		if(req.onload){
-			console.log('loaded');
-		}
-		this.game.state.start('Leaderboard');
-
-
-		// req.open("GET", url);
-		// req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
-		// req.send();
-
-		// console.log("get done");
+		Utils.changeState(this.game, 'Leaderboard');
 
 		
 

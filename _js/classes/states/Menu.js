@@ -1,6 +1,7 @@
 import Button from '../objects/Button';
 import BackgroundCity from '../objects/BackgroundCity';
 import MenuBackground from '../objects/MenuBackground';
+import * as Utils from '../objects/Utils';
 
 
 export default class Menu extends Phaser.State {
@@ -8,7 +9,6 @@ export default class Menu extends Phaser.State {
 		console.log("start menu");
 	}
 	create(){
-		
 		// Images
 		this.city = new BackgroundCity(this.game, 0, 0, 750, 500, 'city');
 		this.game.add.existing(this.city);
@@ -23,21 +23,21 @@ export default class Menu extends Phaser.State {
 												'startButton',
 												this.startClickHandler,
 												this);
-		this.startButton.anchor.setTo(0.5,0.5);
+		Utils.center(this.startButton);
 
 		this.leaderboardButton = this.game.add.button(	this.game.width/2 - 100,
 														this.game.height/2 + 150,
 														'leaderboardbutton',
 														this.leaderboardClickHandler,
 														this);
-		this.leaderboardButton.anchor.setTo(0.5,0.5);
+		Utils.center(this.leaderboardButton);
 
 		this.infoButton = this.game.add.button(	this.game.width/2 + 100,
 												this.game.height/2 + 150,
 												'infoButton',
 												this.infoClickHandler,
 												this);
-		this.infoButton.anchor.setTo(0.5,0.5);
+		Utils.center(this.infoButton);
 
 		// new Button(game, x, y, key, callback, callbackContext)
 		// this.startButtonTest = new Button(this.game, this.game.width/2 + 100, this.game.height/2 + 150, 'startButton', Button.startClickHandler, Button);
@@ -50,12 +50,12 @@ export default class Menu extends Phaser.State {
 		console.log("end menu");
 	}
 	startClickHandler() {
-		this.game.state.start('Play');
+		Utils.changeState(this.game, 'Play');
 	}
 	leaderboardClickHandler() {
-		this.game.state.start('Leaderboard');
+		Utils.changeState(this.game, 'Leaderboard');
 	}
 	infoClickHandler() {
-		this.game.state.start('Info');
+		Utils.changeState(this.game, 'Info');
 	}
 }

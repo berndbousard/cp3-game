@@ -180,6 +180,12 @@
 
 	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
 
+	var _Utils = __webpack_require__(15);
+
+	var Utils = _interopRequireWildcard(_Utils);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -205,7 +211,6 @@
 		}, {
 			key: 'create',
 			value: function create() {
-
 				// Images
 				this.city = new _BackgroundCity2.default(this.game, 0, 0, 750, 500, 'city');
 				this.game.add.existing(this.city);
@@ -215,13 +220,13 @@
 
 				// Buttons
 				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 + 150, 'startButton', this.startClickHandler, this);
-				this.startButton.anchor.setTo(0.5, 0.5);
+				Utils.center(this.startButton);
 
 				this.leaderboardButton = this.game.add.button(this.game.width / 2 - 100, this.game.height / 2 + 150, 'leaderboardbutton', this.leaderboardClickHandler, this);
-				this.leaderboardButton.anchor.setTo(0.5, 0.5);
+				Utils.center(this.leaderboardButton);
 
 				this.infoButton = this.game.add.button(this.game.width / 2 + 100, this.game.height / 2 + 150, 'infoButton', this.infoClickHandler, this);
-				this.infoButton.anchor.setTo(0.5, 0.5);
+				Utils.center(this.infoButton);
 
 				// new Button(game, x, y, key, callback, callbackContext)
 				// this.startButtonTest = new Button(this.game, this.game.width/2 + 100, this.game.height/2 + 150, 'startButton', Button.startClickHandler, Button);
@@ -238,17 +243,17 @@
 		}, {
 			key: 'startClickHandler',
 			value: function startClickHandler() {
-				this.game.state.start('Play');
+				Utils.changeState(this.game, 'Play');
 			}
 		}, {
 			key: 'leaderboardClickHandler',
 			value: function leaderboardClickHandler() {
-				this.game.state.start('Leaderboard');
+				Utils.changeState(this.game, 'Leaderboard');
 			}
 		}, {
 			key: 'infoClickHandler',
 			value: function infoClickHandler() {
-				this.game.state.start('Info');
+				Utils.changeState(this.game, 'Info');
 			}
 		}]);
 
@@ -411,6 +416,10 @@
 
 	var Utils = _interopRequireWildcard(_Utils);
 
+	var _Data = __webpack_require__(20);
+
+	var _Data2 = _interopRequireDefault(_Data);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -438,6 +447,7 @@
 		}, {
 			key: 'create',
 			value: function create() {
+
 				this.flipSound = new _Sound2.default(this.game, 'change_side');
 				this.coinSound = new _Sound2.default(this.game, 'coin');
 				this.enemyHitSound = new _Sound2.default(this.game, 'enemy_hit');
@@ -456,9 +466,9 @@
 
 				// Declarations
 				this.side = 'up'; //Nu kunnen we weten of hij bovenaan of onderaan loopt
-				this.game.state.score = 0;
-				this.game.state.distance = 0;
-				this.game.state.bullets = 5;
+				_Data2.default.score = 0;
+				_Data2.default.distance = 0;
+				_Data2.default.bullets = 5;
 				this.gameSpeed = .95; //variable die de snelheid van de game bepaalt. hoe groter het getal hoe sneller/moeilijker. Beinvloed momenteel enkel spawnrate van enemy
 				this.delay = Phaser.Timer.SECOND * 2;
 
@@ -480,15 +490,15 @@
 
 				// distance score text
 				this.distanceTimer = this.game.time.events.loop(Phaser.Timer.SECOND / 1.2, this.increaseDistance, this);
-				this.distanceTextBox = new _Text2.default(this.game, this.game.width / 2, 50, 'gamefont', this.game.state.distance.toString() + ' km', 30);
+				this.distanceTextBox = new _Text2.default(this.game, this.game.width / 2, 50, 'gamefont', _Data2.default.distance.toString() + ' km', 30);
 				this.game.add.existing(this.distanceTextBox);
 
 				// coins score text
-				this.scoreTextBox = new _Text2.default(this.game, this.game.width / 2 + 300, 50, 'gamefont', this.game.state.score + '\ncoins', 20, 'center');
+				this.scoreTextBox = new _Text2.default(this.game, this.game.width / 2 + 300, 50, 'gamefont', _Data2.default.score + '\ncoins', 20, 'center');
 				this.game.add.existing(this.scoreTextBox);
 
 				// bullets score text
-				this.bulletTextBox = new _Text2.default(this.game, this.game.width / 2 - 300, 50, 'gamefont', this.game.state.bullets + '\nbullets', 20, 'center');
+				this.bulletTextBox = new _Text2.default(this.game, this.game.width / 2 - 300, 50, 'gamefont', _Data2.default.bullets + '\nbullets', 20, 'center');
 				this.game.add.existing(this.bulletTextBox);
 
 				// bullets
@@ -506,7 +516,7 @@
 					this.player.flipUp();
 				}
 
-				// console.log(this.game.state.bullets);
+				// console.log(Data.bullets);
 
 				// console.log(this.game.input.x, this.game.input.y);
 				// makkelijk om te meten
@@ -603,9 +613,9 @@
 			key: 'coinPlayerCollisionHandler',
 			value: function coinPlayerCollisionHandler(player, coin) {
 				coin.exists = false;
-				this.game.state.score++;
-				this.game.state.bullets += 5;
-				this.bulletTextBox.text = this.game.state.bullets + '\nbullets';
+				_Data2.default.score++;
+				_Data2.default.bullets += 5;
+				this.bulletTextBox.text = _Data2.default.bullets + '\nbullets';
 				var suffix = this.createSuffixForScore();
 				this.updateScore(suffix);
 				this.coinSound.play();
@@ -620,7 +630,7 @@
 		}, {
 			key: 'createSuffixForScore',
 			value: function createSuffixForScore() {
-				if (this.game.state.score === 1) {
+				if (_Data2.default.score === 1) {
 					return ' coin';
 				} else {
 					return ' coins';
@@ -629,9 +639,9 @@
 		}, {
 			key: 'increaseDistance',
 			value: function increaseDistance() {
-				this.game.state.distance++;
+				_Data2.default.distance++;
 				this.updateDistance();
-				if (this.game.state.distance % 2 === 0) {
+				if (_Data2.default.distance % 2 === 0) {
 					var delay = this.enemyTimer.delay * this.gameSpeed;
 					// console.log(this.gameSpeed);
 					// this.enemyTimer.tick = 1449055971970 - (Phaser.Timer.SECOND / this.gameSpeed);
@@ -644,7 +654,7 @@
 			value: function spaceBarHandler() {
 				// shoot
 				console.log('schoot');
-				if (this.game.state.bullets >= 1) {
+				if (_Data2.default.bullets >= 1) {
 					var bullet = this.bullets.getFirstExists(false);
 					if (!bullet) {
 						bullet = new _BulletGroup2.default(this.game, this.bullets, this.player.x, this.player.y);
@@ -653,20 +663,20 @@
 					var y = this.player.body.y - 105;
 					// console.log(x, y);
 					bullet.reset(x, y);
-					this.game.state.bullets--;
-					this.bulletTextBox.text = this.game.state.bullets + '\nbullets';
+					_Data2.default.bullets--;
+					this.bulletTextBox.text = _Data2.default.bullets + '\nbullets';
 					// console.log('shoot');
 				}
 			}
 		}, {
 			key: 'updateScore',
 			value: function updateScore(suffix) {
-				this.scoreTextBox.text = this.game.state.score + suffix;
+				this.scoreTextBox.text = _Data2.default.score + suffix;
 			}
 		}, {
 			key: 'updateDistance',
 			value: function updateDistance() {
-				this.distanceTextBox.text = this.game.state.distance + ' km';
+				this.distanceTextBox.text = _Data2.default.distance + ' km';
 			}
 		}]);
 
@@ -1125,6 +1135,10 @@
 		return input.value.length === 0;
 	};
 
+	var center = exports.center = function center(el) {
+		return el.anchor.setTo(.5, .5);
+	};
+
 /***/ },
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
@@ -1267,7 +1281,7 @@
 		}, {
 			key: 'startClickHandler',
 			value: function startClickHandler() {
-				this.game.state.start('Play');
+				Utils.changeState(this.game, 'Play');
 			}
 		}]);
 
@@ -1304,6 +1318,10 @@
 
 	var Utils = _interopRequireWildcard(_Utils);
 
+	var _Data = __webpack_require__(20);
+
+	var _Data2 = _interopRequireDefault(_Data);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -1338,8 +1356,9 @@
 			value: function create() {
 
 				// Waarden zijn in play opgeslaan in this.game.state.score/distance
-				this.score = this.game.state.score;
-				this.distance = this.game.state.distance;
+				// Data.score = 0;
+				// Data.distance = 0;
+				// this.game.data.bullets = 5;
 
 				// Images
 				this.city = new _BackgroundCity2.default(this.game, 0, 0, 750, 500, 'city');
@@ -1353,9 +1372,9 @@
 				this.startButton.anchor.setTo(0.5, 0.5);
 
 				// score and distance
-				this.visibleScore = new _Text2.default(this.game, this.game.width / 2 - 50, 200, 'gamefont', 'Your score\n' + this.score.toString(), 20, 'center');
+				this.visibleScore = new _Text2.default(this.game, this.game.width / 2 - 50, 200, 'gamefont', 'Your score\n' + _Data2.default.score, 20, 'center');
 				this.game.add.existing(this.visibleScore);
-				this.visibleDistance = new _Text2.default(this.game, this.game.width / 2 + 80, 200, 'gamefont', 'You ran\n' + this.distance.toString() + ' km', 20, 'center');
+				this.visibleDistance = new _Text2.default(this.game, this.game.width / 2 + 80, 200, 'gamefont', 'You ran\n' + _Data2.default.distance + ' km', 20, 'center');
 				this.game.add.existing(this.visibleDistance);
 
 				// create input field, prepare it for ajax
@@ -1421,17 +1440,7 @@
 				req.open("POST", url);
 				req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
 				req.send();
-				console.log(req.readyState);
-				if (req.onload) {
-					console.log('loaded');
-				}
-				this.game.state.start('Leaderboard');
-
-				// req.open("GET", url);
-				// req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
-				// req.send();
-
-				// console.log("get done");
+				Utils.changeState(this.game, 'Leaderboard');
 
 				//Utils.showElement(confirm);
 				Utils.hideElement(inputField);
@@ -1540,6 +1549,30 @@
 	})(Phaser.State);
 
 	exports.default = Info;
+
+/***/ },
+/* 19 */,
+/* 20 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Data = function Data(game) {
+		_classCallCheck(this, Data);
+
+		game.data = {};
+		this.score;
+		this.distance;
+		this.bullets;
+	};
+
+	exports.default = Data;
 
 /***/ }
 /******/ ]);

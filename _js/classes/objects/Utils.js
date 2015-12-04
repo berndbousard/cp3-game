@@ -13,3 +13,7 @@ export const hideElement = (el) => {
 export const isEmpty = (input) => {
 	return input.value.length === 0;
 }
+
+export const center = (el) => {
+	return el.anchor.setTo(.5, .5);
+}
