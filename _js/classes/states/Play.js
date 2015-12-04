@@ -96,7 +96,9 @@ export default class Play extends Phaser.State {
 
 		this.bullets.forEach((oneBullet) => {
 			this.enemies.forEach((oneEnemy) => {
+				this.game.physics.arcade.overlap(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
 				this.game.physics.arcade.collide(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
+
 			});
 		});
 	}
@@ -125,8 +127,10 @@ export default class Play extends Phaser.State {
 				enemy.scale.y = 1;
 				if(orangeEnemyChance >= .5){
 					enemy.loadTexture('enemy_orange', null, false);
+					enemy.lives = 2;
 				}else{
 					enemy.loadTexture('enemy_black', null, false);
+					enemy.lives = 1;
 				}
 			}
 		}
@@ -137,17 +141,19 @@ export default class Play extends Phaser.State {
 				enemy.scale.y = -1;
 				if(orangeEnemyChance >= .5){
 					enemy.loadTexture('enemy_orange', null, false);
+					enemy.lives = 2;
 				}else{
 					enemy.loadTexture('enemy_white', null, false);
+					enemy.lives = 1;
 				}
 			}
 		}
 		this.game.physics.arcade.enableBody(enemy);
 		enemy.reset(x, y);
 		enemy.body.velocity.x = -250;
-		if(orangeEnemyChance >= .5){
-			enemy.lives = 2;
-		}
+		// if(orangeEnemyChance >= .5){
+			
+		// }
 		console.log(enemy.lives);
 		this.enemies.add(enemy);
 	}

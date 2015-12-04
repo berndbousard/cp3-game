@@ -418,23 +418,23 @@
 
 	var _BackgroundCity2 = _interopRequireDefault(_BackgroundCity);
 
-	var _Enemy = __webpack_require__(9);
+	var _Enemy = __webpack_require__(10);
 
 	var _Enemy2 = _interopRequireDefault(_Enemy);
 
-	var _Text = __webpack_require__(10);
+	var _Text = __webpack_require__(11);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
-	var _Coin = __webpack_require__(11);
+	var _Coin = __webpack_require__(12);
 
 	var _Coin2 = _interopRequireDefault(_Coin);
 
-	var _Sound = __webpack_require__(12);
+	var _Sound = __webpack_require__(13);
 
 	var _Sound2 = _interopRequireDefault(_Sound);
 
-	var _BulletGroup = __webpack_require__(13);
+	var _BulletGroup = __webpack_require__(14);
 
 	var _BulletGroup2 = _interopRequireDefault(_BulletGroup);
 
@@ -561,6 +561,7 @@
 
 				this.bullets.forEach(function (oneBullet) {
 					_this2.enemies.forEach(function (oneEnemy) {
+						_this2.game.physics.arcade.overlap(oneBullet, oneEnemy, _this2.enemyBulletCollisionHandler, null, _this2);
 						_this2.game.physics.arcade.collide(oneBullet, oneEnemy, _this2.enemyBulletCollisionHandler, null, _this2);
 					});
 				});
@@ -595,8 +596,10 @@
 						enemy.scale.y = 1;
 						if (orangeEnemyChance >= .5) {
 							enemy.loadTexture('enemy_orange', null, false);
+							enemy.lives = 2;
 						} else {
 							enemy.loadTexture('enemy_black', null, false);
+							enemy.lives = 1;
 						}
 					}
 				}
@@ -607,17 +610,19 @@
 						enemy.scale.y = -1;
 						if (orangeEnemyChance >= .5) {
 							enemy.loadTexture('enemy_orange', null, false);
+							enemy.lives = 2;
 						} else {
 							enemy.loadTexture('enemy_white', null, false);
+							enemy.lives = 1;
 						}
 					}
 				}
 				this.game.physics.arcade.enableBody(enemy);
 				enemy.reset(x, y);
 				enemy.body.velocity.x = -250;
-				if (orangeEnemyChance >= .5) {
-					enemy.lives = 2;
-				}
+				// if(orangeEnemyChance >= .5){
+
+				// }
 				console.log(enemy.lives);
 				this.enemies.add(enemy);
 			}
@@ -739,7 +744,7 @@
 		value: true
 	});
 
-	var _Bullet = __webpack_require__(14);
+	var _Bullet = __webpack_require__(9);
 
 	var _Bullet2 = _interopRequireDefault(_Bullet);
 
@@ -840,6 +845,54 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var Bullet = (function (_Phaser$Sprite) {
+		_inherits(Bullet, _Phaser$Sprite);
+
+		function Bullet(game, x, y) {
+			_classCallCheck(this, Bullet);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Bullet).call(this, game, x, y, 'bullet'));
+			// new Group(game, parent, name, addToStage, enableBody, physicsBodyType)
+
+			_this.anchor.setTo(.5, .5);
+
+			_this.game.physics.arcade.enableBody(_this);
+
+			_this.body.allowGravity = false;
+			_this.body.immovable = true;
+			return _this;
+		}
+
+		_createClass(Bullet, [{
+			key: 'update',
+			value: function update() {
+				this.game.debug.body(this);
+			}
+		}]);
+
+		return Bullet;
+	})(Phaser.Sprite);
+
+	exports.default = Bullet;
+
+/***/ },
+/* 10 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 	var Enemy = (function (_Phaser$Sprite) {
 		_inherits(Enemy, _Phaser$Sprite);
 
@@ -895,7 +948,7 @@
 	exports.default = Enemy;
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -928,7 +981,7 @@
 	exports.default = Text;
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -988,7 +1041,7 @@
 	exports.default = Coin;
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1018,7 +1071,7 @@
 	exports.default = Sound;
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1029,7 +1082,7 @@
 		value: true
 	});
 
-	var _Bullet = __webpack_require__(14);
+	var _Bullet = __webpack_require__(9);
 
 	var _Bullet2 = _interopRequireDefault(_Bullet);
 
@@ -1080,54 +1133,6 @@
 	})(Phaser.Group);
 
 	exports.default = BulletGroup;
-
-/***/ },
-/* 14 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Bullet = (function (_Phaser$Sprite) {
-		_inherits(Bullet, _Phaser$Sprite);
-
-		function Bullet(game, x, y) {
-			_classCallCheck(this, Bullet);
-
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Bullet).call(this, game, x, y, 'bullet'));
-			// new Group(game, parent, name, addToStage, enableBody, physicsBodyType)
-
-			_this.anchor.setTo(.5, .5);
-
-			_this.game.physics.arcade.enableBody(_this);
-
-			_this.body.allowGravity = false;
-			_this.body.immovable = true;
-			return _this;
-		}
-
-		_createClass(Bullet, [{
-			key: 'update',
-			value: function update() {
-				this.game.debug.body(this);
-			}
-		}]);
-
-		return Bullet;
-	})(Phaser.Sprite);
-
-	exports.default = Bullet;
 
 /***/ },
 /* 15 */
@@ -1355,7 +1360,7 @@
 
 	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
 
-	var _Text = __webpack_require__(10);
+	var _Text = __webpack_require__(11);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
@@ -1523,7 +1528,7 @@
 		value: true
 	});
 
-	var _Text = __webpack_require__(10);
+	var _Text = __webpack_require__(11);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
