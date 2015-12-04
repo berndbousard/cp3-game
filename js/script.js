@@ -229,6 +229,10 @@
 				this.infoButton = this.game.add.button(this.game.width / 2 + 100, this.game.height / 2 + 150, 'infoButton', this.infoClickHandler, this);
 				Utils.center(this.infoButton);
 
+				// game, x, y, font, text, size, align
+				//this.logo = new Text(this.game, this.game.width/2, this.game.height/2, 'gamefont', 'CityFlip', 50, 'center');;
+				//this.game.add.existing(this.logo);
+
 				// new Button(game, x, y, key, callback, callbackContext)
 				// this.startButtonTest = new Button(this.game, this.game.width/2 + 100, this.game.height/2 + 150, 'startButton', Button.startClickHandler, Button);
 				// this.game.add.existing(this.startButtonTest);
