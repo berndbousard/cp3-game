@@ -8,6 +8,7 @@ let confirm;
 let inputField;
 let leaderboardNameInput;
 let leaderboardSubmit;
+let leaderboard;
 
 
 export default class Gameover extends Phaser.State {
@@ -15,11 +16,19 @@ export default class Gameover extends Phaser.State {
 		console.log('start gameover');
 	}
 	create(){
-
-		// Waarden zijn in play opgeslaan in this.game.state.score/distance
-		// Data.score = 0;
-		// Data.distance = 0;
-		// this.game.data.bullets = 5;
+		this.createForm();
+		leaderboardNameInput = document.getElementById("text");
+		leaderboardSubmit = document.getElementById("submit");
+		leaderboard = document.getElementById("form");
+		leaderboard.addEventListener('submit', (event) => {
+			event.preventDefault();
+			this.leaderboardSubmitHandler();
+		});
+		// not sure about this
+		leaderboardSubmit.addEventListener('submit', (event) => {
+			event.preventDefault();
+			this.leaderboardSubmitHandler();
+		});
 
 		// Images
 		this.city = new BackgroundCity(this.game, 0, 0, 750, 500, 'city');
@@ -31,93 +40,66 @@ export default class Gameover extends Phaser.State {
 		// Buttons
 		this.startButton = this.game.add.button(
 			this.game.width/2,this.game.height/2 + 150,'startButton',this.startClickHandler,this);
-		this.startButton.anchor.setTo(0.5,0.5);
+		Utils.center(this.startButton);
 
 		// score and distance
 		this.visibleScore = new Text(this.game, this.game.width/2 - 50, 200, 'gamefont', 'Your score\n' + Data.score, 20, 'center');
 		this.game.add.existing(this.visibleScore);
 		this.visibleDistance = new Text(this.game, this.game.width/2 + 80, 200, 'gamefont', 'You ran\n' + Data.distance + ' km', 20, 'center');
 		this.game.add.existing(this.visibleDistance);
-
-		// create input field, prepare it for ajax
-		this.createInputField();
-
-		leaderboardNameInput = document.getElementById("text");
-		leaderboardSubmit = document.getElementById("submit");
-		//confirm = document.querySelector('.confirm');
-
-		// AJAX
-		this.doAjax();
-
-		// dit dient om enters op te vangen indien de gebruiker op enter duwt in het textveld, later te implementeren
-		// this.inputElement('keydown', this.keyHandler(event));
-
 	}
 	update(){
 	}
 	shutdown(){
 		console.log('end gameover');
+		leaderboard.remove();
 	}
 
-	createInputField(){
+	createForm(){
 
 		inputField = document.createElement('form');
-		inputField.setAttribute('action', 
-			'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=postScores');
-
-		inputField.setAttribute('class', 'hidden');
 		inputField.id = 'form';
 
-		let inputFieldText = document.createElement('input');
-		inputFieldText.setAttribute('type', 'text');
-		inputFieldText.setAttribute('name', 'name');
-		inputFieldText.setAttribute('placeholder', 'username');
-		inputFieldText.setAttribute('maxlength', '10');
-		inputFieldText.id = 'text';
+		let formNameInput = document.createElement('input');
+		formNameInput.setAttribute('type', 'text');
+		formNameInput.setAttribute('name', 'name');
+		formNameInput.setAttribute('placeholder', 'username');
+		formNameInput.setAttribute('maxlength', '10');
+		formNameInput.id = 'text';
 
-		let inputFieldSubmit = document.createElement('input');
-		inputFieldSubmit.setAttribute('type', 'submit');
-		inputFieldSubmit.setAttribute('name', 'action');
-		inputFieldSubmit.setAttribute('value', 'post score');
-		inputFieldSubmit.id = 'submit';
+		let formSubmit = document.createElement('input');
+		formSubmit.setAttribute('type', 'submit');
+		formSubmit.setAttribute('name', 'action');
+		formSubmit.setAttribute('value', 'post score');
+		formSubmit.id = 'submit';
 
 
-		inputField.appendChild(inputFieldText);
-		inputField.appendChild(inputFieldSubmit);
-
-		//console.log(inputField);
+		inputField.appendChild(formNameInput);
+		inputField.appendChild(formSubmit);
 
 		document.querySelector('body').appendChild(inputField);
 		Utils.showElement(inputField);
 	}
 
-	submitInputHandler(score, distance, name){
-
-		console.log("AJAX called");
-
+	submitInputHandler(name){
 		let req = new XMLHttpRequest();
-		let url = 'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=postScores' + '&name=' + name + '&score=' + score + '&distance=' + distance;
+		let url = 'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=postScores&name=' + name + '' + '&score=' + Data.score + '' + '&distance=' +  Data.distance;
 		req.open("POST", url);
 		req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
 		req.send();
-		Utils.changeState(this.game, 'Leaderboard');
-
-		
-
-		//Utils.showElement(confirm);
-		Utils.hideElement(inputField);
+		// Het lijkt dat hij 2x pusht naar de DDB maar als ik een event listener eraan
+		// Koppen dan zien we het maar 1 keer maar zit wel 2x id DDB
+		req.addEventListener('load', () => {
+			Utils.hideElement(inputField);
+			Utils.changeState(this.game, 'Leaderboard');
+		});
 	}
 
-	doAjax(){
-		leaderboardSubmit.addEventListener('click', e => {
-			e.preventDefault();
-			if(!Utils.isEmpty(leaderboardNameInput)){
-				let score = this.game.state.score;
-				let distance = this.game.state.distance;
-				let name = leaderboardNameInput.value;
-				this.submitInputHandler(score, distance, name);
-			}
-		});
+	leaderboardSubmitHandler(){
+		if(!Utils.isEmpty(leaderboardNameInput)){
+			let name = leaderboardNameInput.value;
+			this.submitInputHandler(name);
+		}
 	}
 	startClickHandler() {
 		Utils.hideElement(inputField);

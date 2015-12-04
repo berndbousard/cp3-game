@@ -54,19 +54,19 @@
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
-	var _Play = __webpack_require__(6);
+	var _Play = __webpack_require__(7);
 
 	var _Play2 = _interopRequireDefault(_Play);
 
-	var _Leaderboard = __webpack_require__(16);
+	var _Leaderboard = __webpack_require__(17);
 
 	var _Leaderboard2 = _interopRequireDefault(_Leaderboard);
 
-	var _Gameover = __webpack_require__(17);
+	var _Gameover = __webpack_require__(18);
 
 	var _Gameover2 = _interopRequireDefault(_Gameover);
 
-	var _Info = __webpack_require__(18);
+	var _Info = __webpack_require__(19);
 
 	var _Info2 = _interopRequireDefault(_Info);
 
@@ -130,6 +130,7 @@
 				this.game.load.spritesheet('player_white', 'assets/player_white.png', 42, 44, 14);
 				this.game.load.spritesheet('enemy_black', 'assets/enemy_black.png', 45, 45, 6);
 				this.game.load.spritesheet('enemy_white', 'assets/enemy_white.png', 45, 45, 6);
+				this.game.load.spritesheet('enemy_orange', 'assets/enemy_orange.png', 45, 45, 6);
 				this.game.load.spritesheet('coin', 'assets/coin.png', 25, 25, 10);
 
 				this.game.load.audio('change_side', 'assets/sound/change_side.mp3');
@@ -180,7 +181,7 @@
 
 	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
 
-	var _Utils = __webpack_require__(15);
+	var _Utils = __webpack_require__(6);
 
 	var Utils = _interopRequireWildcard(_Utils);
 
@@ -370,6 +371,35 @@
 
 /***/ },
 /* 6 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	var changeState = exports.changeState = function changeState(game, state) {
+		game.state.start(state);
+	};
+
+	var showElement = exports.showElement = function showElement(el) {
+		el.style.visibility = 'visible';
+	};
+
+	var hideElement = exports.hideElement = function hideElement(el) {
+		el.style.visibility = 'hidden';
+	};
+
+	var isEmpty = exports.isEmpty = function isEmpty(input) {
+		return input.value.length === 0;
+	};
+
+	var center = exports.center = function center(el) {
+		return el.anchor.setTo(.5, .5);
+	};
+
+/***/ },
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -380,7 +410,7 @@
 		value: true
 	});
 
-	var _Player = __webpack_require__(7);
+	var _Player = __webpack_require__(8);
 
 	var _Player2 = _interopRequireDefault(_Player);
 
@@ -408,15 +438,15 @@
 
 	var _BulletGroup2 = _interopRequireDefault(_BulletGroup);
 
-	var _Keyboard = __webpack_require__(14);
+	var _Keyboard = __webpack_require__(15);
 
 	var _Keyboard2 = _interopRequireDefault(_Keyboard);
 
-	var _Utils = __webpack_require__(15);
+	var _Utils = __webpack_require__(6);
 
 	var Utils = _interopRequireWildcard(_Utils);
 
-	var _Data = __webpack_require__(20);
+	var _Data = __webpack_require__(16);
 
 	var _Data2 = _interopRequireDefault(_Data);
 
@@ -457,12 +487,8 @@
 
 				// controls
 				this.cursors = this.game.input.keyboard.createCursorKeys();
-				// this.keys = this.game.input.keyboard.addKeys({
-				// 	'SPACEBAR': Phaser.Keyboard.SPACEBAR
-				// });
 				this.spacebar = this.game.input.keyboard.addKey(32);
 				this.spacebar.onDown.add(this.spaceBarHandler, this);
-				// this.
 
 				// Declarations
 				this.side = 'up'; //Nu kunnen we weten of hij bovenaan of onderaan loopt
@@ -490,7 +516,7 @@
 
 				// distance score text
 				this.distanceTimer = this.game.time.events.loop(Phaser.Timer.SECOND / 1.2, this.increaseDistance, this);
-				this.distanceTextBox = new _Text2.default(this.game, this.game.width / 2, 50, 'gamefont', _Data2.default.distance.toString() + ' km', 30);
+				this.distanceTextBox = new _Text2.default(this.game, this.game.width / 2, 50, 'gamefont', _Data2.default.distance + ' km', 30);
 				this.game.add.existing(this.distanceTextBox);
 
 				// coins score text
@@ -538,15 +564,12 @@
 						_this2.game.physics.arcade.collide(oneBullet, oneEnemy, _this2.enemyBulletCollisionHandler, null, _this2);
 					});
 				});
-
-				console.log(this.coins.length);
 			}
 		}, {
 			key: 'shutdown',
 			value: function shutdown() {
 				console.log('end play');
 				this.city.autoScroll(0, 0);
-				// this.enemyTimer.timer.destroy();
 			}
 
 			// eigen functies
@@ -554,6 +577,9 @@
 		}, {
 			key: 'spawnEnemy',
 			value: function spawnEnemy() {
+				var orangeEnemyChance = undefined;
+				orangeEnemyChance = Math.random();
+				console.log(orangeEnemyChance);
 				var enemy = this.enemies.getFirstExists(false);
 				if (!enemy) {
 					enemy = new _Enemy2.default(this.game, 0, 0, 'black');
@@ -567,20 +593,32 @@
 					y = 225;
 					if (enemy.scale.y = -1) {
 						enemy.scale.y = 1;
+						if (orangeEnemyChance >= .5) {
+							enemy.loadTexture('enemy_orange', null, false);
+						} else {
+							enemy.loadTexture('enemy_black', null, false);
+						}
 					}
-					enemy.loadTexture('enemy_black', null, false);
 				}
 				if (lot == 1) {
 					// onder
 					y = 275;
 					if (enemy.scale.y = 1) {
 						enemy.scale.y = -1;
+						if (orangeEnemyChance >= .5) {
+							enemy.loadTexture('enemy_orange', null, false);
+						} else {
+							enemy.loadTexture('enemy_white', null, false);
+						}
 					}
-					enemy.loadTexture('enemy_white', null, false);
 				}
 				this.game.physics.arcade.enableBody(enemy);
 				enemy.reset(x, y);
 				enemy.body.velocity.x = -250;
+				if (orangeEnemyChance >= .5) {
+					enemy.lives = 2;
+				}
+				console.log(enemy.lives);
 				this.enemies.add(enemy);
 			}
 		}, {
@@ -605,9 +643,9 @@
 		}, {
 			key: 'enemyPlayerCollisionHandler',
 			value: function enemyPlayerCollisionHandler(player, enemy) {
-				enemy.destroy();
 				player.destroy();
-				this.game.state.start('Gameover');
+				enemy.destroy();
+				Utils.changeState(this.game, 'Gameover');
 			}
 		}, {
 			key: 'coinPlayerCollisionHandler',
@@ -622,8 +660,13 @@
 			}
 		}, {
 			key: 'enemyBulletCollisionHandler',
-			value: function enemyBulletCollisionHandler(bullet, enemy) {
-				enemy.destroy();
+			value: function enemyBulletCollisionHandler(enemy, bullet) {
+				// console.log('bullet hit');
+
+				enemy.lives--;
+				if (enemy.lives === 0) {
+					enemy.destroy();
+				}
 				bullet.destroy();
 				this.enemyHitSound.play();
 			}
@@ -653,7 +696,6 @@
 			key: 'spaceBarHandler',
 			value: function spaceBarHandler() {
 				// shoot
-				console.log('schoot');
 				if (_Data2.default.bullets >= 1) {
 					var bullet = this.bullets.getFirstExists(false);
 					if (!bullet) {
@@ -686,7 +728,7 @@
 	exports.default = Play;
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -697,7 +739,7 @@
 		value: true
 	});
 
-	var _Bullet = __webpack_require__(8);
+	var _Bullet = __webpack_require__(14);
 
 	var _Bullet2 = _interopRequireDefault(_Bullet);
 
@@ -744,21 +786,21 @@
 				// console.log('player staat nu beneden');
 				// http://phaser.io/examples/v2/animation/change-texture-on-click
 				// Phaser.Sprite.loadTexture(key, frame, stopAnimation) : void;
-				this.loadTexture('player_white', null, false);
-				// if(this.body.position.y < this.game.height/2){
-				this.body.y = this.game.height / 2;
-				this.flipSound.play();
-				// }
+				if (this.body.position.y === this.game.height / 2 - 43) {
+					this.loadTexture('player_white', null, false);
+					this.body.y = this.game.height / 2;
+					this.flipSound.play();
+				}
 			}
 		}, {
 			key: 'flipUp',
 			value: function flipUp() {
 				// console.log('player staat nu boven');
-				this.loadTexture('player_black', null, false);
-				// if(this.body.position.y > this.game.height/2){
-				this.body.y = this.game.height / 2 - 43;
-				this.flipSound.play();
-				// }
+				if (this.body.position.y === this.game.height / 2) {
+					this.loadTexture('player_black', null, false);
+					this.body.y = this.game.height / 2 - 43;
+					this.flipSound.play();
+				}
 			}
 		}, {
 			key: 'shoot',
@@ -781,54 +823,6 @@
 	exports.default = Player;
 
 /***/ },
-/* 8 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Bullet = (function (_Phaser$Sprite) {
-		_inherits(Bullet, _Phaser$Sprite);
-
-		function Bullet(game, x, y) {
-			_classCallCheck(this, Bullet);
-
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Bullet).call(this, game, x, y, 'bullet'));
-			// new Group(game, parent, name, addToStage, enableBody, physicsBodyType)
-
-			_this.anchor.setTo(.5, .5);
-
-			_this.game.physics.arcade.enableBody(_this);
-
-			_this.body.allowGravity = false;
-			_this.body.immovable = true;
-			return _this;
-		}
-
-		_createClass(Bullet, [{
-			key: 'update',
-			value: function update() {
-				this.game.debug.body(this);
-			}
-		}]);
-
-		return Bullet;
-	})(Phaser.Sprite);
-
-	exports.default = Bullet;
-
-/***/ },
 /* 9 */
 /***/ function(module, exports) {
 
@@ -849,7 +843,7 @@
 	var Enemy = (function (_Phaser$Sprite) {
 		_inherits(Enemy, _Phaser$Sprite);
 
-		function Enemy(game, x, y, color) {
+		function Enemy(game, x, y, color, size) {
 			_classCallCheck(this, Enemy);
 
 			var key = undefined;
@@ -864,7 +858,10 @@
 			_this.anchor.setTo(.5, .5);
 
 			// collide
-			_this.game.physics.arcade.enableBody(_this);
+			_this.game.physics.arcade.enable(_this);
+			_this.immovable = true;
+			_this.allowGravity = false;
+			console.log(_this.body);
 
 			// pooling
 			_this.exists = true;
@@ -875,6 +872,10 @@
 
 			// movement
 			_this.body.velocity.x = -250;
+
+			_this.lives = 1;
+
+			_this.immovable = true;
 			return _this;
 		}
 
@@ -1028,7 +1029,7 @@
 		value: true
 	});
 
-	var _Bullet = __webpack_require__(8);
+	var _Bullet = __webpack_require__(14);
 
 	var _Bullet2 = _interopRequireDefault(_Bullet);
 
@@ -1084,6 +1085,54 @@
 /* 14 */
 /***/ function(module, exports) {
 
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Bullet = (function (_Phaser$Sprite) {
+		_inherits(Bullet, _Phaser$Sprite);
+
+		function Bullet(game, x, y) {
+			_classCallCheck(this, Bullet);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Bullet).call(this, game, x, y, 'bullet'));
+			// new Group(game, parent, name, addToStage, enableBody, physicsBodyType)
+
+			_this.anchor.setTo(.5, .5);
+
+			_this.game.physics.arcade.enableBody(_this);
+
+			_this.body.allowGravity = false;
+			_this.body.immovable = true;
+			return _this;
+		}
+
+		_createClass(Bullet, [{
+			key: 'update',
+			value: function update() {
+				this.game.debug.body(this);
+			}
+		}]);
+
+		return Bullet;
+	})(Phaser.Sprite);
+
+	exports.default = Bullet;
+
+/***/ },
+/* 15 */
+/***/ function(module, exports) {
+
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
@@ -1111,36 +1160,30 @@
 	exports.default = Keyboard;
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
-	var changeState = exports.changeState = function changeState(game, state) {
-		game.state.start(state);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Data = function Data(game) {
+		_classCallCheck(this, Data);
+
+		game.data = {};
+		this.score = 0;
+		this.distance = 0;
+		this.bullets = 5;
 	};
 
-	var showElement = exports.showElement = function showElement(el) {
-		el.style.visibility = 'visible';
-	};
-
-	var hideElement = exports.hideElement = function hideElement(el) {
-		el.style.visibility = 'hidden';
-	};
-
-	var isEmpty = exports.isEmpty = function isEmpty(input) {
-		return input.value.length === 0;
-	};
-
-	var center = exports.center = function center(el) {
-		return el.anchor.setTo(.5, .5);
-	};
+	exports.default = Data;
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1159,7 +1202,7 @@
 
 	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
 
-	var _Utils = __webpack_require__(15);
+	var _Utils = __webpack_require__(6);
 
 	var Utils = _interopRequireWildcard(_Utils);
 
@@ -1214,7 +1257,9 @@
 			key: 'shutdown',
 			value: function shutdown() {
 				console.log('end leaderboard');
-				Utils.hideElement(leaderboardTabel);
+				if (leaderboardTabel) {
+					Utils.hideElement(leaderboardTabel);
+				}
 			}
 
 			// eigen functies
@@ -1291,7 +1336,7 @@
 	exports.default = Leaderboard;
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1314,11 +1359,11 @@
 
 	var _Text2 = _interopRequireDefault(_Text);
 
-	var _Utils = __webpack_require__(15);
+	var _Utils = __webpack_require__(6);
 
 	var Utils = _interopRequireWildcard(_Utils);
 
-	var _Data = __webpack_require__(20);
+	var _Data = __webpack_require__(16);
 
 	var _Data2 = _interopRequireDefault(_Data);
 
@@ -1336,6 +1381,7 @@
 	var inputField = undefined;
 	var leaderboardNameInput = undefined;
 	var leaderboardSubmit = undefined;
+	var leaderboard = undefined;
 
 	var Gameover = (function (_Phaser$State) {
 		_inherits(Gameover, _Phaser$State);
@@ -1354,11 +1400,21 @@
 		}, {
 			key: 'create',
 			value: function create() {
+				var _this2 = this;
 
-				// Waarden zijn in play opgeslaan in this.game.state.score/distance
-				// Data.score = 0;
-				// Data.distance = 0;
-				// this.game.data.bullets = 5;
+				this.createForm();
+				leaderboardNameInput = document.getElementById("text");
+				leaderboardSubmit = document.getElementById("submit");
+				leaderboard = document.getElementById("form");
+				leaderboard.addEventListener('submit', function (event) {
+					event.preventDefault();
+					_this2.leaderboardSubmitHandler();
+				});
+				// not sure about this
+				leaderboardSubmit.addEventListener('submit', function (event) {
+					event.preventDefault();
+					_this2.leaderboardSubmitHandler();
+				});
 
 				// Images
 				this.city = new _BackgroundCity2.default(this.game, 0, 0, 750, 500, 'city');
@@ -1369,26 +1425,13 @@
 
 				// Buttons
 				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 + 150, 'startButton', this.startClickHandler, this);
-				this.startButton.anchor.setTo(0.5, 0.5);
+				Utils.center(this.startButton);
 
 				// score and distance
 				this.visibleScore = new _Text2.default(this.game, this.game.width / 2 - 50, 200, 'gamefont', 'Your score\n' + _Data2.default.score, 20, 'center');
 				this.game.add.existing(this.visibleScore);
 				this.visibleDistance = new _Text2.default(this.game, this.game.width / 2 + 80, 200, 'gamefont', 'You ran\n' + _Data2.default.distance + ' km', 20, 'center');
 				this.game.add.existing(this.visibleDistance);
-
-				// create input field, prepare it for ajax
-				this.createInputField();
-
-				leaderboardNameInput = document.getElementById("text");
-				leaderboardSubmit = document.getElementById("submit");
-				//confirm = document.querySelector('.confirm');
-
-				// AJAX
-				this.doAjax();
-
-				// dit dient om enters op te vangen indien de gebruiker op enter duwt in het textveld, later te implementeren
-				// this.inputElement('keydown', this.keyHandler(event));
 			}
 		}, {
 			key: 'update',
@@ -1397,68 +1440,58 @@
 			key: 'shutdown',
 			value: function shutdown() {
 				console.log('end gameover');
+				leaderboard.remove();
 			}
 		}, {
-			key: 'createInputField',
-			value: function createInputField() {
+			key: 'createForm',
+			value: function createForm() {
 
 				inputField = document.createElement('form');
-				inputField.setAttribute('action', 'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=postScores');
-
-				inputField.setAttribute('class', 'hidden');
 				inputField.id = 'form';
 
-				var inputFieldText = document.createElement('input');
-				inputFieldText.setAttribute('type', 'text');
-				inputFieldText.setAttribute('name', 'name');
-				inputFieldText.setAttribute('placeholder', 'username');
-				inputFieldText.setAttribute('maxlength', '10');
-				inputFieldText.id = 'text';
+				var formNameInput = document.createElement('input');
+				formNameInput.setAttribute('type', 'text');
+				formNameInput.setAttribute('name', 'name');
+				formNameInput.setAttribute('placeholder', 'username');
+				formNameInput.setAttribute('maxlength', '10');
+				formNameInput.id = 'text';
 
-				var inputFieldSubmit = document.createElement('input');
-				inputFieldSubmit.setAttribute('type', 'submit');
-				inputFieldSubmit.setAttribute('name', 'action');
-				inputFieldSubmit.setAttribute('value', 'post score');
-				inputFieldSubmit.id = 'submit';
+				var formSubmit = document.createElement('input');
+				formSubmit.setAttribute('type', 'submit');
+				formSubmit.setAttribute('name', 'action');
+				formSubmit.setAttribute('value', 'post score');
+				formSubmit.id = 'submit';
 
-				inputField.appendChild(inputFieldText);
-				inputField.appendChild(inputFieldSubmit);
-
-				//console.log(inputField);
+				inputField.appendChild(formNameInput);
+				inputField.appendChild(formSubmit);
 
 				document.querySelector('body').appendChild(inputField);
 				Utils.showElement(inputField);
 			}
 		}, {
 			key: 'submitInputHandler',
-			value: function submitInputHandler(score, distance, name) {
-
-				console.log("AJAX called");
+			value: function submitInputHandler(name) {
+				var _this3 = this;
 
 				var req = new XMLHttpRequest();
-				var url = 'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=postScores' + '&name=' + name + '&score=' + score + '&distance=' + distance;
+				var url = 'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=postScores&name=' + name + '' + '&score=' + _Data2.default.score + '' + '&distance=' + _Data2.default.distance;
 				req.open("POST", url);
 				req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
 				req.send();
-				Utils.changeState(this.game, 'Leaderboard');
-
-				//Utils.showElement(confirm);
-				Utils.hideElement(inputField);
+				// Het lijkt dat hij 2x pusht naar de DDB maar als ik een event listener eraan
+				// Koppen dan zien we het maar 1 keer maar zit wel 2x id DDB
+				req.addEventListener('load', function () {
+					Utils.hideElement(inputField);
+					Utils.changeState(_this3.game, 'Leaderboard');
+				});
 			}
 		}, {
-			key: 'doAjax',
-			value: function doAjax() {
-				var _this2 = this;
-
-				leaderboardSubmit.addEventListener('click', function (e) {
-					e.preventDefault();
-					if (!Utils.isEmpty(leaderboardNameInput)) {
-						var score = _this2.game.state.score;
-						var distance = _this2.game.state.distance;
-						var name = leaderboardNameInput.value;
-						_this2.submitInputHandler(score, distance, name);
-					}
-				});
+			key: 'leaderboardSubmitHandler',
+			value: function leaderboardSubmitHandler() {
+				if (!Utils.isEmpty(leaderboardNameInput)) {
+					var name = leaderboardNameInput.value;
+					this.submitInputHandler(name);
+				}
 			}
 		}, {
 			key: 'startClickHandler',
@@ -1479,7 +1512,7 @@
 	exports.default = Gameover;
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1549,30 +1582,6 @@
 	})(Phaser.State);
 
 	exports.default = Info;
-
-/***/ },
-/* 19 */,
-/* 20 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var Data = function Data(game) {
-		_classCallCheck(this, Data);
-
-		game.data = {};
-		this.score;
-		this.distance;
-		this.bullets;
-	};
-
-	exports.default = Data;
 
 /***/ }
 /******/ ]);

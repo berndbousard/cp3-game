@@ -30,7 +30,9 @@ export default class Leaderboard extends Phaser.State {
 	}
 	shutdown(){
 		console.log('end leaderboard');
-		Utils.hideElement(leaderboardTabel);
+		if(leaderboardTabel){
+			Utils.hideElement(leaderboardTabel);
+		}
 	}
 
 	// eigen functies

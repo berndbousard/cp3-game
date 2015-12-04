@@ -24,12 +24,8 @@ export default class Play extends Phaser.State {
 
 		// controls
 		this.cursors = this.game.input.keyboard.createCursorKeys();
-		// this.keys = this.game.input.keyboard.addKeys({
-		// 	'SPACEBAR': Phaser.Keyboard.SPACEBAR
-		// });
 		this.spacebar = this.game.input.keyboard.addKey(32);
 		this.spacebar.onDown.add(this.spaceBarHandler, this);
-		// this.
 
 
 		// Declarations
@@ -58,7 +54,7 @@ export default class Play extends Phaser.State {
 
 		// distance score text
 		this.distanceTimer = this.game.time.events.loop(Phaser.Timer.SECOND / 1.2, this.increaseDistance, this);
-		this.distanceTextBox = new Text(this.game, this.game.width/2, 50, 'gamefont', Data.distance.toString() + ' km', 30);
+		this.distanceTextBox = new Text(this.game, this.game.width/2, 50, 'gamefont', Data.distance + ' km', 30);
 		this.game.add.existing(this.distanceTextBox);
 
 		// coins score text
@@ -103,17 +99,17 @@ export default class Play extends Phaser.State {
 				this.game.physics.arcade.collide(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
 			});
 		});
-
-		console.log(this.coins.length);
 	}
 	shutdown(){
 		console.log('end play');
 		this.city.autoScroll(0, 0);
-		// this.enemyTimer.timer.destroy();
 	}
 
 	// eigen functies
 	spawnEnemy(){
+		let orangeEnemyChance;
+		orangeEnemyChance = Math.random();
+		console.log(orangeEnemyChance);
 		let enemy = this.enemies.getFirstExists(false);
 		if(!enemy){
 			enemy = new Enemy(this.game, 0, 0, 'black');
@@ -127,20 +123,32 @@ export default class Play extends Phaser.State {
 			y = 225;
 			if(enemy.scale.y = -1){
 				enemy.scale.y = 1;
+				if(orangeEnemyChance >= .5){
+					enemy.loadTexture('enemy_orange', null, false);
+				}else{
+					enemy.loadTexture('enemy_black', null, false);
+				}
 			}
-			enemy.loadTexture('enemy_black', null, false);
 		}
 		if(lot == 1){
 			// onder
 			y = 275;
 			if(enemy.scale.y = 1){
 				enemy.scale.y = -1;
+				if(orangeEnemyChance >= .5){
+					enemy.loadTexture('enemy_orange', null, false);
+				}else{
+					enemy.loadTexture('enemy_white', null, false);
+				}
 			}
-			enemy.loadTexture('enemy_white', null, false);
 		}
 		this.game.physics.arcade.enableBody(enemy);
 		enemy.reset(x, y);
 		enemy.body.velocity.x = -250;
+		if(orangeEnemyChance >= .5){
+			enemy.lives = 2;
+		}
+		console.log(enemy.lives);
 		this.enemies.add(enemy);
 	}
 
@@ -163,9 +171,9 @@ export default class Play extends Phaser.State {
 	}
 
 	enemyPlayerCollisionHandler(player, enemy){
-		enemy.destroy();
 		player.destroy();
-		this.game.state.start('Gameover');
+		enemy.destroy();
+		Utils.changeState(this.game, 'Gameover');
 	}
 
 	coinPlayerCollisionHandler(player, coin){
@@ -178,8 +186,13 @@ export default class Play extends Phaser.State {
 		this.coinSound.play();
 	}
 
-	enemyBulletCollisionHandler(bullet, enemy){
-		enemy.destroy();
+	enemyBulletCollisionHandler(enemy, bullet){
+		// console.log('bullet hit');
+
+		enemy.lives--;
+		if(enemy.lives === 0){
+			enemy.destroy();
+		}
 		bullet.destroy();
 		this.enemyHitSound.play();
 	}
@@ -206,7 +219,6 @@ export default class Play extends Phaser.State {
 
 	spaceBarHandler(){
 		// shoot
-		console.log('schoot');
 		if(Data.bullets >= 1){
 			let bullet = this.bullets.getFirstExists(false);
 			if(!bullet){

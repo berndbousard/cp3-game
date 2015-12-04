@@ -1,5 +1,5 @@
 export default class Enemy extends Phaser.Sprite {
-	constructor(game, x, y, color){
+	constructor(game, x, y, color, size){
 		let key;
 		if(color == 'black'){
 			key = 'enemy_black';
@@ -10,7 +10,10 @@ export default class Enemy extends Phaser.Sprite {
 		this.anchor.setTo(.5, .5);
 
 		// collide
-		this.game.physics.arcade.enableBody(this);
+		this.game.physics.arcade.enable(this);
+		this.immovable = true;
+		this.allowGravity = false;
+		console.log(this.body);
 	
 		// pooling
 		this.exists = true;
@@ -21,6 +24,10 @@ export default class Enemy extends Phaser.Sprite {
 
 		// movement
 		this.body.velocity.x = -250;
+
+		this.lives = 1;
+
+		this.immovable = true;
 	}
 	update(){
 		this.game.debug.body(this);
