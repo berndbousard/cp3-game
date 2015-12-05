@@ -10,6 +10,7 @@ export default class Preload extends Phaser.State {
 		this.game.load.image('city', 'assets/city.jpg');
 		this.game.load.image('menuBackground', 'assets/menu_background.png');
 		this.game.load.image('bullet', 'assets/bullet.png');
+		this.game.load.image('player_menu', 'assets/player_menu.png');
 
 		this.game.load.bitmapFont('gamefont', 'assets/font/extra/gamefont.png', 'assets/font/extra/gamefont.fnt');
 

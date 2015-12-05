@@ -1,6 +1,7 @@
 import Button from '../objects/Button';
 import BackgroundCity from '../objects/BackgroundCity';
 import MenuBackground from '../objects/MenuBackground';
+import Text from '../objects/Text';
 import * as Utils from '../objects/Utils';
 
 
@@ -15,7 +16,14 @@ export default class Menu extends Phaser.State {
 
 		this.menuBackground = new MenuBackground(this.game, this.game.width/2, this.game.height/2);
 		this.game.add.existing(this.menuBackground);
-		
+
+		this.playerImg = this.game.add.sprite(this.game.width/2, this.game.height/2-90, 'player_menu');
+		Utils.center(this.playerImg);
+
+		let title = "CITYFLIP";
+		this.titleBox = new Text(this.game, this.game.width/2+5, this.game.height/2-22, 'gamefont', title, 60);
+		Utils.center(this.titleBox);
+		this.game.add.existing(this.titleBox);
 
 		// Buttons
 		this.startButton = this.game.add.button(
