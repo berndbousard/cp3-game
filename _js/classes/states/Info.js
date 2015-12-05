@@ -1,4 +1,5 @@
 import Text from '../objects/Text';
+import * as Utils from '../objects/Utils';
 
 export default class Info extends Phaser.State {
 	preload(){
@@ -15,9 +16,13 @@ export default class Info extends Phaser.State {
 		
 
 		this.startButton = this.game.add.button(
-			this.game.width/2, this.game.height/2 + 175, 'startButton', this.startClickHandler, this
+			this.game.width/2 + 50, this.game.height/2 + 175, 'startButton', this.startClickHandler, this
 		);
-		this.startButton.anchor.setTo(0.5,0.5);
+		Utils.center(this.startButton);
+		this.backButton = this.game.add.button(
+			this.game.width/2 - 50, this.game.height/2 + 175, 'backButton', this.backClickHandler, this
+		);
+		Utils.center(this.backButton);
 	}
 	update(){
 		
@@ -26,6 +31,9 @@ export default class Info extends Phaser.State {
 		console.log('end info');	
 	}
 	startClickHandler() {
-		this.game.state.start('Play');
+		Utils.changeState(this.game, 'Play');
+	}
+	backClickHandler() {
+		Utils.changeState(this.game, 'Menu');
 	}
 }

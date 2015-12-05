@@ -22,8 +22,12 @@ export default class Leaderboard extends Phaser.State {
 
 		// Buttons
 		this.startButton = this.game.add.button(
-			this.game.width/2,this.game.height/2 + 150,'startButton', this.startClickHandler,this);
-		this.startButton.anchor.setTo(0.5,0.5);
+			this.game.width/2 + 50,this.game.height/2 + 150,'startButton', this.startClickHandler,this);
+		Utils.center(this.startButton);
+		this.backButton = this.game.add.button(
+			this.game.width/2 - 50, this.game.height/2 + 150, 'backButton', this.backClickHandler, this
+		);
+		Utils.center(this.backButton);
 
 	}
 	update(){
@@ -47,9 +51,9 @@ export default class Leaderboard extends Phaser.State {
 		let topRowThForDistance = document.createElement('th');
 		let topRowThForName = document.createElement('th');
 
-		topRowThForScore.innerText = "score";
-		topRowThForName.innerText = "name";
-		topRowThForDistance.innerText = "distance";
+		topRowThForScore.innerText = "Score";
+		topRowThForName.innerText = "Name";
+		topRowThForDistance.innerText = "Distance";
 
 		topRowThForScore.classList.add('score');
 
@@ -97,5 +101,8 @@ export default class Leaderboard extends Phaser.State {
 
 	startClickHandler() {
 		Utils.changeState(this.game, 'Play');
+	}
+	backClickHandler() {
+		Utils.changeState(this.game, 'Menu');
 	}
 }

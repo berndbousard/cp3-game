@@ -18,25 +18,19 @@ export default class Menu extends Phaser.State {
 		
 
 		// Buttons
-		this.startButton = this.game.add.button(this.game.width/2,
-												this.game.height/2 + 150,
-												'startButton',
-												this.startClickHandler,
-												this);
+		this.startButton = this.game.add.button(
+			this.game.width/2, this.game.height/2 + 150, 'startButton', this.startClickHandler, this
+		);
 		Utils.center(this.startButton);
 
-		this.leaderboardButton = this.game.add.button(	this.game.width/2 - 100,
-														this.game.height/2 + 150,
-														'leaderboardbutton',
-														this.leaderboardClickHandler,
-														this);
+		this.leaderboardButton = this.game.add.button(
+			this.game.width/2 - 100, this.game.height/2 + 150, 'leaderboardButton', this.leaderboardClickHandler, this
+		);
 		Utils.center(this.leaderboardButton);
 
-		this.infoButton = this.game.add.button(	this.game.width/2 + 100,
-												this.game.height/2 + 150,
-												'infoButton',
-												this.infoClickHandler,
-												this);
+		this.infoButton = this.game.add.button(
+			this.game.width/2 + 100, this.game.height/2 + 150, 'infoButton', this.infoClickHandler, this
+		);
 		Utils.center(this.infoButton);
 
 		// game, x, y, font, text, size, align

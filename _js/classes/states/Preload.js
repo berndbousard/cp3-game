@@ -4,13 +4,14 @@ export default class Preload extends Phaser.State {
 
 		// load assets
 		this.game.load.image('startButton', 'assets/startButton.png');
-		this.game.load.image('leaderboardbutton', 'assets/leaderboardButton.png');
+		this.game.load.image('leaderboardButton', 'assets/leaderboardButton.png');
 		this.game.load.image('infoButton', 'assets/instructionsButton.png');
+		this.game.load.image('backButton', 'assets/backButton.png');
 		this.game.load.image('city', 'assets/city.jpg');
 		this.game.load.image('menuBackground', 'assets/menu_background.png');
 		this.game.load.image('bullet', 'assets/bullet.png');
 
-		this.game.load.bitmapFont('gamefont', 'assets/font/gamefont/gamefont.png', 'assets/font/gamefont/gamefont.fnt');
+		this.game.load.bitmapFont('gamefont', 'assets/font/extra/gamefont.png', 'assets/font/extra/gamefont.fnt');
 
 		this.game.load.spritesheet('player_black', 'assets/player_black.png', 42, 44, 14);
 		this.game.load.spritesheet('player_white', 'assets/player_white.png', 42, 44, 14);

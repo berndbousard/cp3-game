@@ -118,13 +118,14 @@
 
 				// load assets
 				this.game.load.image('startButton', 'assets/startButton.png');
-				this.game.load.image('leaderboardbutton', 'assets/leaderboardButton.png');
+				this.game.load.image('leaderboardButton', 'assets/leaderboardButton.png');
 				this.game.load.image('infoButton', 'assets/instructionsButton.png');
+				this.game.load.image('backButton', 'assets/backButton.png');
 				this.game.load.image('city', 'assets/city.jpg');
 				this.game.load.image('menuBackground', 'assets/menu_background.png');
 				this.game.load.image('bullet', 'assets/bullet.png');
 
-				this.game.load.bitmapFont('gamefont', 'assets/font/gamefont/gamefont.png', 'assets/font/gamefont/gamefont.fnt');
+				this.game.load.bitmapFont('gamefont', 'assets/font/extra/gamefont.png', 'assets/font/extra/gamefont.fnt');
 
 				this.game.load.spritesheet('player_black', 'assets/player_black.png', 42, 44, 14);
 				this.game.load.spritesheet('player_white', 'assets/player_white.png', 42, 44, 14);
@@ -223,7 +224,7 @@
 				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 + 150, 'startButton', this.startClickHandler, this);
 				Utils.center(this.startButton);
 
-				this.leaderboardButton = this.game.add.button(this.game.width / 2 - 100, this.game.height / 2 + 150, 'leaderboardbutton', this.leaderboardClickHandler, this);
+				this.leaderboardButton = this.game.add.button(this.game.width / 2 - 100, this.game.height / 2 + 150, 'leaderboardButton', this.leaderboardClickHandler, this);
 				Utils.center(this.leaderboardButton);
 
 				this.infoButton = this.game.add.button(this.game.width / 2 + 100, this.game.height / 2 + 150, 'infoButton', this.infoClickHandler, this);
@@ -976,6 +977,7 @@
 			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Text).call(this, game, x, y, font, text, size, align));
 
 			_this.anchor.setTo(.5, .5);
+			_this.tint = 0xFFFFFF;
 			return _this;
 		}
 
@@ -1256,8 +1258,10 @@
 				this.game.add.existing(this.menuBackground);
 
 				// Buttons
-				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 + 150, 'startButton', this.startClickHandler, this);
-				this.startButton.anchor.setTo(0.5, 0.5);
+				this.startButton = this.game.add.button(this.game.width / 2 + 50, this.game.height / 2 + 150, 'startButton', this.startClickHandler, this);
+				Utils.center(this.startButton);
+				this.backButton = this.game.add.button(this.game.width / 2 - 50, this.game.height / 2 + 150, 'backButton', this.backClickHandler, this);
+				Utils.center(this.backButton);
 			}
 		}, {
 			key: 'update',
@@ -1286,9 +1290,9 @@
 				var topRowThForDistance = document.createElement('th');
 				var topRowThForName = document.createElement('th');
 
-				topRowThForScore.innerText = "score";
-				topRowThForName.innerText = "name";
-				topRowThForDistance.innerText = "distance";
+				topRowThForScore.innerText = "Score";
+				topRowThForName.innerText = "Name";
+				topRowThForDistance.innerText = "Distance";
 
 				topRowThForScore.classList.add('score');
 
@@ -1336,6 +1340,11 @@
 			key: 'startClickHandler',
 			value: function startClickHandler() {
 				Utils.changeState(this.game, 'Play');
+			}
+		}, {
+			key: 'backClickHandler',
+			value: function backClickHandler() {
+				Utils.changeState(this.game, 'Menu');
 			}
 		}]);
 
@@ -1536,6 +1545,12 @@
 
 	var _Text2 = _interopRequireDefault(_Text);
 
+	var _Utils = __webpack_require__(6);
+
+	var Utils = _interopRequireWildcard(_Utils);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1569,8 +1584,10 @@
 				this.textBox.anchor.setTo(.5, .5);
 				this.game.add.existing(this.textBox);
 
-				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 + 175, 'startButton', this.startClickHandler, this);
-				this.startButton.anchor.setTo(0.5, 0.5);
+				this.startButton = this.game.add.button(this.game.width / 2 + 50, this.game.height / 2 + 175, 'startButton', this.startClickHandler, this);
+				Utils.center(this.startButton);
+				this.backButton = this.game.add.button(this.game.width / 2 - 50, this.game.height / 2 + 175, 'backButton', this.backClickHandler, this);
+				Utils.center(this.backButton);
 			}
 		}, {
 			key: 'update',
@@ -1583,7 +1600,12 @@
 		}, {
 			key: 'startClickHandler',
 			value: function startClickHandler() {
-				this.game.state.start('Play');
+				Utils.changeState(this.game, 'Play');
+			}
+		}, {
+			key: 'backClickHandler',
+			value: function backClickHandler() {
+				Utils.changeState(this.game, 'Menu');
 			}
 		}]);
 
