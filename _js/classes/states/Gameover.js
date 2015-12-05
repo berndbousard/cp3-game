@@ -103,9 +103,6 @@ export default class Gameover extends Phaser.State {
 	}
 	startClickHandler() {
 		Utils.hideElement(inputField);
-		this.changeState('Play');
-	}
-	changeState(state){
-		this.game.state.start(state);
+		Utils.changeState(this.game, 'Play');
 	}
 }

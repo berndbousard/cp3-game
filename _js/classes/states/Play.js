@@ -8,6 +8,9 @@ import BulletGroup from '../objects/BulletGroup';
 import Keyboard from '../objects/Keyboard';
 import * as Utils from '../objects/Utils';
 import Data from '../objects/Data';
+import Boss from '../objects/Boss';
+
+let harderOverTime = 0;
 
 export default class Play extends Phaser.State {
 	preload(){
@@ -32,9 +35,13 @@ export default class Play extends Phaser.State {
 		this.side = 'up'; //Nu kunnen we weten of hij bovenaan of onderaan loopt
 		Data.score = 0;
 		Data.distance = 0;
-		Data.bullets = 5;
+		Data.bullets = 20;
 		this.gameSpeed = .95; //variable die de snelheid van de game bepaalt. hoe groter het getal hoe sneller/moeilijker. Beinvloed momenteel enkel spawnrate van enemy
 		this.delay = Phaser.Timer.SECOND * 2;
+		this.minimumDistanceBetween = 500;
+
+		this.bossTimer = 0;
+		this.keepUpWithBoss = []; // array om bij te houden welke bosses er al aangemaakt zijn. Idealiter blijft deze array op 0 of 1 entries.
 
 		// Images
 		this.city = new BackgroundCity(this.game, 0, 0, 750, 500, 'city');
@@ -70,21 +77,24 @@ export default class Play extends Phaser.State {
 	}
 	update(){
 
+		harderOverTime ++;
+
 		if(this.cursors.down.isDown){
 			this.player.flipDown();
+			if(this.keepUpWithBoss.length != 0){
+				this.keepUpWithBoss[0].flipDown();
+			}
 		}
 		if(this.cursors.up.isDown){
 			this.player.flipUp();
+			if(this.keepUpWithBoss.length != 0){
+				this.keepUpWithBoss[0].flipUp();
+			}
 		}
 
 		// console.log(Data.bullets);
-		
-		// console.log(this.game.input.x, this.game.input.y);
-		// makkelijk om te meten
 
 		// collision
-		// console.log('aantal coins' + this.coins.children.length); //zo zie je hoeveel er in enemies group zitten, zit nog geen pooling op
-
 		this.enemies.forEach((oneEnemy) => {
 			this.game.physics.arcade.overlap(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
 			this.game.physics.arcade.collide(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
@@ -109,57 +119,78 @@ export default class Play extends Phaser.State {
 
 	// eigen functies
 	spawnEnemy(){
-		let orangeEnemyChance;
-		orangeEnemyChance = Math.random();
-		console.log(orangeEnemyChance);
+		let bossChance = Math.random();
+		let orangeEnemyChance = Math.random() * (0.6 + (harderOverTime/10000));
+		console.log(bossChance);
+
+		let direction;
+		let bossCheck = false;
+
 		let enemy = this.enemies.getFirstExists(false);
 		if(!enemy){
-			enemy = new Enemy(this.game, 0, 0, 'black');
+			if(bossChance < (0.3 + (harderOverTime/10000)) && bossChance > 0 && this.keepUpWithBoss.length === 0){
+				console.log("spawn a boss");
+				enemy = new Boss(this.game, 0, 0, 'black');
+				bossCheck = true;
+
+				// geef hem mee aan this.keepUpWithBoss zodat je later er nog veranderingen op kan uitvoeren
+				// (buiten deze functie om)
+				this.keepUpWithBoss.push(enemy);
+			}else{
+				enemy = new Enemy(this.game, 0, 0, 'black');
+				bossCheck = false;
+			}
 		}
+
 		// positioning
 		let x = this.game.rnd.integerInRange(750, 800);
 		let lot = Math.round(Math.random()*1);
 		let y;
 		if(lot == 0){
-			// boven
-			y = 225;
-			if(enemy.scale.y = -1){
-				enemy.scale.y = 1;
-				if(orangeEnemyChance >= .5){
-					enemy.loadTexture('enemy_orange', null, false);
-					enemy.lives = 2;
-				}else{
-					enemy.loadTexture('enemy_black', null, false);
-					enemy.lives = 1;
-				}
+			direction = "up";
+			if(bossCheck){
+				y = (this.game.height/2) - 30;
+			}else{
+				y = 225;
 			}
+			enemy.scale.y = 1;
+			this.spawnEnemyDetails(orangeEnemyChance, enemy, direction, bossCheck);
 		}
 		if(lot == 1){
-			// onder
-			y = 275;
-			if(enemy.scale.y = 1){
-				enemy.scale.y = -1;
-				if(orangeEnemyChance >= .5){
-					enemy.loadTexture('enemy_orange', null, false);
-					enemy.lives = 2;
-				}else{
-					enemy.loadTexture('enemy_white', null, false);
-					enemy.lives = 1;
-				}
+			direction = "down";
+			if(bossCheck){
+				y = (this.game.height/2) + 30;
+			}else{
+				y = 275;
 			}
+			enemy.scale.y = -1;
+			this.spawnEnemyDetails(orangeEnemyChance, enemy, direction, bossCheck);
 		}
+
 		this.game.physics.arcade.enableBody(enemy);
 		enemy.reset(x, y);
-		enemy.body.velocity.x = -250;
-		// if(orangeEnemyChance >= .5){
-			
-		// }
-		console.log(enemy.lives);
+		enemy.body.velocity.x = -250 - (harderOverTime/50);
 		this.enemies.add(enemy);
 	}
 
+	spawnEnemyDetails(orangeEnemyChance, enemy, direction, bossCheck){
+		if(bossCheck){
+			enemy.loadTexture('enemy_red', null, false);
+			enemy.lives = 4;
+		}else if(orangeEnemyChance >= .5){
+			enemy.loadTexture('enemy_orange', null, false);
+			enemy.lives = 2;
+		}else{
+			if(direction === "up"){
+				enemy.loadTexture('enemy_black', null, false);
+			}else{
+				enemy.loadTexture('enemy_white', null, false);
+			}
+			enemy.lives = 1;
+		}
+	}
+
 	spawnCoin(){
-		// console.log('spawn een coin');
 		let coin = this.coins.getFirstExists(false);
 		if(!coin){
 			coin = new Coin(this.game, 0, 0);
@@ -198,6 +229,11 @@ export default class Play extends Phaser.State {
 		enemy.lives--;
 		if(enemy.lives === 0){
 			enemy.destroy();
+			if(this.keepUpWithBoss.length !== 0){
+				if(this.keepUpWithBoss[0].lives === 0){
+					this.keepUpWithBoss = [];
+				}
+			}
 		}
 		bullet.destroy();
 		this.enemyHitSound.play();
@@ -219,7 +255,11 @@ export default class Play extends Phaser.State {
 			// console.log(this.gameSpeed);
 			// this.enemyTimer.tick = 1449055971970 - (Phaser.Timer.SECOND / this.gameSpeed);
 			this.enemyTimer.delay = delay;
-			// console.log(this.enemyTimer.delay);
+
+			// zorg dat er niet enemies elkaar overlappen en dat de player (in principe) nog kan swappen
+			if(this.enemyTimer.delay < this.minimumDistanceBetween){
+				this.enemyTimer.delay = this.minimumDistanceBetween;
+			}
 		}
 	}
 
