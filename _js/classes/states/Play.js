@@ -8,7 +8,6 @@ import BulletGroup from '../objects/BulletGroup';
 import Keyboard from '../objects/Keyboard';
 import * as Utils from '../objects/Utils';
 import Data from '../objects/Data';
-import Boss from '../objects/Boss';
 
 let harderOverTime = 0;
 
@@ -121,24 +120,30 @@ export default class Play extends Phaser.State {
 	spawnEnemy(){
 		let bossChance = Math.random();
 		let orangeEnemyChance = Math.random() * (0.6 + (harderOverTime/10000));
-		console.log(bossChance);
+		console.log(bossChance, orangeEnemyChance);
 
 		let direction;
-		let bossCheck = false;
+		let enemyType = "normal";
 
 		let enemy = this.enemies.getFirstExists(false);
+
 		if(!enemy){
-			if(bossChance < (0.3 + (harderOverTime/10000)) && bossChance > 0 && this.keepUpWithBoss.length === 0){
+			if(bossChance < (0.2 + (harderOverTime/10000)) && bossChance > 0 && this.keepUpWithBoss.length === 0){
 				console.log("spawn a boss");
-				enemy = new Boss(this.game, 0, 0, 'black');
-				bossCheck = true;
+				enemy = new Enemy(this.game, 0, 0, 'enemy_red');
+				enemyType = "boss";
 
 				// geef hem mee aan this.keepUpWithBoss zodat je later er nog veranderingen op kan uitvoeren
 				// (buiten deze functie om)
 				this.keepUpWithBoss.push(enemy);
+
+			}else if(orangeEnemyChance < 0.4){
+				console.log("spawn an orange guy");
+				enemy = new Enemy(this.game, 0, 0, 'enemy_orange');
+				enemyType = "orange";
 			}else{
-				enemy = new Enemy(this.game, 0, 0, 'black');
-				bossCheck = false;
+				enemy = new Enemy(this.game, 0, 0, 'enemy_black');
+				enemyType = "normal";
 			}
 		}
 
@@ -148,24 +153,24 @@ export default class Play extends Phaser.State {
 		let y;
 		if(lot == 0){
 			direction = "up";
-			if(bossCheck){
-				y = (this.game.height/2) - 30;
+			if(enemyType === "boss"){
+				y = (this.game.height/2) - 29;
 			}else{
 				y = 225;
 			}
 			enemy.scale.y = 1;
-			this.spawnEnemyDetails(orangeEnemyChance, enemy, direction, bossCheck);
 		}
 		if(lot == 1){
 			direction = "down";
-			if(bossCheck){
-				y = (this.game.height/2) + 30;
+			if(enemyType === "boss"){
+				y = (this.game.height/2) + 31;
 			}else{
 				y = 275;
 			}
 			enemy.scale.y = -1;
-			this.spawnEnemyDetails(orangeEnemyChance, enemy, direction, bossCheck);
 		}
+
+		this.spawnEnemyDetails(orangeEnemyChance, enemy, direction, enemyType);
 
 		this.game.physics.arcade.enableBody(enemy);
 		enemy.reset(x, y);
@@ -173,13 +178,16 @@ export default class Play extends Phaser.State {
 		this.enemies.add(enemy);
 	}
 
-	spawnEnemyDetails(orangeEnemyChance, enemy, direction, bossCheck){
-		if(bossCheck){
-			enemy.loadTexture('enemy_red', null, false);
+	spawnEnemyDetails(orangeEnemyChance, enemy, direction, enemyType){
+		// boss
+		if(enemyType === "boss"){
 			enemy.lives = 4;
-		}else if(orangeEnemyChance >= .5){
-			enemy.loadTexture('enemy_orange', null, false);
+			enemy.loadTexture('enemy_red', null, false);
+		// harder enemy
+		}else if(enemyType === "orange"){
 			enemy.lives = 2;
+			enemy.loadTexture('enemy_orange', null, false);
+		// regular enemy
 		}else{
 			if(direction === "up"){
 				enemy.loadTexture('enemy_black', null, false);

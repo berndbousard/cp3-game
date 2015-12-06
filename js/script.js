@@ -54,19 +54,19 @@
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
-	var _Play = __webpack_require__(7);
+	var _Play = __webpack_require__(8);
 
 	var _Play2 = _interopRequireDefault(_Play);
 
-	var _Leaderboard = __webpack_require__(18);
+	var _Leaderboard = __webpack_require__(17);
 
 	var _Leaderboard2 = _interopRequireDefault(_Leaderboard);
 
-	var _Gameover = __webpack_require__(19);
+	var _Gameover = __webpack_require__(18);
 
 	var _Gameover2 = _interopRequireDefault(_Gameover);
 
-	var _Info = __webpack_require__(20);
+	var _Info = __webpack_require__(19);
 
 	var _Info2 = _interopRequireDefault(_Info);
 
@@ -184,11 +184,11 @@
 
 	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
 
-	var _Text = __webpack_require__(11);
+	var _Text = __webpack_require__(6);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
-	var _Utils = __webpack_require__(6);
+	var _Utils = __webpack_require__(7);
 
 	var Utils = _interopRequireWildcard(_Utils);
 
@@ -392,6 +392,40 @@
 /* 6 */
 /***/ function(module, exports) {
 
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Text = (function (_Phaser$BitmapText) {
+		_inherits(Text, _Phaser$BitmapText);
+
+		function Text(game, x, y, font, text, size, align) {
+			_classCallCheck(this, Text);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Text).call(this, game, x, y, font, text, size, align));
+
+			_this.anchor.setTo(.5, .5);
+			_this.tint = 0xFFFFFF;
+			return _this;
+		}
+
+		return Text;
+	})(Phaser.BitmapText);
+
+	exports.default = Text;
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
@@ -418,7 +452,7 @@
 	};
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -429,7 +463,7 @@
 		value: true
 	});
 
-	var _Player = __webpack_require__(8);
+	var _Player = __webpack_require__(9);
 
 	var _Player2 = _interopRequireDefault(_Player);
 
@@ -437,11 +471,11 @@
 
 	var _BackgroundCity2 = _interopRequireDefault(_BackgroundCity);
 
-	var _Enemy = __webpack_require__(10);
+	var _Enemy = __webpack_require__(11);
 
 	var _Enemy2 = _interopRequireDefault(_Enemy);
 
-	var _Text = __webpack_require__(11);
+	var _Text = __webpack_require__(6);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
@@ -461,17 +495,13 @@
 
 	var _Keyboard2 = _interopRequireDefault(_Keyboard);
 
-	var _Utils = __webpack_require__(6);
+	var _Utils = __webpack_require__(7);
 
 	var Utils = _interopRequireWildcard(_Utils);
 
 	var _Data = __webpack_require__(16);
 
 	var _Data2 = _interopRequireDefault(_Data);
-
-	var _Boss = __webpack_require__(17);
-
-	var _Boss2 = _interopRequireDefault(_Boss);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -612,24 +642,29 @@
 			value: function spawnEnemy() {
 				var bossChance = Math.random();
 				var orangeEnemyChance = Math.random() * (0.6 + harderOverTime / 10000);
-				console.log(bossChance);
+				console.log(bossChance, orangeEnemyChance);
 
 				var direction = undefined;
-				var bossCheck = false;
+				var enemyType = "normal";
 
 				var enemy = this.enemies.getFirstExists(false);
+
 				if (!enemy) {
-					if (bossChance < 0.3 + harderOverTime / 10000 && bossChance > 0 && this.keepUpWithBoss.length === 0) {
+					if (bossChance < 0.2 + harderOverTime / 10000 && bossChance > 0 && this.keepUpWithBoss.length === 0) {
 						console.log("spawn a boss");
-						enemy = new _Boss2.default(this.game, 0, 0, 'black');
-						bossCheck = true;
+						enemy = new _Enemy2.default(this.game, 0, 0, 'enemy_red');
+						enemyType = "boss";
 
 						// geef hem mee aan this.keepUpWithBoss zodat je later er nog veranderingen op kan uitvoeren
 						// (buiten deze functie om)
 						this.keepUpWithBoss.push(enemy);
+					} else if (orangeEnemyChance < 0.4) {
+						console.log("spawn an orange guy");
+						enemy = new _Enemy2.default(this.game, 0, 0, 'enemy_orange');
+						enemyType = "orange";
 					} else {
-						enemy = new _Enemy2.default(this.game, 0, 0, 'black');
-						bossCheck = false;
+						enemy = new _Enemy2.default(this.game, 0, 0, 'enemy_black');
+						enemyType = "normal";
 					}
 				}
 
@@ -639,24 +674,24 @@
 				var y = undefined;
 				if (lot == 0) {
 					direction = "up";
-					if (bossCheck) {
-						y = this.game.height / 2 - 30;
+					if (enemyType === "boss") {
+						y = this.game.height / 2 - 29;
 					} else {
 						y = 225;
 					}
 					enemy.scale.y = 1;
-					this.spawnEnemyDetails(orangeEnemyChance, enemy, direction, bossCheck);
 				}
 				if (lot == 1) {
 					direction = "down";
-					if (bossCheck) {
-						y = this.game.height / 2 + 30;
+					if (enemyType === "boss") {
+						y = this.game.height / 2 + 31;
 					} else {
 						y = 275;
 					}
 					enemy.scale.y = -1;
-					this.spawnEnemyDetails(orangeEnemyChance, enemy, direction, bossCheck);
 				}
+
+				this.spawnEnemyDetails(orangeEnemyChance, enemy, direction, enemyType);
 
 				this.game.physics.arcade.enableBody(enemy);
 				enemy.reset(x, y);
@@ -665,21 +700,24 @@
 			}
 		}, {
 			key: 'spawnEnemyDetails',
-			value: function spawnEnemyDetails(orangeEnemyChance, enemy, direction, bossCheck) {
-				if (bossCheck) {
-					enemy.loadTexture('enemy_red', null, false);
+			value: function spawnEnemyDetails(orangeEnemyChance, enemy, direction, enemyType) {
+				// boss
+				if (enemyType === "boss") {
 					enemy.lives = 4;
-				} else if (orangeEnemyChance >= .5) {
-					enemy.loadTexture('enemy_orange', null, false);
-					enemy.lives = 2;
-				} else {
-					if (direction === "up") {
-						enemy.loadTexture('enemy_black', null, false);
+					enemy.loadTexture('enemy_red', null, false);
+					// harder enemy
+				} else if (enemyType === "orange") {
+						enemy.lives = 2;
+						enemy.loadTexture('enemy_orange', null, false);
+						// regular enemy
 					} else {
-						enemy.loadTexture('enemy_white', null, false);
-					}
-					enemy.lives = 1;
-				}
+							if (direction === "up") {
+								enemy.loadTexture('enemy_black', null, false);
+							} else {
+								enemy.loadTexture('enemy_white', null, false);
+							}
+							enemy.lives = 1;
+						}
 			}
 		}, {
 			key: 'spawnCoin',
@@ -796,7 +834,7 @@
 	exports.default = Play;
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -807,7 +845,7 @@
 		value: true
 	});
 
-	var _Bullet = __webpack_require__(9);
+	var _Bullet = __webpack_require__(10);
 
 	var _Bullet2 = _interopRequireDefault(_Bullet);
 
@@ -891,7 +929,7 @@
 	exports.default = Player;
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -939,7 +977,7 @@
 	exports.default = Bullet;
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -959,17 +997,10 @@
 	var Enemy = (function (_Phaser$Sprite) {
 		_inherits(Enemy, _Phaser$Sprite);
 
-		function Enemy(game, x, y, color, size) {
+		function Enemy(game, x, y, color) {
 			_classCallCheck(this, Enemy);
 
-			var key = undefined;
-			if (color == 'black') {
-				key = 'enemy_black';
-			} else if (color == 'white') {
-				key = 'enemy_white';
-			}
-
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Enemy).call(this, game, x, y, key));
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Enemy).call(this, game, x, y, color));
 
 			_this.anchor.setTo(.5, .5);
 
@@ -988,6 +1019,7 @@
 			// movement
 			_this.body.velocity.x = -250;
 
+			// standaard 1, tenzij anders meegegeven in Play state
 			_this.lives = 1;
 
 			_this.immovable = true;
@@ -1002,46 +1034,24 @@
 					this.exists = false;
 				}
 			}
+		}, {
+			key: 'flipDown',
+			value: function flipDown() {
+				this.body.y = this.game.height / 2;
+				this.scale.y = -1;
+			}
+		}, {
+			key: 'flipUp',
+			value: function flipUp() {
+				this.body.y = this.game.height / 2 - 60;
+				this.scale.y = 1;
+			}
 		}]);
 
 		return Enemy;
 	})(Phaser.Sprite);
 
 	exports.default = Enemy;
-
-/***/ },
-/* 11 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Text = (function (_Phaser$BitmapText) {
-		_inherits(Text, _Phaser$BitmapText);
-
-		function Text(game, x, y, font, text, size, align) {
-			_classCallCheck(this, Text);
-
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Text).call(this, game, x, y, font, text, size, align));
-
-			_this.anchor.setTo(.5, .5);
-			_this.tint = 0xFFFFFF;
-			return _this;
-		}
-
-		return Text;
-	})(Phaser.BitmapText);
-
-	exports.default = Text;
 
 /***/ },
 /* 12 */
@@ -1145,7 +1155,7 @@
 		value: true
 	});
 
-	var _Bullet = __webpack_require__(9);
+	var _Bullet = __webpack_require__(10);
 
 	var _Bullet2 = _interopRequireDefault(_Bullet);
 
@@ -1252,86 +1262,6 @@
 
 /***/ },
 /* 17 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Boss = (function (_Phaser$Sprite) {
-		_inherits(Boss, _Phaser$Sprite);
-
-		function Boss(game, x, y, color, size) {
-			_classCallCheck(this, Boss);
-
-			var key = "enemy_red";
-
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Boss).call(this, game, x, y, key));
-
-			_this.anchor.setTo(.5, .5);
-
-			// collide
-			_this.game.physics.arcade.enable(_this);
-			_this.immovable = true;
-			_this.allowGravity = false;
-
-			// pooling
-			_this.exists = true;
-
-			// animation
-			_this.animations.add('walk');
-			_this.animations.play('walk', 8, true);
-
-			// movement
-			_this.body.velocity.x = -250;
-
-			_this.body.y = _this.game.height / 2 - 10;
-
-			_this.lives = 4;
-
-			_this.immovable = true;
-			return _this;
-		}
-
-		_createClass(Boss, [{
-			key: 'update',
-			value: function update() {
-				this.game.debug.body(this);
-				if (this.body.position.x < 0 - this.width) {
-					this.exists = false;
-				}
-			}
-		}, {
-			key: 'flipDown',
-			value: function flipDown() {
-				this.body.y = this.game.height / 2;
-				this.scale.y = -1;
-			}
-		}, {
-			key: 'flipUp',
-			value: function flipUp() {
-				this.body.y = this.game.height / 2 - 60;
-				this.scale.y = 1;
-			}
-		}]);
-
-		return Boss;
-	})(Phaser.Sprite);
-
-	exports.default = Boss;
-
-/***/ },
-/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1350,7 +1280,7 @@
 
 	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
 
-	var _Utils = __webpack_require__(6);
+	var _Utils = __webpack_require__(7);
 
 	var Utils = _interopRequireWildcard(_Utils);
 
@@ -1491,7 +1421,7 @@
 	exports.default = Leaderboard;
 
 /***/ },
-/* 19 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1510,11 +1440,11 @@
 
 	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
 
-	var _Text = __webpack_require__(11);
+	var _Text = __webpack_require__(6);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
-	var _Utils = __webpack_require__(6);
+	var _Utils = __webpack_require__(7);
 
 	var Utils = _interopRequireWildcard(_Utils);
 
@@ -1662,7 +1592,7 @@
 	exports.default = Gameover;
 
 /***/ },
-/* 20 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1673,11 +1603,11 @@
 		value: true
 	});
 
-	var _Text = __webpack_require__(11);
+	var _Text = __webpack_require__(6);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
-	var _Utils = __webpack_require__(6);
+	var _Utils = __webpack_require__(7);
 
 	var Utils = _interopRequireWildcard(_Utils);
 
