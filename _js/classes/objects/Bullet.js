@@ -6,7 +6,6 @@ export default class Bullet extends Phaser.Sprite {
 		this.anchor.setTo(.5, .5);
 
 		this.game.physics.arcade.enableBody(this);
-
 		this.body.allowGravity = false;
 		this.body.immovable = true;
 	}

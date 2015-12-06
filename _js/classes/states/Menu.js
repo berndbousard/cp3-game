@@ -1,6 +1,7 @@
 import Button from '../objects/Button';
 import BackgroundCity from '../objects/BackgroundCity';
 import MenuBackground from '../objects/MenuBackground';
+import Sound from '../objects/Sound';
 import Text from '../objects/Text';
 import * as Utils from '../objects/Utils';
 
@@ -10,6 +11,9 @@ export default class Menu extends Phaser.State {
 		console.log("start menu");
 	}
 	create(){
+		// music
+		this.clickSound = new Sound(this.game, 'click');
+
 		// Images
 		this.city = new BackgroundCity(this.game, 0, 0, 750, 500, 'city');
 		this.game.add.existing(this.city);
@@ -56,12 +60,15 @@ export default class Menu extends Phaser.State {
 		console.log("end menu");
 	}
 	startClickHandler() {
+		this.clickSound.play();
 		Utils.changeState(this.game, 'Play');
 	}
 	leaderboardClickHandler() {
+		this.clickSound.play();
 		Utils.changeState(this.game, 'Leaderboard');
 	}
 	infoClickHandler() {
+		this.clickSound.play();
 		Utils.changeState(this.game, 'Info');
 	}
 }

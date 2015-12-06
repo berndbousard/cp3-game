@@ -1,6 +1,9 @@
 import Player from '../objects/Player';
 import BackgroundCity from '../objects/BackgroundCity';
+
 import Enemy from '../objects/Enemy';
+import EnemyGroup from '../objects/EnemyGroup';
+
 import Text from '../objects/Text';
 import Coin from '../objects/Coin';
 import Sound from '../objects/Sound';
@@ -14,12 +17,17 @@ let harderOverTime = 0;
 export default class Play extends Phaser.State {
 	preload(){
 		console.log('start play');
+		this.backgroundSound = new Sound(this.game, 'background');
 	}
 	create(){
 
 		this.flipSound = new Sound(this.game, 'change_side');
 		this.coinSound = new Sound(this.game, 'coin');
 		this.enemyHitSound = new Sound(this.game, 'enemy_hit');
+		this.playerHitSound = new Sound(this.game, 'player_hit');
+		this.playerShootSound = new Sound(this.game, 'player_shoot');
+		this.backgroundSound.volume = .4;
+		this.backgroundSound.play();
 
 		// physics
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -73,7 +81,11 @@ export default class Play extends Phaser.State {
 
 		// bullets
 		this.bullets = this.game.add.group();
+
+		// testEnemies
+		this.enemiesTest = this.game.add.group();
 	}
+
 	update(){
 
 		harderOverTime ++;
@@ -110,17 +122,30 @@ export default class Play extends Phaser.State {
 
 			});
 		});
+
+		// testen
+		this.bullets.forEach((oneBullet) => {
+			this.enemiesTest.forEach((oneEnemy) => {
+				this.game.physics.arcade.overlap(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
+				this.game.physics.arcade.collide(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
+
+			});
+		});
+		this.enemiesTest.forEach((oneEnemy) => {
+			this.game.physics.arcade.overlap(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
+			this.game.physics.arcade.collide(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
+		});
 	}
 	shutdown(){
 		console.log('end play');
-		this.city.autoScroll(0, 0);
+		this.backgroundSound.destroy();
 	}
 
 	// eigen functies
 	spawnEnemy(){
 		let bossChance = Math.random();
 		let orangeEnemyChance = Math.random() * (0.6 + (harderOverTime/10000));
-		console.log(bossChance, orangeEnemyChance);
+		// console.log(bossChance, orangeEnemyChance);
 
 		let direction;
 		let enemyType = "normal";
@@ -129,7 +154,7 @@ export default class Play extends Phaser.State {
 
 		if(!enemy){
 			if(bossChance < (0.2 + (harderOverTime/10000)) && bossChance > 0 && this.keepUpWithBoss.length === 0){
-				console.log("spawn a boss");
+				// console.log("spawn a boss");
 				enemy = new Enemy(this.game, 0, 0, 'enemy_red');
 				enemyType = "boss";
 
@@ -138,7 +163,7 @@ export default class Play extends Phaser.State {
 				this.keepUpWithBoss.push(enemy);
 
 			}else if(orangeEnemyChance < 0.4){
-				console.log("spawn an orange guy");
+				// console.log("spawn an orange guy");
 				enemy = new Enemy(this.game, 0, 0, 'enemy_orange');
 				enemyType = "orange";
 			}else{
@@ -218,6 +243,7 @@ export default class Play extends Phaser.State {
 	enemyPlayerCollisionHandler(player, enemy){
 		player.destroy();
 		enemy.destroy();
+		this.playerHitSound.play();
 		Utils.changeState(this.game, 'Gameover');
 	}
 
@@ -232,7 +258,7 @@ export default class Play extends Phaser.State {
 	}
 
 	enemyBulletCollisionHandler(enemy, bullet){
-		// console.log('bullet hit');
+		console.log('bullet hit');
 
 		enemy.lives--;
 		if(enemy.lives === 0){
@@ -243,6 +269,7 @@ export default class Play extends Phaser.State {
 				}
 			}
 		}
+
 		bullet.destroy();
 		this.enemyHitSound.play();
 	}
@@ -285,6 +312,8 @@ export default class Play extends Phaser.State {
 			Data.bullets--;
 			this.bulletTextBox.text = Data.bullets + '\nbullets';
 			// console.log('shoot');
+			this.playerShootSound.play();
+
 		}
 	}
 	updateScore(suffix){
@@ -292,5 +321,20 @@ export default class Play extends Phaser.State {
 	}
 	updateDistance(){
 		this.distanceTextBox.text = Data.distance + ' km';
+	}
+
+	spawnEnemyTest(){
+		let color = this.generateRandomColor();
+		console.log('spawn er een');
+		let enemy = this.enemiesTest.getFirstExists(false);
+		if(!enemy){
+			enemy = new EnemyGroup(this.game, this.enemiesTest, this.generateRandomColor());
+		}
+		enemy.reset(color);
+		console.log(this.enemiesTest.length);
+	}
+	generateRandomColor(){
+		let colors = ['black', 'orange', 'red', 'white'];
+		return colors[Math.round(Math.random() * (colors.length - 1))];
 	}
 }

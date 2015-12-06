@@ -25,6 +25,11 @@ export default class Preload extends Phaser.State {
 		this.game.load.audio('change_side' ,'assets/sound/change_side.mp3');
 		this.game.load.audio('coin' ,'assets/sound/coin.mp3');
 		this.game.load.audio('enemy_hit' ,'assets/sound/enemy_hit.wav');
+		this.game.load.audio('step' ,'assets/sound/step.mp3');
+		this.game.load.audio('player_hit' ,'assets/sound/player_hit.mp3');
+		this.game.load.audio('player_shoot' ,'assets/sound/shot.mp3');
+		this.game.load.audio('click' ,'assets/sound/click.mp3');
+		this.game.load.audio('background' ,'assets/sound/background2.mp3');
 
 	}
 	create(){

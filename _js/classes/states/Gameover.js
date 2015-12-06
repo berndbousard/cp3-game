@@ -1,5 +1,6 @@
 import BackgroundCity from '../objects/BackgroundCity';
 import MenuBackground from '../objects/MenuBackground';
+import Sound from '../objects/Sound';
 import Text from '../objects/Text';
 import * as Utils from '../objects/Utils';
 import Data from '../objects/Data';
@@ -16,6 +17,9 @@ export default class Gameover extends Phaser.State {
 		console.log('start gameover');
 	}
 	create(){
+		// music
+		this.clickSound = new Sound(this.game, 'click');
+
 		this.createForm();
 		leaderboardNameInput = document.getElementById("text");
 		leaderboardSubmit = document.getElementById("submit");
@@ -82,6 +86,7 @@ export default class Gameover extends Phaser.State {
 	}
 
 	submitInputHandler(name){
+		this.clickSound.play();
 		let req = new XMLHttpRequest();
 		let url = 'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=postScores&name=' + name + '' + '&score=' + Data.score + '' + '&distance=' +  Data.distance;
 		req.open("POST", url);
@@ -102,6 +107,7 @@ export default class Gameover extends Phaser.State {
 		}
 	}
 	startClickHandler() {
+		this.clickSound.play();
 		Utils.hideElement(inputField);
 		Utils.changeState(this.game, 'Play');
 	}

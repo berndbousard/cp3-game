@@ -1,5 +1,6 @@
 import BackgroundCity from '../objects/BackgroundCity';
 import MenuBackground from '../objects/MenuBackground';
+import Sound from '../objects/Sound';
 import * as Utils from '../objects/Utils';
 
 let leaderboardTabel;
@@ -9,6 +10,8 @@ export default class Leaderboard extends Phaser.State {
 		console.log('start leaderboard');
 	}
 	create(){
+		// music
+		this.clickSound = new Sound(this.game, 'click');
 
 		// Build table with results
 		this.getJSON('http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=getScores');
@@ -100,9 +103,11 @@ export default class Leaderboard extends Phaser.State {
 	}
 
 	startClickHandler() {
+		this.clickSound.play();
 		Utils.changeState(this.game, 'Play');
 	}
 	backClickHandler() {
+		this.clickSound.play();
 		Utils.changeState(this.game, 'Menu');
 	}
 }

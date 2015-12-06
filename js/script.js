@@ -58,15 +58,15 @@
 
 	var _Play2 = _interopRequireDefault(_Play);
 
-	var _Leaderboard = __webpack_require__(17);
+	var _Leaderboard = __webpack_require__(18);
 
 	var _Leaderboard2 = _interopRequireDefault(_Leaderboard);
 
-	var _Gameover = __webpack_require__(18);
+	var _Gameover = __webpack_require__(19);
 
 	var _Gameover2 = _interopRequireDefault(_Gameover);
 
-	var _Info = __webpack_require__(19);
+	var _Info = __webpack_require__(20);
 
 	var _Info2 = _interopRequireDefault(_Info);
 
@@ -139,6 +139,11 @@
 				this.game.load.audio('change_side', 'assets/sound/change_side.mp3');
 				this.game.load.audio('coin', 'assets/sound/coin.mp3');
 				this.game.load.audio('enemy_hit', 'assets/sound/enemy_hit.wav');
+				this.game.load.audio('step', 'assets/sound/step.mp3');
+				this.game.load.audio('player_hit', 'assets/sound/player_hit.mp3');
+				this.game.load.audio('player_shoot', 'assets/sound/shot.mp3');
+				this.game.load.audio('click', 'assets/sound/click.mp3');
+				this.game.load.audio('background', 'assets/sound/background2.mp3');
 			}
 		}, {
 			key: 'create',
@@ -184,6 +189,10 @@
 
 	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
 
+	var _Sound = __webpack_require__(14);
+
+	var _Sound2 = _interopRequireDefault(_Sound);
+
 	var _Text = __webpack_require__(6);
 
 	var _Text2 = _interopRequireDefault(_Text);
@@ -219,6 +228,9 @@
 		}, {
 			key: 'create',
 			value: function create() {
+				// music
+				this.clickSound = new _Sound2.default(this.game, 'click');
+
 				// Images
 				this.city = new _BackgroundCity2.default(this.game, 0, 0, 750, 500, 'city');
 				this.game.add.existing(this.city);
@@ -263,16 +275,19 @@
 		}, {
 			key: 'startClickHandler',
 			value: function startClickHandler() {
+				this.clickSound.play();
 				Utils.changeState(this.game, 'Play');
 			}
 		}, {
 			key: 'leaderboardClickHandler',
 			value: function leaderboardClickHandler() {
+				this.clickSound.play();
 				Utils.changeState(this.game, 'Leaderboard');
 			}
 		}, {
 			key: 'infoClickHandler',
 			value: function infoClickHandler() {
+				this.clickSound.play();
 				Utils.changeState(this.game, 'Info');
 			}
 		}]);
@@ -475,23 +490,27 @@
 
 	var _Enemy2 = _interopRequireDefault(_Enemy);
 
+	var _EnemyGroup = __webpack_require__(12);
+
+	var _EnemyGroup2 = _interopRequireDefault(_EnemyGroup);
+
 	var _Text = __webpack_require__(6);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
-	var _Coin = __webpack_require__(12);
+	var _Coin = __webpack_require__(13);
 
 	var _Coin2 = _interopRequireDefault(_Coin);
 
-	var _Sound = __webpack_require__(13);
+	var _Sound = __webpack_require__(14);
 
 	var _Sound2 = _interopRequireDefault(_Sound);
 
-	var _BulletGroup = __webpack_require__(14);
+	var _BulletGroup = __webpack_require__(15);
 
 	var _BulletGroup2 = _interopRequireDefault(_BulletGroup);
 
-	var _Keyboard = __webpack_require__(15);
+	var _Keyboard = __webpack_require__(16);
 
 	var _Keyboard2 = _interopRequireDefault(_Keyboard);
 
@@ -499,7 +518,7 @@
 
 	var Utils = _interopRequireWildcard(_Utils);
 
-	var _Data = __webpack_require__(16);
+	var _Data = __webpack_require__(17);
 
 	var _Data2 = _interopRequireDefault(_Data);
 
@@ -528,6 +547,7 @@
 			key: 'preload',
 			value: function preload() {
 				console.log('start play');
+				this.backgroundSound = new _Sound2.default(this.game, 'background');
 			}
 		}, {
 			key: 'create',
@@ -536,6 +556,10 @@
 				this.flipSound = new _Sound2.default(this.game, 'change_side');
 				this.coinSound = new _Sound2.default(this.game, 'coin');
 				this.enemyHitSound = new _Sound2.default(this.game, 'enemy_hit');
+				this.playerHitSound = new _Sound2.default(this.game, 'player_hit');
+				this.playerShootSound = new _Sound2.default(this.game, 'player_shoot');
+				this.backgroundSound.volume = .4;
+				this.backgroundSound.play();
 
 				// physics
 				this.game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -588,6 +612,9 @@
 
 				// bullets
 				this.bullets = this.game.add.group();
+
+				// testEnemies
+				this.enemiesTest = this.game.add.group();
 			}
 		}, {
 			key: 'update',
@@ -627,12 +654,24 @@
 						_this2.game.physics.arcade.collide(oneBullet, oneEnemy, _this2.enemyBulletCollisionHandler, null, _this2);
 					});
 				});
+
+				// testen
+				this.bullets.forEach(function (oneBullet) {
+					_this2.enemiesTest.forEach(function (oneEnemy) {
+						_this2.game.physics.arcade.overlap(oneBullet, oneEnemy, _this2.enemyBulletCollisionHandler, null, _this2);
+						_this2.game.physics.arcade.collide(oneBullet, oneEnemy, _this2.enemyBulletCollisionHandler, null, _this2);
+					});
+				});
+				this.enemiesTest.forEach(function (oneEnemy) {
+					_this2.game.physics.arcade.overlap(_this2.player, oneEnemy, _this2.enemyPlayerCollisionHandler, null, _this2);
+					_this2.game.physics.arcade.collide(_this2.player, oneEnemy, _this2.enemyPlayerCollisionHandler, null, _this2);
+				});
 			}
 		}, {
 			key: 'shutdown',
 			value: function shutdown() {
 				console.log('end play');
-				this.city.autoScroll(0, 0);
+				this.backgroundSound.destroy();
 			}
 
 			// eigen functies
@@ -642,7 +681,7 @@
 			value: function spawnEnemy() {
 				var bossChance = Math.random();
 				var orangeEnemyChance = Math.random() * (0.6 + harderOverTime / 10000);
-				console.log(bossChance, orangeEnemyChance);
+				// console.log(bossChance, orangeEnemyChance);
 
 				var direction = undefined;
 				var enemyType = "normal";
@@ -651,7 +690,7 @@
 
 				if (!enemy) {
 					if (bossChance < 0.2 + harderOverTime / 10000 && bossChance > 0 && this.keepUpWithBoss.length === 0) {
-						console.log("spawn a boss");
+						// console.log("spawn a boss");
 						enemy = new _Enemy2.default(this.game, 0, 0, 'enemy_red');
 						enemyType = "boss";
 
@@ -659,7 +698,7 @@
 						// (buiten deze functie om)
 						this.keepUpWithBoss.push(enemy);
 					} else if (orangeEnemyChance < 0.4) {
-						console.log("spawn an orange guy");
+						// console.log("spawn an orange guy");
 						enemy = new _Enemy2.default(this.game, 0, 0, 'enemy_orange');
 						enemyType = "orange";
 					} else {
@@ -742,6 +781,7 @@
 			value: function enemyPlayerCollisionHandler(player, enemy) {
 				player.destroy();
 				enemy.destroy();
+				this.playerHitSound.play();
 				Utils.changeState(this.game, 'Gameover');
 			}
 		}, {
@@ -758,7 +798,7 @@
 		}, {
 			key: 'enemyBulletCollisionHandler',
 			value: function enemyBulletCollisionHandler(enemy, bullet) {
-				// console.log('bullet hit');
+				console.log('bullet hit');
 
 				enemy.lives--;
 				if (enemy.lives === 0) {
@@ -769,6 +809,7 @@
 						}
 					}
 				}
+
 				bullet.destroy();
 				this.enemyHitSound.play();
 			}
@@ -814,6 +855,7 @@
 					_Data2.default.bullets--;
 					this.bulletTextBox.text = _Data2.default.bullets + '\nbullets';
 					// console.log('shoot');
+					this.playerShootSound.play();
 				}
 			}
 		}, {
@@ -825,6 +867,24 @@
 			key: 'updateDistance',
 			value: function updateDistance() {
 				this.distanceTextBox.text = _Data2.default.distance + ' km';
+			}
+		}, {
+			key: 'spawnEnemyTest',
+			value: function spawnEnemyTest() {
+				var color = this.generateRandomColor();
+				console.log('spawn er een');
+				var enemy = this.enemiesTest.getFirstExists(false);
+				if (!enemy) {
+					enemy = new _EnemyGroup2.default(this.game, this.enemiesTest, this.generateRandomColor());
+				}
+				enemy.reset(color);
+				console.log(this.enemiesTest.length);
+			}
+		}, {
+			key: 'generateRandomColor',
+			value: function generateRandomColor() {
+				var colors = ['black', 'orange', 'red', 'white'];
+				return colors[Math.round(Math.random() * (colors.length - 1))];
 			}
 		}]);
 
@@ -958,7 +1018,6 @@
 			_this.anchor.setTo(.5, .5);
 
 			_this.game.physics.arcade.enableBody(_this);
-
 			_this.body.allowGravity = false;
 			_this.body.immovable = true;
 			return _this;
@@ -997,7 +1056,7 @@
 	var Enemy = (function (_Phaser$Sprite) {
 		_inherits(Enemy, _Phaser$Sprite);
 
-		function Enemy(game, x, y, color) {
+		function Enemy(game, x, y, color, lives, speed) {
 			_classCallCheck(this, Enemy);
 
 			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Enemy).call(this, game, x, y, color));
@@ -1017,12 +1076,11 @@
 			_this.animations.play('walk', 8, true);
 
 			// movement
-			_this.body.velocity.x = -250;
+			// this.body.velocity.x = -250;
 
 			// standaard 1, tenzij anders meegegeven in Play state
 			_this.lives = 1;
-
-			_this.immovable = true;
+			_this.body.velocity.x = -250;
 			return _this;
 		}
 
@@ -1030,7 +1088,7 @@
 			key: 'update',
 			value: function update() {
 				this.game.debug.body(this);
-				if (this.body.position.x < 0 - this.width) {
+				if (this.position.x < -this.width) {
 					this.exists = false;
 				}
 			}
@@ -1055,6 +1113,125 @@
 
 /***/ },
 /* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _Enemy = __webpack_require__(11);
+
+	var _Enemy2 = _interopRequireDefault(_Enemy);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var EnemyGroup = (function (_Phaser$Group) {
+		_inherits(EnemyGroup, _Phaser$Group);
+
+		function EnemyGroup(game, parent, color) {
+			_classCallCheck(this, EnemyGroup);
+
+			// constructor(game, x, y, color, lives, speed)
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(EnemyGroup).call(this, game, parent));
+
+			_this.enemy;
+			var x = _this.game.rnd.integerInRange(750, 800);
+			var y = _this.calculateRandom();
+			switch (color) {
+				case 'orange':
+					_this.enemy = new _Enemy2.default(game, x, y, 'enemy_orange', 1, -300);
+					_this.enemy.position.y = 225;
+					break;
+				case 'black':
+					_this.enemy = new _Enemy2.default(game, x, y, 'enemy_black', 1, -250);
+					_this.enemy.position.y = 225;
+					break;
+				case 'white':
+					_this.enemy = new _Enemy2.default(game, x, y, 'enemy_white', 1, -250);
+					_this.enemy.scale.y = -1;
+					_this.enemy.position.y = 275;
+					break;
+				case 'red':
+					_this.enemy = new _Enemy2.default(game, x, y, 'enemy_red', 2, -100);
+					_this.enemy.position.y = 220;
+					break;
+			}
+
+			_this.exists = true;
+
+			_this.add(_this.enemy);
+			return _this;
+		}
+
+		_createClass(EnemyGroup, [{
+			key: 'update',
+			value: function update() {
+				if (this.enemy.position.x < -this.enemy.width) {
+					this.exists = false;
+				}
+				this.game.debug.body(this.enemy);
+			}
+		}, {
+			key: 'reset',
+			value: function reset(color) {
+				var y = 0;
+				var x = this.game.rnd.integerInRange(750, 800);
+				var v = 0;
+				var l = 0;
+				console.log('enemy' + color);
+				switch (color) {
+					case 'orange':
+						y = 225;
+						v = -300;
+						l = 1;
+						break;
+					case 'black':
+						y = 225;
+						v = -300;
+						l = 1;
+						break;
+					case 'white':
+						y = 275;
+						v = -300;
+						l = 1;
+						break;
+					case 'red':
+						y = 220;
+						v = -50;
+						l = 2;
+						break;
+				}
+				console.log(x, y, v, l);
+				this.enemy.reset(x, y);
+				this.enemy.body.velocity.x = v;
+				this.enemy.lives = l;
+				this.exists = true;
+			}
+		}, {
+			key: 'calculateRandom',
+			value: function calculateRandom() {
+				return Math.round(Math.random());
+			}
+		}]);
+
+		return EnemyGroup;
+	})(Phaser.Group);
+
+	exports.default = EnemyGroup;
+
+/***/ },
+/* 13 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1114,7 +1291,7 @@
 	exports.default = Coin;
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1144,7 +1321,7 @@
 	exports.default = Sound;
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1208,7 +1385,7 @@
 	exports.default = BulletGroup;
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1238,7 +1415,7 @@
 	exports.default = Keyboard;
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1261,7 +1438,7 @@
 	exports.default = Data;
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1279,6 +1456,10 @@
 	var _MenuBackground = __webpack_require__(5);
 
 	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
+
+	var _Sound = __webpack_require__(14);
+
+	var _Sound2 = _interopRequireDefault(_Sound);
 
 	var _Utils = __webpack_require__(7);
 
@@ -1313,6 +1494,8 @@
 		}, {
 			key: 'create',
 			value: function create() {
+				// music
+				this.clickSound = new _Sound2.default(this.game, 'click');
 
 				// Build table with results
 				this.getJSON('http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=getScores');
@@ -1406,11 +1589,13 @@
 		}, {
 			key: 'startClickHandler',
 			value: function startClickHandler() {
+				this.clickSound.play();
 				Utils.changeState(this.game, 'Play');
 			}
 		}, {
 			key: 'backClickHandler',
 			value: function backClickHandler() {
+				this.clickSound.play();
 				Utils.changeState(this.game, 'Menu');
 			}
 		}]);
@@ -1421,7 +1606,7 @@
 	exports.default = Leaderboard;
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1440,6 +1625,10 @@
 
 	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
 
+	var _Sound = __webpack_require__(14);
+
+	var _Sound2 = _interopRequireDefault(_Sound);
+
 	var _Text = __webpack_require__(6);
 
 	var _Text2 = _interopRequireDefault(_Text);
@@ -1448,7 +1637,7 @@
 
 	var Utils = _interopRequireWildcard(_Utils);
 
-	var _Data = __webpack_require__(16);
+	var _Data = __webpack_require__(17);
 
 	var _Data2 = _interopRequireDefault(_Data);
 
@@ -1486,6 +1675,9 @@
 			key: 'create',
 			value: function create() {
 				var _this2 = this;
+
+				// music
+				this.clickSound = new _Sound2.default(this.game, 'click');
 
 				this.createForm();
 				leaderboardNameInput = document.getElementById("text");
@@ -1558,6 +1750,7 @@
 			value: function submitInputHandler(name) {
 				var _this3 = this;
 
+				this.clickSound.play();
 				var req = new XMLHttpRequest();
 				var url = 'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=postScores&name=' + name + '' + '&score=' + _Data2.default.score + '' + '&distance=' + _Data2.default.distance;
 				req.open("POST", url);
@@ -1581,6 +1774,7 @@
 		}, {
 			key: 'startClickHandler',
 			value: function startClickHandler() {
+				this.clickSound.play();
 				Utils.hideElement(inputField);
 				Utils.changeState(this.game, 'Play');
 			}
@@ -1592,7 +1786,7 @@
 	exports.default = Gameover;
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1606,6 +1800,10 @@
 	var _Text = __webpack_require__(6);
 
 	var _Text2 = _interopRequireDefault(_Text);
+
+	var _Sound = __webpack_require__(14);
+
+	var _Sound2 = _interopRequireDefault(_Sound);
 
 	var _Utils = __webpack_require__(7);
 
@@ -1638,6 +1836,8 @@
 		}, {
 			key: 'create',
 			value: function create() {
+				// music
+				this.clickSound = new _Sound2.default(this.game, 'click');
 				// To create multi-line text insert \r, \n or \r\n escape codes into the text string.
 				// dit font heeft geen . tekens dus als je een punt typt komt er een error, geen punten dus ;)
 				// new BitmapText(game, x, y, font, text, size)`
@@ -1662,11 +1862,13 @@
 		}, {
 			key: 'startClickHandler',
 			value: function startClickHandler() {
+				this.clickSound.play();
 				Utils.changeState(this.game, 'Play');
 			}
 		}, {
 			key: 'backClickHandler',
 			value: function backClickHandler() {
+				this.clickSound.play();
 				Utils.changeState(this.game, 'Menu');
 			}
 		}]);

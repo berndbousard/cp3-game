@@ -1,4 +1,5 @@
 import Text from '../objects/Text';
+import Sound from '../objects/Sound';
 import * as Utils from '../objects/Utils';
 
 export default class Info extends Phaser.State {
@@ -6,6 +7,8 @@ export default class Info extends Phaser.State {
 		console.log('start info');
 	}
 	create(){
+		// music
+		this.clickSound = new Sound(this.game, 'click');
 		// To create multi-line text insert \r, \n or \r\n escape codes into the text string.
 		// dit font heeft geen . tekens dus als je een punt typt komt er een error, geen punten dus ;)
 		// new BitmapText(game, x, y, font, text, size)`
@@ -31,9 +34,11 @@ export default class Info extends Phaser.State {
 		console.log('end info');	
 	}
 	startClickHandler() {
+		this.clickSound.play();
 		Utils.changeState(this.game, 'Play');
 	}
 	backClickHandler() {
+		this.clickSound.play();
 		Utils.changeState(this.game, 'Menu');
 	}
 }
