@@ -54,7 +54,7 @@
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
-	var _Play = __webpack_require__(8);
+	var _Play = __webpack_require__(9);
 
 	var _Play2 = _interopRequireDefault(_Play);
 
@@ -189,15 +189,15 @@
 
 	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
 
-	var _Sound = __webpack_require__(14);
+	var _Sound = __webpack_require__(6);
 
 	var _Sound2 = _interopRequireDefault(_Sound);
 
-	var _Text = __webpack_require__(6);
+	var _Text = __webpack_require__(7);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
-	var _Utils = __webpack_require__(7);
+	var _Utils = __webpack_require__(8);
 
 	var Utils = _interopRequireWildcard(_Utils);
 
@@ -419,6 +419,36 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var Sound = (function (_Phaser$Sound) {
+		_inherits(Sound, _Phaser$Sound);
+
+		function Sound(game, key, volume, loop) {
+			_classCallCheck(this, Sound);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(Sound).call(this, game, key, 1, false));
+		}
+
+		return Sound;
+	})(Phaser.Sound);
+
+	exports.default = Sound;
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 	var Text = (function (_Phaser$BitmapText) {
 		_inherits(Text, _Phaser$BitmapText);
 
@@ -438,7 +468,7 @@
 	exports.default = Text;
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -467,7 +497,7 @@
 	};
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -478,7 +508,7 @@
 		value: true
 	});
 
-	var _Player = __webpack_require__(9);
+	var _Player = __webpack_require__(10);
 
 	var _Player2 = _interopRequireDefault(_Player);
 
@@ -486,23 +516,23 @@
 
 	var _BackgroundCity2 = _interopRequireDefault(_BackgroundCity);
 
-	var _Enemy = __webpack_require__(11);
+	var _Enemy = __webpack_require__(12);
 
 	var _Enemy2 = _interopRequireDefault(_Enemy);
 
-	var _EnemyGroup = __webpack_require__(12);
+	var _EnemyGroup = __webpack_require__(13);
 
 	var _EnemyGroup2 = _interopRequireDefault(_EnemyGroup);
 
-	var _Text = __webpack_require__(6);
+	var _Text = __webpack_require__(7);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
-	var _Coin = __webpack_require__(13);
+	var _Coin = __webpack_require__(14);
 
 	var _Coin2 = _interopRequireDefault(_Coin);
 
-	var _Sound = __webpack_require__(14);
+	var _Sound = __webpack_require__(6);
 
 	var _Sound2 = _interopRequireDefault(_Sound);
 
@@ -514,13 +544,17 @@
 
 	var _Keyboard2 = _interopRequireDefault(_Keyboard);
 
-	var _Utils = __webpack_require__(7);
+	var _Utils = __webpack_require__(8);
 
 	var Utils = _interopRequireWildcard(_Utils);
 
 	var _Data = __webpack_require__(17);
 
 	var _Data2 = _interopRequireDefault(_Data);
+
+	var _EnemyBlack = __webpack_require__(21);
+
+	var _EnemyBlack2 = _interopRequireDefault(_EnemyBlack);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -591,7 +625,7 @@
 
 				// enemy
 				this.enemies = this.game.add.group();
-				this.enemyTimer = this.game.time.events.loop(this.delay, this.spawnEnemy, this);
+				this.enemyTimer = this.game.time.events.loop(this.delay, this.spawnEnemyTest2, this);
 
 				// coins
 				this.coins = this.game.add.group();
@@ -615,11 +649,19 @@
 
 				// testEnemies
 				this.enemiesTest = this.game.add.group();
+
+				// testblack
+				this.blackEnemies = this.game.add.group();
+				this.blackEnemies.enableBody = true;
 			}
 		}, {
 			key: 'update',
 			value: function update() {
 				var _this2 = this;
+
+				this.blackEnemies.forEach(function (enemy) {
+					enemy.body.velocity.x = -200;
+				});
 
 				harderOverTime++;
 
@@ -886,6 +928,32 @@
 				var colors = ['black', 'orange', 'red', 'white'];
 				return colors[Math.round(Math.random() * (colors.length - 1))];
 			}
+		}, {
+			key: 'spawnEnemyTest2',
+			value: function spawnEnemyTest2() {
+				console.log(this.blackEnemies.length);
+				// let enemy = this.blackEnemies.getFirstExists(false);
+				// if(!enemy){
+				// 	let color = this.generateRandomColor();
+				// 	switch(color){
+				// 		case 'black':
+				// 			enemy = new EnemyBlack(this.game, 0, 0);
+				// 			break;
+				// 	}
+				// 	this.blackEnemies.add(enemy);
+				// }
+				// enemy.reset(this.game.width/2,this.game.height/2);
+				var enemy = this.blackEnemies.getFirstExists(false);
+				if (!enemy) {
+					enemy = new _EnemyBlack2.default(this.game, this.game.width / 2, this.game.height / 2);
+					enemy.body.velocity.x = -200;
+					this.blackEnemies.add(enemy);
+				}
+				enemy.reset(this.game.width / 2, this.game.height / 2);
+
+				// let enemy = new EnemyBlack(this.game, this.game.width/2, this.game.height/2);
+				// this.game.add.existing(enemy);
+			}
 		}]);
 
 		return Play;
@@ -894,7 +962,7 @@
 	exports.default = Play;
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -905,7 +973,7 @@
 		value: true
 	});
 
-	var _Bullet = __webpack_require__(10);
+	var _Bullet = __webpack_require__(11);
 
 	var _Bullet2 = _interopRequireDefault(_Bullet);
 
@@ -989,7 +1057,7 @@
 	exports.default = Player;
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1036,7 +1104,7 @@
 	exports.default = Bullet;
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1112,7 +1180,7 @@
 	exports.default = Enemy;
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1123,7 +1191,7 @@
 		value: true
 	});
 
-	var _Enemy = __webpack_require__(11);
+	var _Enemy = __webpack_require__(12);
 
 	var _Enemy2 = _interopRequireDefault(_Enemy);
 
@@ -1231,7 +1299,7 @@
 	exports.default = EnemyGroup;
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1291,36 +1359,6 @@
 	exports.default = Coin;
 
 /***/ },
-/* 14 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Sound = (function (_Phaser$Sound) {
-		_inherits(Sound, _Phaser$Sound);
-
-		function Sound(game, key, volume, loop) {
-			_classCallCheck(this, Sound);
-
-			return _possibleConstructorReturn(this, Object.getPrototypeOf(Sound).call(this, game, key, 1, false));
-		}
-
-		return Sound;
-	})(Phaser.Sound);
-
-	exports.default = Sound;
-
-/***/ },
 /* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1332,7 +1370,7 @@
 		value: true
 	});
 
-	var _Bullet = __webpack_require__(10);
+	var _Bullet = __webpack_require__(11);
 
 	var _Bullet2 = _interopRequireDefault(_Bullet);
 
@@ -1457,11 +1495,11 @@
 
 	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
 
-	var _Sound = __webpack_require__(14);
+	var _Sound = __webpack_require__(6);
 
 	var _Sound2 = _interopRequireDefault(_Sound);
 
-	var _Utils = __webpack_require__(7);
+	var _Utils = __webpack_require__(8);
 
 	var Utils = _interopRequireWildcard(_Utils);
 
@@ -1625,15 +1663,15 @@
 
 	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
 
-	var _Sound = __webpack_require__(14);
+	var _Sound = __webpack_require__(6);
 
 	var _Sound2 = _interopRequireDefault(_Sound);
 
-	var _Text = __webpack_require__(6);
+	var _Text = __webpack_require__(7);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
-	var _Utils = __webpack_require__(7);
+	var _Utils = __webpack_require__(8);
 
 	var Utils = _interopRequireWildcard(_Utils);
 
@@ -1797,15 +1835,15 @@
 		value: true
 	});
 
-	var _Text = __webpack_require__(6);
+	var _Text = __webpack_require__(7);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
-	var _Sound = __webpack_require__(14);
+	var _Sound = __webpack_require__(6);
 
 	var _Sound2 = _interopRequireDefault(_Sound);
 
-	var _Utils = __webpack_require__(7);
+	var _Utils = __webpack_require__(8);
 
 	var Utils = _interopRequireWildcard(_Utils);
 
@@ -1877,6 +1915,118 @@
 	})(Phaser.State);
 
 	exports.default = Info;
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _EnemyTest2 = __webpack_require__(22);
+
+	var _EnemyTest3 = _interopRequireDefault(_EnemyTest2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var EnemyBlack = (function (_EnemyTest) {
+		_inherits(EnemyBlack, _EnemyTest);
+
+		function EnemyBlack(game, x, y) {
+			_classCallCheck(this, EnemyBlack);
+
+			// pooling
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(EnemyBlack).call(this, game, x, y, 'enemy_black'));
+
+			_this.exists = true;
+
+			_this.game.physics.arcade.enable(_this);
+
+			_this.lives = 1;
+			_this.body.velocity.x = -250;
+			return _this;
+		}
+
+		return EnemyBlack;
+	})(_EnemyTest3.default);
+
+	exports.default = EnemyBlack;
+
+/***/ },
+/* 22 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var EnemyTest = (function (_Phaser$Sprite) {
+		_inherits(EnemyTest, _Phaser$Sprite);
+
+		function EnemyTest(game, x, y, key) {
+			_classCallCheck(this, EnemyTest);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(EnemyTest).call(this, game, x, y, key));
+
+			_this.anchor.setTo(.5, .5);
+
+			// collide
+			_this.game.physics.arcade.enable(_this);
+			_this.immovable = true;
+			_this.allowGravity = false;
+
+			// animation
+			_this.animations.add('walk');
+			_this.animations.play('walk', 8, true);
+			return _this;
+		}
+
+		_createClass(EnemyTest, [{
+			key: 'update',
+			value: function update() {
+				this.game.debug.body(this);
+				if (this.position.x < -this.width) {
+					this.exists = false;
+				}
+			}
+		}, {
+			key: 'flipDown',
+			value: function flipDown() {
+				this.body.y = this.game.height / 2;
+				this.scale.y = -1;
+			}
+		}, {
+			key: 'flipUp',
+			value: function flipUp() {
+				this.body.y = this.game.height / 2 - 60;
+				this.scale.y = 1;
+			}
+		}]);
+
+		return EnemyTest;
+	})(Phaser.Sprite);
+
+	exports.default = EnemyTest;
 
 /***/ }
 /******/ ]);

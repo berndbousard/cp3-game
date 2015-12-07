@@ -12,6 +12,8 @@ import Keyboard from '../objects/Keyboard';
 import * as Utils from '../objects/Utils';
 import Data from '../objects/Data';
 
+import EnemyBlack from '../objects/EnemyBlack';
+
 let harderOverTime = 0;
 
 export default class Play extends Phaser.State {
@@ -60,7 +62,7 @@ export default class Play extends Phaser.State {
 
 		// enemy
 		this.enemies = this.game.add.group();
-		this.enemyTimer = this.game.time.events.loop(this.delay, this.spawnEnemy, this);
+		this.enemyTimer = this.game.time.events.loop(this.delay, this.spawnEnemyTest2, this);
 
 		// coins
 		this.coins = this.game.add.group();
@@ -84,9 +86,16 @@ export default class Play extends Phaser.State {
 
 		// testEnemies
 		this.enemiesTest = this.game.add.group();
+
+		// testblack
+		this.blackEnemies = this.game.add.group();
+		this.blackEnemies.enableBody = true;
 	}
 
 	update(){
+		this.blackEnemies.forEach(enemy => {
+			enemy.body.velocity.x = -200;
+		});
 
 		harderOverTime ++;
 
@@ -336,5 +345,31 @@ export default class Play extends Phaser.State {
 	generateRandomColor(){
 		let colors = ['black', 'orange', 'red', 'white'];
 		return colors[Math.round(Math.random() * (colors.length - 1))];
+	}
+
+	spawnEnemyTest2(){
+		console.log(this.blackEnemies.length);
+		// let enemy = this.blackEnemies.getFirstExists(false);
+		// if(!enemy){
+		// 	let color = this.generateRandomColor();
+		// 	switch(color){
+		// 		case 'black':
+		// 			enemy = new EnemyBlack(this.game, 0, 0);
+		// 			break;
+		// 	}
+		// 	this.blackEnemies.add(enemy);
+		// }
+		// enemy.reset(this.game.width/2,this.game.height/2);
+		let enemy = this.blackEnemies.getFirstExists(false);
+		if(!enemy){
+			enemy = new EnemyBlack(this.game, this.game.width/2, this.game.height/2);
+			enemy.body.velocity.x = -200;
+			this.blackEnemies.add(enemy);
+		}
+		enemy.reset(this.game.width/2,this.game.height/2);
+
+		// let enemy = new EnemyBlack(this.game, this.game.width/2, this.game.height/2);
+		// this.game.add.existing(enemy);
+
 	}
 }
