@@ -14,6 +14,7 @@ import Data from '../objects/Data';
 
 import EnemyBlack from '../objects/EnemyBlack';
 import EnemyWhite from '../objects/EnemyWhite';
+import EnemyOrange from '../objects/EnemyOrange';
 
 let harderOverTime = 0;
 
@@ -101,6 +102,10 @@ export default class Play extends Phaser.State {
 		this.whiteEnemies = this.game.add.group();
 		this.whiteEnemies.enableBody = true;
 		this.allEnemies.add(this.whiteEnemies);
+
+		this.orangeEnemies = this.game.add.group();
+		this.orangeEnemies.enableBody = true;
+		this.allEnemies.add(this.orangeEnemies);
 	}
 
 	update(){
@@ -112,49 +117,53 @@ export default class Play extends Phaser.State {
 			enemy.body.velocity.x = -200;
 		});
 
+		this.orangeEnemies.forEach(enemy => {
+			enemy.body.velocity.x = -250;
+		});
+
 		harderOverTime ++;
 
 		if(this.cursors.down.isDown){
 			this.player.flipDown();
-			if(this.keepUpWithBoss.length != 0){
-				this.keepUpWithBoss[0].flipDown();
-			}
+			// if(this.keepUpWithBoss.length != 0){
+			// 	this.keepUpWithBoss[0].flipDown();
+			// }
 		}
 		if(this.cursors.up.isDown){
 			this.player.flipUp();
-			if(this.keepUpWithBoss.length != 0){
-				this.keepUpWithBoss[0].flipUp();
-			}
+			// if(this.keepUpWithBoss.length != 0){
+			// 	this.keepUpWithBoss[0].flipUp();
+			// }
 		}
 
 		// console.log(Data.bullets);
 
 		// collision
-		this.enemies.forEach((oneEnemy) => {
-			this.game.physics.arcade.overlap(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
-			this.game.physics.arcade.collide(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
-		});
+		// this.enemies.forEach((oneEnemy) => {
+		// 	this.game.physics.arcade.overlap(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
+		// 	this.game.physics.arcade.collide(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
+		// });
 
 		this.coins.forEach((oneCoin) => {
 			this.game.physics.arcade.overlap(this.player, oneCoin, this.coinPlayerCollisionHandler, null, this);
 		});
 
-		this.bullets.forEach((oneBullet) => {
-			this.enemies.forEach((oneEnemy) => {
-				this.game.physics.arcade.overlap(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
-				this.game.physics.arcade.collide(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
+		// this.bullets.forEach((oneBullet) => {
+		// 	this.enemies.forEach((oneEnemy) => {
+		// 		this.game.physics.arcade.overlap(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
+		// 		this.game.physics.arcade.collide(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
 
-			});
-		});
+		// 	});
+		// });
 
 		// testen
-		this.bullets.forEach((oneBullet) => {
-			this.enemiesTest.forEach((oneEnemy) => {
-				this.game.physics.arcade.overlap(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
-				this.game.physics.arcade.collide(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
+		// this.bullets.forEach((oneBullet) => {
+		// 	this.enemiesTest.forEach((oneEnemy) => {
+		// 		this.game.physics.arcade.overlap(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
+		// 		this.game.physics.arcade.collide(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
 
-			});
-		});
+		// 	});
+		// });
 		// this.enemiesTest.forEach((oneEnemy) => {
 		// 	this.game.physics.arcade.overlap(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
 		// 	this.game.physics.arcade.collide(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
@@ -401,10 +410,31 @@ export default class Play extends Phaser.State {
 				enemy.lives = 1;
 				break;
 
-			// to do: red, orange	
+			case 'orange':
+				enemy = this.orangeEnemies.getFirstExists(false);
+				if(!enemy){
+					enemy = new EnemyOrange(this.game, 0, 0);
+					enemy.body.velocity.x = -200;
+					this.orangeEnemies.add(enemy);
+				}
+				x = this.game.rnd.integerInRange(750, 800);
+				if(Math.random() > .5){
+					enemy.scale.y = -1;
+					y = 275;
+				}else{
+					enemy.scale.y = 1;
+					y = 225;
+				}
+				
+				console.log('x ' + x, 'y ' + y);
+				enemy.reset(x, y);
+				enemy.lives = 1;
+				break;
+
+			// to do: red	
 		}
 
 		// object pooling werkt, yes
-		console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length);
+		console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length);
 	}
 }
