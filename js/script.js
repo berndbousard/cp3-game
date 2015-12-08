@@ -58,15 +58,15 @@
 
 	var _Play2 = _interopRequireDefault(_Play);
 
-	var _Leaderboard = __webpack_require__(21);
+	var _Leaderboard = __webpack_require__(22);
 
 	var _Leaderboard2 = _interopRequireDefault(_Leaderboard);
 
-	var _Gameover = __webpack_require__(22);
+	var _Gameover = __webpack_require__(23);
 
 	var _Gameover2 = _interopRequireDefault(_Gameover);
 
-	var _Info = __webpack_require__(23);
+	var _Info = __webpack_require__(24);
 
 	var _Info2 = _interopRequireDefault(_Info);
 
@@ -560,9 +560,13 @@
 
 	var _EnemyWhite2 = _interopRequireDefault(_EnemyWhite);
 
-	var _EnemyOrange = __webpack_require__(24);
+	var _EnemyOrange = __webpack_require__(21);
 
 	var _EnemyOrange2 = _interopRequireDefault(_EnemyOrange);
+
+	var _EnemyRed = __webpack_require__(25);
+
+	var _EnemyRed2 = _interopRequireDefault(_EnemyRed);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -673,6 +677,10 @@
 				this.orangeEnemies = this.game.add.group();
 				this.orangeEnemies.enableBody = true;
 				this.allEnemies.add(this.orangeEnemies);
+
+				this.redEnemies = this.game.add.group();
+				this.redEnemies.enableBody = true;
+				this.allEnemies.add(this.redEnemies);
 			}
 		}, {
 			key: 'update',
@@ -689,6 +697,10 @@
 
 				this.orangeEnemies.forEach(function (enemy) {
 					enemy.body.velocity.x = -250;
+				});
+
+				this.redEnemies.forEach(function (enemy) {
+					enemy.body.velocity.x = -50;
 				});
 
 				harderOverTime++;
@@ -747,7 +759,7 @@
 
 				this.bullets.forEach(function (oneBullet) {
 					_this2.allEnemies.forEach(function (oneEnemy) {
-						_this2.game.physics.arcade.overlap(oneBullet, oneEnemy, _this2.enemyBulletCollisionHandler, null, _this2);
+						_this2.game.physics.arcade.collide(oneBullet, oneEnemy, _this2.enemyBulletCollisionHandler, null, _this2);
 						// this.game.physics.arcade.collide(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
 					});
 				});
@@ -889,6 +901,7 @@
 				}
 				bullet.destroy();
 				this.enemyHitSound.play();
+				console.log(enemy.lives);
 			}
 		}, {
 			key: 'createSuffixForScore',
@@ -983,7 +996,6 @@
 						y = 225;
 						console.log('x ' + x, 'y ' + y);
 						enemy.reset(x, y);
-						enemy.lives = 1;
 						break;
 
 					case 'white':
@@ -997,7 +1009,6 @@
 						y = 275;
 						console.log('x ' + x, 'y ' + y);
 						enemy.reset(x, y);
-						enemy.lives = 1;
 						break;
 
 					case 'orange':
@@ -1018,14 +1029,30 @@
 
 						console.log('x ' + x, 'y ' + y);
 						enemy.reset(x, y);
-						enemy.lives = 1;
 						break;
 
-					// to do: red	
+					case 'red':
+						enemy = this.redEnemies.getFirstExists(false);
+						if (!enemy) {
+							enemy = new _EnemyRed2.default(this.game, 0, 0);
+							enemy.body.velocity.x = -200;
+							this.redEnemies.add(enemy);
+						}
+						x = this.game.rnd.integerInRange(750, 800);
+						if (Math.random() > .5) {
+							enemy.scale.y = -1;
+							y = 280;
+						} else {
+							enemy.scale.y = 1;
+							y = 220;
+						}
+						console.log('x ' + x, 'y ' + y);
+						enemy.reset(x, y);
+						break;
 				}
 
 				// object pooling werkt, yes
-				console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length);
+				console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length, 'red ' + this.redEnemies.length);
 			}
 		}]);
 
@@ -1697,7 +1724,7 @@
 
 			_this.position.y = 275;
 			_this.scale.y = -1;
-			_this.lives = 3;
+			_this.lives = 1;
 			return _this;
 		}
 
@@ -1708,6 +1735,51 @@
 
 /***/ },
 /* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _EnemyTest2 = __webpack_require__(19);
+
+	var _EnemyTest3 = _interopRequireDefault(_EnemyTest2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var EnemyOrange = (function (_EnemyTest) {
+		_inherits(EnemyOrange, _EnemyTest);
+
+		function EnemyOrange(game, x, y) {
+			_classCallCheck(this, EnemyOrange);
+
+			// pooling
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(EnemyOrange).call(this, game, x, y, 'enemy_orange'));
+
+			_this.exists = true;
+
+			_this.game.physics.arcade.enable(_this);
+
+			_this.lives = 1;
+			return _this;
+		}
+
+		return EnemyOrange;
+	})(_EnemyTest3.default);
+
+	exports.default = EnemyOrange;
+
+/***/ },
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1875,7 +1947,7 @@
 	exports.default = Leaderboard;
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2055,7 +2127,7 @@
 	exports.default = Gameover;
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2148,7 +2220,7 @@
 	exports.default = Info;
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2169,28 +2241,28 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var EnemyOrange = (function (_EnemyTest) {
-		_inherits(EnemyOrange, _EnemyTest);
+	var EnemyRed = (function (_EnemyTest) {
+		_inherits(EnemyRed, _EnemyTest);
 
-		function EnemyOrange(game, x, y) {
-			_classCallCheck(this, EnemyOrange);
+		function EnemyRed(game, x, y) {
+			_classCallCheck(this, EnemyRed);
 
 			// pooling
 
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(EnemyOrange).call(this, game, x, y, 'enemy_orange'));
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(EnemyRed).call(this, game, x, y, 'enemy_red'));
 
 			_this.exists = true;
 
 			_this.game.physics.arcade.enable(_this);
 
-			_this.lives = 1;
+			_this.lives = 2;
 			return _this;
 		}
 
-		return EnemyOrange;
+		return EnemyRed;
 	})(_EnemyTest3.default);
 
-	exports.default = EnemyOrange;
+	exports.default = EnemyRed;
 
 /***/ }
 /******/ ]);

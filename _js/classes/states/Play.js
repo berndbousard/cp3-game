@@ -15,6 +15,7 @@ import Data from '../objects/Data';
 import EnemyBlack from '../objects/EnemyBlack';
 import EnemyWhite from '../objects/EnemyWhite';
 import EnemyOrange from '../objects/EnemyOrange';
+import EnemyRed from '../objects/EnemyRed';
 
 let harderOverTime = 0;
 
@@ -106,6 +107,10 @@ export default class Play extends Phaser.State {
 		this.orangeEnemies = this.game.add.group();
 		this.orangeEnemies.enableBody = true;
 		this.allEnemies.add(this.orangeEnemies);
+
+		this.redEnemies = this.game.add.group();
+		this.redEnemies.enableBody = true;
+		this.allEnemies.add(this.redEnemies);
 	}
 
 	update(){
@@ -119,6 +124,10 @@ export default class Play extends Phaser.State {
 
 		this.orangeEnemies.forEach(enemy => {
 			enemy.body.velocity.x = -250;
+		});
+
+		this.redEnemies.forEach(enemy => {
+			enemy.body.velocity.x = -50;
 		});
 
 		harderOverTime ++;
@@ -177,7 +186,7 @@ export default class Play extends Phaser.State {
 
 		this.bullets.forEach((oneBullet) => {
 			this.allEnemies.forEach((oneEnemy) => {
-				this.game.physics.arcade.overlap(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
+				this.game.physics.arcade.collide(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
 				// this.game.physics.arcade.collide(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
 
 			});
@@ -311,6 +320,7 @@ export default class Play extends Phaser.State {
 		}	
 		bullet.destroy();
 		this.enemyHitSound.play();
+		console.log(enemy.lives);
 	}
 
 	createSuffixForScore(){
@@ -393,7 +403,6 @@ export default class Play extends Phaser.State {
 				y = 225;
 				console.log('x ' + x, 'y ' + y);
 				enemy.reset(x, y);
-				enemy.lives = 1;
 				break;
 
 			case 'white':
@@ -407,7 +416,6 @@ export default class Play extends Phaser.State {
 				y = 275;
 				console.log('x ' + x, 'y ' + y);
 				enemy.reset(x, y);
-				enemy.lives = 1;
 				break;
 
 			case 'orange':
@@ -428,13 +436,29 @@ export default class Play extends Phaser.State {
 				
 				console.log('x ' + x, 'y ' + y);
 				enemy.reset(x, y);
-				enemy.lives = 1;
 				break;
 
-			// to do: red	
+			case 'red':
+				enemy = this.redEnemies.getFirstExists(false);
+				if(!enemy){
+					enemy = new EnemyRed(this.game, 0, 0);
+					enemy.body.velocity.x = -200;
+					this.redEnemies.add(enemy);
+				}
+				x = this.game.rnd.integerInRange(750, 800);
+				if(Math.random() > .5){
+					enemy.scale.y = -1;
+					y = 280;
+				}else{
+					enemy.scale.y = 1;
+					y = 220;
+				}
+				console.log('x ' + x, 'y ' + y);
+				enemy.reset(x, y);
+				break;
 		}
 
 		// object pooling werkt, yes
-		console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length);
+		console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length, 'red ' + this.redEnemies.length);
 	}
 }

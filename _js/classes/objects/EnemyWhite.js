@@ -11,6 +11,6 @@ export default class EnemyWhite extends EnemyTest {
 
 		this.position.y = 275;
 		this.scale.y = -1;
-		this.lives = 3;
+		this.lives = 1;
 	}
 }
