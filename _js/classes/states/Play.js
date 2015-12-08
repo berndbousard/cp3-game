@@ -13,6 +13,7 @@ import * as Utils from '../objects/Utils';
 import Data from '../objects/Data';
 
 import EnemyBlack from '../objects/EnemyBlack';
+import EnemyWhite from '../objects/EnemyWhite';
 
 let harderOverTime = 0;
 
@@ -87,13 +88,27 @@ export default class Play extends Phaser.State {
 		// testEnemies
 		this.enemiesTest = this.game.add.group();
 
+
+
+		// All enemies
+		this.allEnemies = this.game.add.group();
+
 		// testblack
 		this.blackEnemies = this.game.add.group();
 		this.blackEnemies.enableBody = true;
+		this.allEnemies.add(this.blackEnemies);
+
+		this.whiteEnemies = this.game.add.group();
+		this.whiteEnemies.enableBody = true;
+		this.allEnemies.add(this.whiteEnemies);
 	}
 
 	update(){
 		this.blackEnemies.forEach(enemy => {
+			enemy.body.velocity.x = -200;
+		});
+
+		this.whiteEnemies.forEach(enemy => {
 			enemy.body.velocity.x = -200;
 		});
 
@@ -140,9 +155,23 @@ export default class Play extends Phaser.State {
 
 			});
 		});
-		this.enemiesTest.forEach((oneEnemy) => {
+		// this.enemiesTest.forEach((oneEnemy) => {
+		// 	this.game.physics.arcade.overlap(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
+		// 	this.game.physics.arcade.collide(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
+		// });
+
+		// nieuwe code
+		this.allEnemies.forEach((oneEnemy) => {
 			this.game.physics.arcade.overlap(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
 			this.game.physics.arcade.collide(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
+		});
+
+		this.bullets.forEach((oneBullet) => {
+			this.allEnemies.forEach((oneEnemy) => {
+				this.game.physics.arcade.overlap(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
+				// this.game.physics.arcade.collide(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
+
+			});
 		});
 	}
 	shutdown(){
@@ -266,19 +295,11 @@ export default class Play extends Phaser.State {
 		this.coinSound.play();
 	}
 
-	enemyBulletCollisionHandler(enemy, bullet){
-		console.log('bullet hit');
-
+	enemyBulletCollisionHandler(bullet, enemy){
 		enemy.lives--;
 		if(enemy.lives === 0){
 			enemy.destroy();
-			if(this.keepUpWithBoss.length !== 0){
-				if(this.keepUpWithBoss[0].lives === 0){
-					this.keepUpWithBoss = [];
-				}
-			}
-		}
-
+		}	
 		bullet.destroy();
 		this.enemyHitSound.play();
 	}
@@ -348,28 +369,42 @@ export default class Play extends Phaser.State {
 	}
 
 	spawnEnemyTest2(){
-		console.log(this.blackEnemies.length);
-		// let enemy = this.blackEnemies.getFirstExists(false);
-		// if(!enemy){
-		// 	let color = this.generateRandomColor();
-		// 	switch(color){
-		// 		case 'black':
-		// 			enemy = new EnemyBlack(this.game, 0, 0);
-		// 			break;
-		// 	}
-		// 	this.blackEnemies.add(enemy);
-		// }
-		// enemy.reset(this.game.width/2,this.game.height/2);
-		let enemy = this.blackEnemies.getFirstExists(false);
-		if(!enemy){
-			enemy = new EnemyBlack(this.game, this.game.width/2, this.game.height/2);
-			enemy.body.velocity.x = -200;
-			this.blackEnemies.add(enemy);
+		let color = this.generateRandomColor();
+		let enemy, x, y;
+		console.log('color ' + color);
+		switch(color){
+			case 'black':
+				enemy = this.blackEnemies.getFirstExists(false);
+				if(!enemy){
+					enemy = new EnemyBlack(this.game, 0, 0);
+					enemy.body.velocity.x = -200;
+					this.blackEnemies.add(enemy);
+				}
+				x = this.game.rnd.integerInRange(750, 800);
+				y = 225;
+				console.log('x ' + x, 'y ' + y);
+				enemy.reset(x, y);
+				enemy.lives = 1;
+				break;
+
+			case 'white':
+				enemy = this.whiteEnemies.getFirstExists(false);
+				if(!enemy){
+					enemy = new EnemyWhite(this.game, 0, 0);
+					enemy.body.velocity.x = -200;
+					this.whiteEnemies.add(enemy);
+				}
+				x = this.game.rnd.integerInRange(750, 800);
+				y = 275;
+				console.log('x ' + x, 'y ' + y);
+				enemy.reset(x, y);
+				enemy.lives = 1;
+				break;
+
+			// to do: red, orange	
 		}
-		enemy.reset(this.game.width/2,this.game.height/2);
 
-		// let enemy = new EnemyBlack(this.game, this.game.width/2, this.game.height/2);
-		// this.game.add.existing(enemy);
-
+		// object pooling werkt, yes
+		console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length);
 	}
 }
