@@ -1,6 +1,6 @@
 export default class Enemy extends Phaser.Sprite {
-	constructor(game, x, y, color, lives, speed){
-		super(game, x, y, color);
+	constructor(game, x, y, key){
+		super(game, x, y, key);
 
 		this.anchor.setTo(.5, .5);
 
@@ -8,20 +8,10 @@ export default class Enemy extends Phaser.Sprite {
 		this.game.physics.arcade.enable(this);
 		this.immovable = true;
 		this.allowGravity = false;
-	
-		// pooling
-		this.exists = true;
 
 		// animation
 		this.animations.add('walk');
 		this.animations.play('walk', 8, true);
-
-		// movement
-		// this.body.velocity.x = -250;
-
-		// standaard 1, tenzij anders meegegeven in Play state
-		this.lives = 1;
-		this.body.velocity.x = -250;
 	}
 	update(){
 		this.game.debug.body(this);

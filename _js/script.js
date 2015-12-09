@@ -6,6 +6,8 @@ import Play from './classes/states/Play';
 import Leaderboard from './classes/states/Leaderboard';
 import Gameover from './classes/states/Gameover';
 import Info from './classes/states/Info';
+import Shop from './classes/states/Shop';
+
 
 const init = () => {
 	let game = new Phaser.Game(750, 500, Phaser.AUTO);
@@ -15,6 +17,7 @@ const init = () => {
 	game.state.add('Leaderboard', Leaderboard, false);
 	game.state.add('Gameover', Gameover, false);
 	game.state.add('Info', Info, false);
+	game.state.add('Shop', Shop, false);
 }
 
 init();

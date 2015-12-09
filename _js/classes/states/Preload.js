@@ -11,6 +11,8 @@ export default class Preload extends Phaser.State {
 		this.game.load.image('menuBackground', 'assets/menu_background.png');
 		this.game.load.image('bullet', 'assets/bullet.png');
 		this.game.load.image('player_menu', 'assets/player_menu.png');
+		this.game.load.image('shopButton', 'assets/shopButton.png');
+		this.game.load.image('bulletButton', 'assets/bulletButton.png');
 
 		this.game.load.bitmapFont('gamefont', 'assets/font/extra/gamefont.png', 'assets/font/extra/gamefont.fnt');
 
@@ -29,6 +31,7 @@ export default class Preload extends Phaser.State {
 		this.game.load.audio('player_hit' ,'assets/sound/player_hit.mp3');
 		this.game.load.audio('player_shoot' ,'assets/sound/shot.mp3');
 		this.game.load.audio('click' ,'assets/sound/click.mp3');
+		this.game.load.audio('bulletPackSound' ,'assets/sound/ammoSound.mp3');
 		this.game.load.audio('background' ,'assets/sound/background2.mp3');
 
 	}

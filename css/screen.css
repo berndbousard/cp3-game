@@ -112,3 +112,7 @@ input:focus {
 
 	visibility: hidden;
 }
+
+.hide {
+	display: none;
+}

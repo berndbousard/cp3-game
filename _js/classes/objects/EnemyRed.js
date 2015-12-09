@@ -1,6 +1,6 @@
-import EnemyTest from '../objects/EnemyTest';
+import Enemy from '../objects/Enemy';
 
-export default class EnemyRed extends EnemyTest {
+export default class EnemyRed extends Enemy {
 	constructor(game, x, y){
 		super(game, x, y, 'enemy_red');
 	

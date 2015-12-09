@@ -1,5 +1,6 @@
 import BackgroundCity from '../objects/BackgroundCity';
 import MenuBackground from '../objects/MenuBackground';
+import Text from '../objects/Text';
 import Sound from '../objects/Sound';
 import * as Utils from '../objects/Utils';
 
@@ -8,13 +9,13 @@ let leaderboardTabel;
 export default class Leaderboard extends Phaser.State {
 	preload(){
 		console.log('start leaderboard');
-	}
-	create(){
 		// music
 		this.clickSound = new Sound(this.game, 'click');
+	}
+	create(){
 
 		// Build table with results
-		this.getJSON('http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=getScores');
+		this.getJSON(`http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=getScores&t=${Date.now()}`);
 
 		// Images
 		this.city = new BackgroundCity(this.game, 0, 0, 750, 500, 'city');
@@ -54,16 +55,16 @@ export default class Leaderboard extends Phaser.State {
 		let topRowThForDistance = document.createElement('th');
 		let topRowThForName = document.createElement('th');
 
-		topRowThForScore.innerText = "Score";
+		topRowThForScore.innerText = "Coins";
 		topRowThForName.innerText = "Name";
 		topRowThForDistance.innerText = "Distance";
 
 		topRowThForScore.classList.add('score');
 
-		topRowTr.appendChild(topRowThForScore);
-		topRowTr.appendChild(topRowThForName);
 		topRowTr.appendChild(topRowThForDistance);
-
+		topRowTr.appendChild(topRowThForName);
+		topRowTr.appendChild(topRowThForScore);
+		
 		leaderboardTabel.appendChild(topRowTr);
 		
 		userScores.forEach((data) => {
@@ -78,15 +79,15 @@ export default class Leaderboard extends Phaser.State {
 			scoreHTML.classList.add('score');
 			distanceHTML.innerText = data.distance;
 
-			tr.appendChild(scoreHTML);
-			tr.appendChild(nameHTML);
 			tr.appendChild(distanceHTML);
+			tr.appendChild(nameHTML);
+			tr.appendChild(scoreHTML);
+
 			leaderboardTabel.appendChild(tr);
 		});
 
 		document.querySelector('body').appendChild(leaderboardTabel);
 		Utils.showElement(leaderboardTabel);
-
 	}
 
 	getJSON(url){
@@ -98,7 +99,7 @@ export default class Leaderboard extends Phaser.State {
 				this.buildLeaderboard(response);
 			})
 			.catch((error) => {
-				console.log('no scores yet');
+				this.giveError(error);
 			});
 	}
 
@@ -109,5 +110,11 @@ export default class Leaderboard extends Phaser.State {
 	backClickHandler() {
 		this.clickSound.play();
 		Utils.changeState(this.game, 'Menu');
+	}
+	giveError(error){
+		// game, x, y, font, text, size, align
+		let text ='We vermoeden dat je\ngeen internet hebt\nOm topscores te laden hebben\nwe jammergenoeg internet nodig';
+		let errorText = new Text(this.game, this.game.width/2, this.game.height/2, 'gamefont', text, 15, 'center');
+		this.game.add.existing(errorText);
 	}
 }
