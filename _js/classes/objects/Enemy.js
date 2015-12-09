@@ -20,11 +20,11 @@ export default class Enemy extends Phaser.Sprite {
 		}
 	}
 	flipDown(){
-		this.body.y = this.game.height/2;
+		this.body.y = this.game.height/2 +2;
 		this.scale.y = -1;
 	}
 	flipUp(){
-		this.body.y = (this.game.height/2) - 60;
+		this.body.y = (this.game.height/2) - 62;
 		this.scale.y = 1;
 	}
 }

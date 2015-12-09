@@ -26,6 +26,7 @@ export default class Play extends Phaser.State {
 		this.playerShootSound = new Sound(this.game, 'player_shoot', 0.5);
 	}
 	create(){
+
 		// sound
 		this.backgroundSound.play();
 
@@ -36,9 +37,9 @@ export default class Play extends Phaser.State {
 		this.cursors = this.game.input.keyboard.createCursorKeys();
 		this.spacebar = this.game.input.keyboard.addKey(32);
 		this.spacebar.onDown.add(this.spaceBarHandler, this);
+		this.side = 'up';
 
 		// Declarations
-		// this.side = 'up'; //Nu kunnen we weten of hij bovenaan of onderaan loopt
 		if(!Data.coins){
 			Data.coins = 0;
 		}else{
@@ -48,6 +49,11 @@ export default class Play extends Phaser.State {
 			Data.bullets = 0;
 		}else{
 			Data.bullets = Data.bullets;
+		}
+		if(!Data.kills){
+			Data.kills = 0;
+		}else{
+			Data.kills = Data.kills;
 		}
 		Data.distance = 0;
 		Data.kills = 0;
@@ -132,12 +138,14 @@ export default class Play extends Phaser.State {
 
 		// controls
 		if(this.cursors.down.isDown){
+			this.side = 'down';
 			this.player.flipDown();
 			this.redEnemies.forEach((oneEnemy) => {
 				oneEnemy.flipDown();
 			});
 		}
 		if(this.cursors.up.isDown){
+			this.side = 'up';
 			this.player.flipUp();
 			this.redEnemies.forEach((oneEnemy) => {
 				oneEnemy.flipUp();
@@ -156,7 +164,7 @@ export default class Play extends Phaser.State {
 
 		this.bullets.forEach((oneBullet) => {
 			this.allEnemies.forEach((oneEnemy) => {
-				this.game.physics.arcade.overlap(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
+				this.game.physics.arcade.collide(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
 			});
 		});
 	}
@@ -216,12 +224,14 @@ export default class Play extends Phaser.State {
 					this.redEnemies.add(enemy);
 				}
 
-				if(Math.random() > .5){
+				enemy.lives = 2;
+
+				if(this.side == 'down'){
 					enemy.scale.y = -1;
-					y = 280;
+					y = 283;
 				}else{
 					enemy.scale.y = 1;
-					y = 220;
+					y = 217;
 				}
 				break;
 		}
@@ -262,7 +272,6 @@ export default class Play extends Phaser.State {
 	}
 
 	enemyBulletCollisionHandler(bullet, enemy){
-		console.log(enemy);
 		enemy.lives--;
 		if(enemy.lives === 0){
 			enemy.destroy();

@@ -14,6 +14,14 @@ export default class Menu extends Phaser.State {
 		this.clickSound = new Sound(this.game, 'click');
 	}
 	create(){
+
+		if(!Data.bullets){
+			Data.bullets = 0;
+		}
+		if(!Data.coins){
+			Data.coins = 0;
+		}
+
 		// Images
 		this.city = new BackgroundCity(this.game, 0, 0, 750, 500, 'city');
 		this.game.add.existing(this.city);
