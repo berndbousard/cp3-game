@@ -152,6 +152,7 @@
 				this.game.load.image('player_menu', 'assets/player_menu.png');
 				this.game.load.image('shopButton', 'assets/shopButton.png');
 				this.game.load.image('bulletButton', 'assets/bulletButton.png');
+				this.game.load.image('meteorButton', 'assets/meteorButton.png');
 
 				this.game.load.bitmapFont('gamefont', 'assets/font/extra/gamefont.png', 'assets/font/extra/gamefont.fnt');
 
@@ -577,6 +578,7 @@
 		this.bullets;
 		this.kills;
 		this.meteor;
+		this.meteors;
 	};
 
 	exports.default = Data;
@@ -2326,6 +2328,14 @@
 				if (!_Data2.default.coins) {
 					_Data2.default.coins = 0;
 				}
+				if (!_Data2.default.meteors) {
+					_Data2.default.meteors = 0;
+				}
+
+				this.prices = {
+					'bulletprice': '2',
+					'meteorprice': '1'
+				};
 
 				// Images
 				this.city = new _BackgroundCity2.default(this.game, 0, 0, 750, 500, 'city');
@@ -2335,22 +2345,34 @@
 				this.game.add.existing(this.menuBackground);
 
 				// text
-				// game, x, y, font, text, size, align
 				this.bulletText = new _Text2.default(this.game, this.game.width / 2 + 85, this.game.height / 2 - 50, 'gamefont', _Data2.default.bullets + '\nbullets', 20, 'center');
 				this.game.add.existing(this.bulletText);
+
+				this.meteorText = new _Text2.default(this.game, this.game.width / 2 + 85, this.game.height / 2 + 20, 'gamefont', _Data2.default.meteors + '\nmeteors', 20, 'center');
+				this.game.add.existing(this.meteorText);
 
 				this.coinText = new _Text2.default(this.game, this.game.width / 2, this.game.height / 2 - 150, 'gamefont', _Data2.default.coins + '\ncoins', 20, 'center');
 				this.game.add.existing(this.coinText);
 
 				// Buttons
+				this.priceBullets = new _Text2.default(this.game, this.game.width / 2 - 80, this.game.height / 2 - 82, 'gamefont', 'price: ' + this.prices.bulletprice, 14, 'center');
+				this.game.add.existing(this.priceBullets);
+
+				this.bulletButton = this.game.add.button(this.game.width / 2 - 45, this.game.height / 2 - 50, 'bulletButton', this.bulletButtonClickHandler, this);
+				Utils.center(this.bulletButton);
+
+				this.priceMeteors = new _Text2.default(this.game, this.game.width / 2 - 80, this.game.height / 2 - 12, 'gamefont', 'price: ' + this.prices.meteorprice, 14, 'center');
+				this.game.add.existing(this.priceMeteors);
+
+				this.meteorButton = this.game.add.button(this.game.width / 2 - 45, this.game.height / 2 + 20, 'meteorButton', this.meteorButtonClickHandler, this);
+				Utils.center(this.meteorButton);
+
+				// Game State Buttons
 				this.startButton = this.game.add.button(this.game.width / 2 + 50, this.game.height / 2 + 150, 'startButton', this.startClickHandler, this);
 				Utils.center(this.startButton);
 
 				this.backButton = this.game.add.button(this.game.width / 2 - 50, this.game.height / 2 + 150, 'backButton', this.backClickHandler, this);
 				Utils.center(this.backButton);
-
-				this.bulletButton = this.game.add.button(this.game.width / 2 - 45, this.game.height / 2 - 50, 'bulletButton', this.bulletButtonClickHandler, this);
-				Utils.center(this.bulletButton);
 			}
 		}, {
 			key: 'update',
@@ -2358,15 +2380,30 @@
 		}, {
 			key: 'bulletButtonClickHandler',
 			value: function bulletButtonClickHandler() {
-				if (_Data2.default.coins > 0) {
+				if (_Data2.default.coins >= this.prices.bulletprice) {
 					this.doErrorHandling("no error");
 					errorInfo = "";
 
 					this.bulletPackSound.play();
 					_Data2.default.bullets += 5;
-					_Data2.default.coins--;
+					_Data2.default.coins -= this.prices.bulletprice;
 					this.bulletText.text = _Data2.default.bullets + '\nbullets';
-					// hij flipt nog op de coins, geen idee waarom
+					this.coinText.text = _Data2.default.coins + '\ncoins';
+				} else {
+					this.doErrorHandling("not enough money");
+				}
+			}
+		}, {
+			key: 'meteorButtonClickHandler',
+			value: function meteorButtonClickHandler() {
+				if (_Data2.default.coins >= this.prices.meteorprice) {
+					this.doErrorHandling("no error");
+					errorInfo = "";
+
+					this.bulletPackSound.play();
+					_Data2.default.meteors++;
+					_Data2.default.coins -= this.prices.meteorprice;
+					this.meteorText.text = _Data2.default.meteors + '\nbullets';
 					this.coinText.text = _Data2.default.coins + '\ncoins';
 				} else {
 					this.doErrorHandling("not enough money");
@@ -2398,7 +2435,7 @@
 				if (check == "not enough money") {
 					errorInfo = "not enough money in store";
 				}
-				this.errorText = new _Text2.default(this.game, this.game.width / 2 + 5, this.game.height / 2 - 10, 'gamefont', errorInfo, 14, 'center');
+				this.errorText = new _Text2.default(this.game, this.game.width / 2 + 5, this.game.height / 2 + 85, 'gamefont', errorInfo, 14, 'center');
 				this.game.add.existing(this.errorText);
 			}
 		}]);
