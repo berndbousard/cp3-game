@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>CP3 Eindopracht</title>
+	<title>Cityflip</title>
 	<link rel="stylesheet" type="text/css" href="css/screen.css">
+	<link rel="shortcut icon" type="image/png" href="assets/favicon.png"/>
 </head>
 <body>
 	<script src="js/vendors/phaser.js"></script>
