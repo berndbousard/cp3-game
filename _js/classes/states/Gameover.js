@@ -67,6 +67,8 @@ export default class Gameover extends Phaser.State {
 	createForm(){
 
 		form = document.createElement('form');
+		form.setAttribute('method', 'POST');
+		form.setAttribute('action', 'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=postScores');
 		form.id = 'form';
 
 		let formNameInput = document.createElement('input');
@@ -78,15 +80,15 @@ export default class Gameover extends Phaser.State {
 
 		let formScoreInput = document.createElement('input');
 		formScoreInput.setAttribute('type', 'text');
-		formScoreInput.setAttribute('name', 'name');
-		formScoreInput.value = Data.coins;
+		formScoreInput.setAttribute('name', 'score');
+		formScoreInput.setAttribute('value', Data.coins);
 		formScoreInput.id = 'scoreInput';
 		formScoreInput.classList.add('hide');
 
 		let formDistanceInput = document.createElement('input');
 		formDistanceInput.setAttribute('type', 'text');
-		formDistanceInput.setAttribute('name', 'name');
-		formDistanceInput.value = Data.coins;
+		formDistanceInput.setAttribute('name', 'distance');
+		formDistanceInput.setAttribute('value', Data.distance);
 		formDistanceInput.id = 'distanceInput';
 		formDistanceInput.classList.add('hide');
 
@@ -108,22 +110,21 @@ export default class Gameover extends Phaser.State {
 	submitInputHandler(name){
 		this.clickSound.play();
 		let req = new XMLHttpRequest();
-		req.responseType = 'json';
+		// req.responseType = 'json';
 		req.addEventListener('load', () => {
-
+			if(req.status === 200){
+				Utils.hideElement(form);
+				Utils.changeState(this.game, 'Leaderboard');
+			}else{
+				alert('ja, lap al kapot, theeft lang geduurd');
+			}
 		});
-
-
-		let url = `http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=postScores?t=${Data.now()}`;
+		let url = `${form.getAttribute('action')}&t=${Date.now()}`;
 		req.open('post', url, true);
 		req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
 		req.send(new FormData(form));
 		// Het lijkt dat hij 2x pusht naar de DDB maar als ik een event listener eraan
 		// Koppen dan zien we het maar 1 keer maar zit wel 2x id DDB
-		req.addEventListener('load', () => {
-			Utils.hideElement(form);
-			Utils.changeState(this.game, 'Leaderboard');
-		});
 	}
 
 	leaderboardSubmitHandler(){

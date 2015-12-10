@@ -91,7 +91,7 @@
 
 /***/ },
 /* 1 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -100,6 +100,18 @@
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
+
+	var _Text = __webpack_require__(7);
+
+	var _Text2 = _interopRequireDefault(_Text);
+
+	var _Utils = __webpack_require__(8);
+
+	var Utils = _interopRequireWildcard(_Utils);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -120,6 +132,14 @@
 			key: 'preload',
 			value: function preload() {
 				console.log("start preload");
+
+				//show percentage
+				// game, x, y, font, text, size, align
+				this.progressText = this.game.add.text(this.game.world.centerX, this.game.world.centerY - 30, '0%', { fill: 'white' });
+				Utils.center(this.progressText);
+
+				this.game.load.onFileComplete.add(this.onFileComplete, this);
+				this.game.load.onLoadComplete.addOnce(this.onLoadComplete, this);
 
 				// load assets
 				this.game.load.image('startButton', 'assets/startButton.png');
@@ -155,12 +175,20 @@
 			}
 		}, {
 			key: 'create',
-			value: function create() {
-				this.game.state.start('Menu');
-			}
+			value: function create() {}
 		}, {
 			key: 'update',
 			value: function update() {}
+		}, {
+			key: 'onFileComplete',
+			value: function onFileComplete(progress) {
+				this.progressText.text = progress + '%';
+			}
+		}, {
+			key: 'onLoadComplete',
+			value: function onLoadComplete() {
+				Utils.changeState(this.game, 'Menu');
+			}
 		}, {
 			key: 'shutdown',
 			value: function shutdown() {
@@ -1832,6 +1860,8 @@
 			value: function createForm() {
 
 				form = document.createElement('form');
+				form.setAttribute('method', 'POST');
+				form.setAttribute('action', 'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=postScores');
 				form.id = 'form';
 
 				var formNameInput = document.createElement('input');
@@ -1843,15 +1873,15 @@
 
 				var formScoreInput = document.createElement('input');
 				formScoreInput.setAttribute('type', 'text');
-				formScoreInput.setAttribute('name', 'name');
-				formScoreInput.value = _Data2.default.coins;
+				formScoreInput.setAttribute('name', 'score');
+				formScoreInput.setAttribute('value', _Data2.default.coins);
 				formScoreInput.id = 'scoreInput';
 				formScoreInput.classList.add('hide');
 
 				var formDistanceInput = document.createElement('input');
 				formDistanceInput.setAttribute('type', 'text');
-				formDistanceInput.setAttribute('name', 'name');
-				formDistanceInput.value = _Data2.default.coins;
+				formDistanceInput.setAttribute('name', 'distance');
+				formDistanceInput.setAttribute('value', _Data2.default.distance);
 				formDistanceInput.id = 'distanceInput';
 				formDistanceInput.classList.add('hide');
 
@@ -1876,19 +1906,21 @@
 
 				this.clickSound.play();
 				var req = new XMLHttpRequest();
-				req.responseType = 'json';
-				req.addEventListener('load', function () {});
-
-				var url = 'http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=postScores?t=' + _Data2.default.now();
+				// req.responseType = 'json';
+				req.addEventListener('load', function () {
+					if (req.status === 200) {
+						Utils.hideElement(form);
+						Utils.changeState(_this3.game, 'Leaderboard');
+					} else {
+						alert('ja, lap al kapot, theeft lang geduurd');
+					}
+				});
+				var url = form.getAttribute('action') + '&t=' + Date.now();
 				req.open('post', url, true);
 				req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
 				req.send(new FormData(form));
 				// Het lijkt dat hij 2x pusht naar de DDB maar als ik een event listener eraan
 				// Koppen dan zien we het maar 1 keer maar zit wel 2x id DDB
-				req.addEventListener('load', function () {
-					Utils.hideElement(form);
-					Utils.changeState(_this3.game, 'Leaderboard');
-				});
 			}
 		}, {
 			key: 'leaderboardSubmitHandler',

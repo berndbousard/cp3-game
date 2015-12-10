@@ -1,6 +1,17 @@
+import Text from '../objects/Text';
+import * as Utils from '../objects/Utils';
+
 export default class Preload extends Phaser.State {
 	preload(){
 		console.log("start preload");
+
+		//show percentage
+		// game, x, y, font, text, size, align
+		this.progressText = this.game.add.text(this.game.world.centerX, this.game.world.centerY-30, '0%', {fill: 'white'});
+		Utils.center(this.progressText);
+
+		this.game.load.onFileComplete.add(this.onFileComplete, this);
+		this.game.load.onLoadComplete.addOnce(this.onLoadComplete, this);
 
 		// load assets
 		this.game.load.image('startButton', 'assets/startButton.png');
@@ -36,10 +47,16 @@ export default class Preload extends Phaser.State {
 
 	}
 	create(){
-		this.game.state.start('Menu');
+
 	}
 	update(){
 		
+	}
+	onFileComplete(progress){
+		this.progressText.text = progress + '%';
+	}
+	onLoadComplete(){
+		Utils.changeState(this.game, 'Menu');
 	}
 	shutdown(){
 		console.log('end preload');
