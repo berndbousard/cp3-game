@@ -17,3 +17,7 @@ export const isEmpty = (input) => {
 export const center = (el) => {
 	return el.anchor.setTo(.5, .5);
 }
+
+export const setScale = (el, scale) => {
+	return el.scale.setTo(scale, scale);
+}

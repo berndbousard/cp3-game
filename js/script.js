@@ -162,7 +162,11 @@
 				this.game.load.spritesheet('enemy_orange', 'assets/enemy_orange.png', 45, 45, 6);
 				this.game.load.spritesheet('enemy_red', 'assets/enemy_red.png', 60, 60, 6);
 				this.game.load.spritesheet('coin', 'assets/coin.png', 25, 25, 10);
+<<<<<<< HEAD
 				this.game.load.spritesheet('meteor', 'assets/meteor.png', 37, 50, 6);
+=======
+				this.game.load.spritesheet('keysImg', 'assets/keys.png', 100, 47, 5);
+>>>>>>> bfb79eb05b61125807dca66434a0c0f2027fde21
 
 				this.game.load.audio('change_side', 'assets/sound/change_side.mp3');
 				this.game.load.audio('coin', 'assets/sound/coin.mp3');
@@ -265,6 +269,13 @@
 		return el.anchor.setTo(.5, .5);
 	};
 
+<<<<<<< HEAD
+=======
+	var setScale = exports.setScale = function setScale(el, scale) {
+		return el.scale.setTo(scale, scale);
+	};
+
+>>>>>>> bfb79eb05b61125807dca66434a0c0f2027fde21
 /***/ },
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
@@ -595,10 +606,13 @@
 
 	var _BackgroundCity2 = _interopRequireDefault(_BackgroundCity);
 
+<<<<<<< HEAD
 	var _Meteor = __webpack_require__(25);
 
 	var _Meteor2 = _interopRequireDefault(_Meteor);
 
+=======
+>>>>>>> bfb79eb05b61125807dca66434a0c0f2027fde21
 	var _Text = __webpack_require__(2);
 
 	var _Text2 = _interopRequireDefault(_Text);
@@ -2005,6 +2019,14 @@
 
 	var Utils = _interopRequireWildcard(_Utils);
 
+	var _KeysImage = __webpack_require__(25);
+
+	var _KeysImage2 = _interopRequireDefault(_KeysImage);
+
+	var _Player = __webpack_require__(11);
+
+	var _Player2 = _interopRequireDefault(_Player);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -2046,6 +2068,10 @@
 				Utils.center(this.startButton);
 				this.backButton = this.game.add.button(this.game.width / 2 - 50, this.game.height / 2 + 175, 'backButton', this.backClickHandler, this);
 				Utils.center(this.backButton);
+
+				this.keysImg = new _KeysImage2.default(this.game, this.game.width / 2 + 225, this.game.height / 2 + 50);
+				Utils.center(this.keysImg);
+				this.game.add.existing(this.keysImg);
 			}
 		}, {
 			key: 'update',
@@ -2252,6 +2278,7 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+<<<<<<< HEAD
 	var Meteor = (function (_Phaser$Sprite) {
 		_inherits(Meteor, _Phaser$Sprite);
 
@@ -2273,6 +2300,27 @@
 	})(Phaser.Sprite);
 
 	exports.default = Meteor;
+=======
+	var KeysImage = (function (_Phaser$Sprite) {
+		_inherits(KeysImage, _Phaser$Sprite);
+
+		function KeysImage(game, x, y) {
+			_classCallCheck(this, KeysImage);
+
+			// animation
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(KeysImage).call(this, game, x, y, 'keysImg'));
+
+			_this.animations.add('run');
+			_this.animations.play('run', 5, true);
+			return _this;
+		}
+
+		return KeysImage;
+	})(Phaser.Sprite);
+
+	exports.default = KeysImage;
+>>>>>>> bfb79eb05b61125807dca66434a0c0f2027fde21
 
 /***/ }
 /******/ ]);
