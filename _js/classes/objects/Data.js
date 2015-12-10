@@ -5,5 +5,6 @@ export default class Data {
 		this.distance;
 		this.bullets;
 		this.kills;
+		this.meteors;
 	}
 }
