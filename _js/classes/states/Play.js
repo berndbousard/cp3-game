@@ -1,5 +1,6 @@
 import Player from '../objects/Player';
 import BackgroundCity from '../objects/BackgroundCity';
+import Meteor from '../objects/Meteor';
 
 import Text from '../objects/Text';
 import Coin from '../objects/Coin';
@@ -111,6 +112,9 @@ export default class Play extends Phaser.State {
 		this.redEnemies = this.game.add.group();
 		this.redEnemies.enableBody = true;
 		this.allEnemies.add(this.redEnemies);
+
+		this.meteorGroup = this.game.add.group();
+		this.meteorGroup.enableBody = true;
 	}
 
 	update(){
@@ -130,6 +134,12 @@ export default class Play extends Phaser.State {
 		this.redEnemies.forEach(enemy => {
 			enemy.body.velocity.x = -50;
 		});
+
+		this.meteorGroup.forEach((meteor) => {
+			meteor.body.velocity.y = 50;
+		});
+
+		console.log(this.meteorGroup.children);
 
 		// controls
 		if(this.cursors.down.isDown){
@@ -322,6 +332,8 @@ export default class Play extends Phaser.State {
 			this.bulletTextBox.text = Data.bullets + '\nbullets';
 
 			this.playerShootSound.play();
+
+			this.spawnMeteor();
 		}
 	}
 	updateScore(suffix){
@@ -337,5 +349,18 @@ export default class Play extends Phaser.State {
 	}
 	randomInRange(num1, num2){
 		return this.game.rnd.integerInRange(num1, num2);
+	}
+	spawnMeteor(){
+		for(let i = 0; i < 10; i++){
+			let x = this.randomInRange(0, this.game.width);
+			let y = this.randomInRange(0, -75);
+			let meteor = this.meteorGroup.getFirstExists(false);
+			if(!meteor){
+				meteor = new Meteor(this.game, x, y);
+			}
+			meteor.reset(x, y);
+			meteor.body.velocity.y = 50;
+			this.meteorGroup.add(meteor);
+		}
 	}
 }
