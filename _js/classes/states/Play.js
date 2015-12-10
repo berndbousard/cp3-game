@@ -46,14 +46,9 @@ export default class Play extends Phaser.State {
 			Data.coins = Data.coins;
 		}
 		if(!Data.bullets){
-			Data.bullets = 0;
+			Data.bullets = 5;
 		}else{
 			Data.bullets = Data.bullets;
-		}
-		if(!Data.kills){
-			Data.kills = 0;
-		}else{
-			Data.kills = Data.kills;
 		}
 		Data.distance = 0;
 		Data.kills = 0;
@@ -159,7 +154,7 @@ export default class Play extends Phaser.State {
 
 		this.allEnemies.forEach((oneEnemy) => {
 			this.game.physics.arcade.overlap(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
-			this.game.physics.arcade.collide(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
+			// this.game.physics.arcade.collide(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
 		});
 
 		this.bullets.forEach((oneBullet) => {
@@ -224,8 +219,6 @@ export default class Play extends Phaser.State {
 					this.redEnemies.add(enemy);
 				}
 
-				enemy.lives = 2;
-
 				if(this.side == 'down'){
 					enemy.scale.y = -1;
 					y = 283;
@@ -255,8 +248,10 @@ export default class Play extends Phaser.State {
 
 	//collisions
 	enemyPlayerCollisionHandler(player, enemy){
-		player.destroy();
-		enemy.destroy();
+		// player.destroy();
+		// enemy.destroy();
+		player.pendingDestroy = true;
+		enemy.pendingDestroy = true;
 		this.playerHitSound.play();
 		Utils.changeState(this.game, 'Gameover');
 	}
@@ -272,13 +267,19 @@ export default class Play extends Phaser.State {
 	}
 
 	enemyBulletCollisionHandler(bullet, enemy){
+		// console.log(enemy.lives);
+		// enemy.destroy();
+		// bullet.destroy();
 		enemy.lives--;
-		if(enemy.lives === 0){
-			enemy.destroy();
+		if(enemy.lives < 1){
+			//enemy.destroy();
+			enemy.pendingDestroy = true;
 			Data.kills++;
 			this.killsTextBox.text = Data.kills + '\nkills';
 		}
-		bullet.destroy();
+		
+		//bullet.destroy();
+		bullet.pendingDestroy = true;
 		this.enemyHitSound.play();
 	}
 

@@ -664,14 +664,9 @@
 					_Data2.default.coins = _Data2.default.coins;
 				}
 				if (!_Data2.default.bullets) {
-					_Data2.default.bullets = 0;
+					_Data2.default.bullets = 5;
 				} else {
 					_Data2.default.bullets = _Data2.default.bullets;
-				}
-				if (!_Data2.default.kills) {
-					_Data2.default.kills = 0;
-				} else {
-					_Data2.default.kills = _Data2.default.kills;
 				}
 				_Data2.default.distance = 0;
 				_Data2.default.kills = 0;
@@ -780,7 +775,7 @@
 
 				this.allEnemies.forEach(function (oneEnemy) {
 					_this2.game.physics.arcade.overlap(_this2.player, oneEnemy, _this2.enemyPlayerCollisionHandler, null, _this2);
-					_this2.game.physics.arcade.collide(_this2.player, oneEnemy, _this2.enemyPlayerCollisionHandler, null, _this2);
+					// this.game.physics.arcade.collide(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
 				});
 
 				this.bullets.forEach(function (oneBullet) {
@@ -849,8 +844,6 @@
 							this.redEnemies.add(enemy);
 						}
 
-						enemy.lives = 2;
-
 						if (this.side == 'down') {
 							enemy.scale.y = -1;
 							y = 283;
@@ -884,8 +877,10 @@
 		}, {
 			key: 'enemyPlayerCollisionHandler',
 			value: function enemyPlayerCollisionHandler(player, enemy) {
-				player.destroy();
-				enemy.destroy();
+				// player.destroy();
+				// enemy.destroy();
+				player.pendingDestroy = true;
+				enemy.pendingDestroy = true;
 				this.playerHitSound.play();
 				Utils.changeState(this.game, 'Gameover');
 			}
@@ -903,13 +898,19 @@
 		}, {
 			key: 'enemyBulletCollisionHandler',
 			value: function enemyBulletCollisionHandler(bullet, enemy) {
+				// console.log(enemy.lives);
+				// enemy.destroy();
+				// bullet.destroy();
 				enemy.lives--;
-				if (enemy.lives === 0) {
-					enemy.destroy();
+				if (enemy.lives < 1) {
+					//enemy.destroy();
+					enemy.pendingDestroy = true;
 					_Data2.default.kills++;
 					this.killsTextBox.text = _Data2.default.kills + '\nkills';
 				}
-				bullet.destroy();
+
+				//bullet.destroy();
+				bullet.pendingDestroy = true;
 				this.enemyHitSound.play();
 			}
 		}, {
