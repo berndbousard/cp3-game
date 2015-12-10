@@ -576,6 +576,7 @@
 		this.distance;
 		this.bullets;
 		this.kills;
+		this.meteor;
 	};
 
 	exports.default = Data;
@@ -692,7 +693,9 @@
 				// controls
 				this.cursors = this.game.input.keyboard.createCursorKeys();
 				this.spacebar = this.game.input.keyboard.addKey(32);
+				this.m = this.game.input.keyboard.addKey(77);
 				this.spacebar.onDown.add(this.spaceBarHandler, this);
+				this.m.onDown.add(this.mDownHandler, this);
 				this.side = 'up';
 
 				// Declarations
@@ -705,6 +708,11 @@
 					_Data2.default.bullets = 5;
 				} else {
 					_Data2.default.bullets = _Data2.default.bullets;
+				}
+				if (!_Data2.default.meteor) {
+					_Data2.default.meteor = 5;
+				} else {
+					_Data2.default.meteor = _Data2.default.meteor;
 				}
 				_Data2.default.distance = 0;
 				_Data2.default.kills = 0;
@@ -743,6 +751,10 @@
 				// kills score text
 				this.killsTextBox = new _Text2.default(this.game, this.game.width / 2 - 150, 50, 'gamefont', _Data2.default.kills + '\nkills', 20, 'center');
 				this.game.add.existing(this.killsTextBox);
+
+				// meteor score text
+				this.meteorTextBox = new _Text2.default(this.game, this.game.width / 2 + 150, 50, 'gamefont', _Data2.default.meteor + '\nmeteor', 20, 'center');
+				this.game.add.existing(this.meteorTextBox);
 
 				// bullets
 				this.bullets = this.game.add.group();
@@ -794,10 +806,8 @@
 				});
 
 				this.meteorGroup.forEach(function (meteor) {
-					meteor.body.velocity.y = 50;
+					meteor.body.velocity.y = 100;
 				});
-
-				console.log(this.meteorGroup.children);
 
 				// controls
 				if (this.cursors.down.isDown) {
@@ -830,6 +840,12 @@
 						_this2.game.physics.arcade.collide(oneBullet, oneEnemy, _this2.enemyBulletCollisionHandler, null, _this2);
 					});
 				});
+
+				this.meteorGroup.forEach(function (oneMeteor) {
+					_this2.allEnemies.forEach(function (oneEnemy) {
+						_this2.game.physics.arcade.collide(oneMeteor, oneEnemy, _this2.meteorEnemyCollisionHandler, null, _this2);
+					});
+				});
 			}
 		}, {
 			key: 'shutdown',
@@ -846,6 +862,47 @@
 				    y = undefined;
 				// object pooling werkt, yes
 				console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length, 'red ' + this.redEnemies.length);
+
+				// this.enemyConfigs = {
+				// 	'black': {
+				// 		'group': this.blackEnemies,
+				// 		'class': EnemyBlack,
+				// 		'getY': enemy => 255,
+				// 		'getScale': enemy => 1
+				// 	},
+				// 	'orange': {
+				// 		'group': this.orangeEnemies,
+				// 		'class': EnemyOrange,
+				// 		'getY': enemy => {
+				// 			if(enemy.scale === -1){
+				// 				return 275;
+				// 			}
+				// 			return 225;
+				// 		},
+				// 		'getScale': enemy => {
+				// 			if(Math.random() > .5){
+				// 				return -1;
+				// 			}
+				// 			return 1;
+				// 		}
+				// 	}
+				// };
+
+				// const enemyConfig = this.enemyConfigs[color];
+				// if(enemyConfig) {
+				// 	enemy = enemyConfig.group.getFirstExists(false);
+				// 	if(!enemy){
+				// 		enemy = new enemyConfig.class(this.game, 0, 0);
+				// 		enemy.body.velocity.x = -200;
+				// 		enemyConfig.group.add(enemy);
+				// 	}
+				// 	enemy.scale.y = enemyConfig.getScale(enemy);
+				// 	y = enemyConfig.getY(enemy);
+				// 	x = this.randomInRange(750, 800);
+				// 	enemy.reset(x, y);
+				// 	console.log(x, y, enemy.scale);
+				// }
+
 				switch (color) {
 					case 'black':
 						enemy = this.blackEnemies.getFirstExists(false);
@@ -961,6 +1018,15 @@
 				this.enemyHitSound.play();
 			}
 		}, {
+			key: 'meteorEnemyCollisionHandler',
+			value: function meteorEnemyCollisionHandler(meteor, enemy) {
+				meteor.pendingDestroy = true;
+				_Data2.default.kills++;
+				this.killsTextBox.text = _Data2.default.kills + '\nkills';
+				enemy.pendingDestroy = true;
+				this.enemyHitSound.play();
+			}
+		}, {
 			key: 'createSuffixForScore',
 			value: function createSuffixForScore() {
 				if (_Data2.default.coins === 1) {
@@ -1003,9 +1069,39 @@
 					this.bulletTextBox.text = _Data2.default.bullets + '\nbullets';
 
 					this.playerShootSound.play();
-
-					this.spawnMeteor();
 				}
+			}
+		}, {
+			key: 'mDownHandler',
+			value: function mDownHandler() {
+				if (_Data2.default.meteor >= 1) {
+					_Data2.default.meteor--;
+					// nog een geluid
+					this.spawnMeteor();
+					this.updateMeteorText();
+				}
+			}
+		}, {
+			key: 'spawnMeteor',
+			value: function spawnMeteor() {
+				if (_Data2.default.meteor >= 1) {
+					for (var i = 0; i < 3; i++) {
+						var x = this.randomInRange(0, this.game.width);
+						var y = this.randomInRange(0, -75);
+						var meteor = this.meteorGroup.getFirstExists(false);
+						if (!meteor) {
+							meteor = new _Meteor2.default(this.game, x, y);
+						}
+						meteor.reset(x, y);
+						meteor.body.velocity.y = 50;
+						this.meteorGroup.add(meteor);
+					}
+				}
+			}
+		}, {
+			key: 'updateMeteorText',
+			value: function updateMeteorText() {
+				this.meteorTextBox.text = _Data2.default.meteor + '\nmeteor';
 			}
 		}, {
 			key: 'updateScore',
@@ -1027,21 +1123,6 @@
 			key: 'randomInRange',
 			value: function randomInRange(num1, num2) {
 				return this.game.rnd.integerInRange(num1, num2);
-			}
-		}, {
-			key: 'spawnMeteor',
-			value: function spawnMeteor() {
-				for (var i = 0; i < 10; i++) {
-					var x = this.randomInRange(0, this.game.width);
-					var y = this.randomInRange(0, -75);
-					var meteor = this.meteorGroup.getFirstExists(false);
-					if (!meteor) {
-						meteor = new _Meteor2.default(this.game, x, y);
-					}
-					meteor.reset(x, y);
-					meteor.body.velocity.y = 50;
-					this.meteorGroup.add(meteor);
-				}
 			}
 		}]);
 

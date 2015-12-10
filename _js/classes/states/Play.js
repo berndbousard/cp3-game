@@ -37,7 +37,9 @@ export default class Play extends Phaser.State {
 		// controls
 		this.cursors = this.game.input.keyboard.createCursorKeys();
 		this.spacebar = this.game.input.keyboard.addKey(32);
+		this.m = this.game.input.keyboard.addKey(77);
 		this.spacebar.onDown.add(this.spaceBarHandler, this);
+		this.m.onDown.add(this.mDownHandler, this);
 		this.side = 'up';
 
 		// Declarations
@@ -50,6 +52,11 @@ export default class Play extends Phaser.State {
 			Data.bullets = 5;
 		}else{
 			Data.bullets = Data.bullets;
+		}
+		if(!Data.meteor){
+			Data.meteor = 5;
+		}else{
+			Data.meteor = Data.meteor;
 		}
 		Data.distance = 0;
 		Data.kills = 0;
@@ -88,6 +95,10 @@ export default class Play extends Phaser.State {
 		// kills score text
 		this.killsTextBox = new Text(this.game, this.game.width/2 - 150, 50, 'gamefont', Data.kills + '\nkills', 20, 'center');
 		this.game.add.existing(this.killsTextBox);
+
+		// meteor score text
+		this.meteorTextBox = new Text(this.game, this.game.width/2 + 150, 50, 'gamefont', Data.meteor + '\nmeteor', 20, 'center');
+		this.game.add.existing(this.meteorTextBox);
 
 		// bullets
 		this.bullets = this.game.add.group();
@@ -136,10 +147,8 @@ export default class Play extends Phaser.State {
 		});
 
 		this.meteorGroup.forEach((meteor) => {
-			meteor.body.velocity.y = 50;
+			meteor.body.velocity.y = 100;
 		});
-
-		console.log(this.meteorGroup.children);
 
 		// controls
 		if(this.cursors.down.isDown){
@@ -172,6 +181,12 @@ export default class Play extends Phaser.State {
 				this.game.physics.arcade.collide(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
 			});
 		});
+
+		this.meteorGroup.forEach((oneMeteor) => {
+			this.allEnemies.forEach((oneEnemy) => {
+				this.game.physics.arcade.collide(oneMeteor, oneEnemy, this.meteorEnemyCollisionHandler, null, this);
+			});
+		});
 	}
 
 	shutdown(){
@@ -184,6 +199,49 @@ export default class Play extends Phaser.State {
 		let enemy, x, y;
 		// object pooling werkt, yes
 		console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length, 'red ' + this.redEnemies.length);
+		
+		// this.enemyConfigs = {
+		// 	'black': {
+		// 		'group': this.blackEnemies,
+		// 		'class': EnemyBlack,
+		// 		'getY': enemy => 255,
+		// 		'getScale': enemy => 1
+		// 	},
+		// 	'orange': {
+		// 		'group': this.orangeEnemies,
+		// 		'class': EnemyOrange,
+		// 		'getY': enemy => {
+		// 			if(enemy.scale === -1){
+		// 				return 275;
+		// 			}
+		// 			return 225;
+		// 		},
+		// 		'getScale': enemy => {
+		// 			if(Math.random() > .5){
+		// 				return -1;
+		// 			}
+		// 			return 1;
+		// 		}
+		// 	}
+		// };
+
+		// const enemyConfig = this.enemyConfigs[color];
+		// if(enemyConfig) {
+		// 	enemy = enemyConfig.group.getFirstExists(false);
+		// 	if(!enemy){
+		// 		enemy = new enemyConfig.class(this.game, 0, 0);
+		// 		enemy.body.velocity.x = -200;
+		// 		enemyConfig.group.add(enemy);
+		// 	}
+		// 	enemy.scale.y = enemyConfig.getScale(enemy);
+		// 	y = enemyConfig.getY(enemy);
+		// 	x = this.randomInRange(750, 800);
+		// 	enemy.reset(x, y);
+		// 	console.log(x, y, enemy.scale);
+		// }
+
+		
+
 		switch(color){
 			case 'black':
 				enemy = this.blackEnemies.getFirstExists(false);
@@ -240,7 +298,8 @@ export default class Play extends Phaser.State {
 		}
 		x = this.randomInRange(750, 800);
 		enemy.reset(x, y);
-	}	
+		
+	}
 
 	spawnCoin(){
 		let coin = this.coins.getFirstExists(false);
@@ -293,6 +352,14 @@ export default class Play extends Phaser.State {
 		this.enemyHitSound.play();
 	}
 
+	meteorEnemyCollisionHandler(meteor, enemy){
+		meteor.pendingDestroy = true;
+		Data.kills++;
+		this.killsTextBox.text = Data.kills + '\nkills';
+		enemy.pendingDestroy = true;
+		this.enemyHitSound.play();
+	}
+
 	createSuffixForScore(){
 		if(Data.coins === 1){
 			return ' coin';
@@ -332,9 +399,33 @@ export default class Play extends Phaser.State {
 			this.bulletTextBox.text = Data.bullets + '\nbullets';
 
 			this.playerShootSound.play();
-
-			this.spawnMeteor();
 		}
+	}
+	mDownHandler(){
+		if(Data.meteor >= 1){
+			Data.meteor--;
+			// nog een geluid
+			this.spawnMeteor();
+			this.updateMeteorText();
+		}
+	}
+	spawnMeteor(){
+		if(Data.meteor >= 1){
+			for(let i = 0; i < 3; i++){
+				let x = this.randomInRange(0, this.game.width);
+				let y = this.randomInRange(0, -75);
+				let meteor = this.meteorGroup.getFirstExists(false);
+				if(!meteor){
+					meteor = new Meteor(this.game, x, y);
+				}
+				meteor.reset(x, y);
+				meteor.body.velocity.y = 50;
+				this.meteorGroup.add(meteor);
+			}
+		}
+	}
+	updateMeteorText(){
+		this.meteorTextBox.text = Data.meteor + '\nmeteor';
 	}
 	updateScore(suffix){
 		this.scoreTextBox.text = Data.coins + suffix;
@@ -349,18 +440,5 @@ export default class Play extends Phaser.State {
 	}
 	randomInRange(num1, num2){
 		return this.game.rnd.integerInRange(num1, num2);
-	}
-	spawnMeteor(){
-		for(let i = 0; i < 10; i++){
-			let x = this.randomInRange(0, this.game.width);
-			let y = this.randomInRange(0, -75);
-			let meteor = this.meteorGroup.getFirstExists(false);
-			if(!meteor){
-				meteor = new Meteor(this.game, x, y);
-			}
-			meteor.reset(x, y);
-			meteor.body.velocity.y = 50;
-			this.meteorGroup.add(meteor);
-		}
 	}
 }
