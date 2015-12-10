@@ -50,7 +50,7 @@
 
 	var _Preload2 = _interopRequireDefault(_Preload);
 
-	var _Menu = __webpack_require__(2);
+	var _Menu = __webpack_require__(4);
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
@@ -101,11 +101,11 @@
 		value: true
 	});
 
-	var _Text = __webpack_require__(7);
+	var _Text = __webpack_require__(2);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
-	var _Utils = __webpack_require__(8);
+	var _Utils = __webpack_require__(3);
 
 	var Utils = _interopRequireWildcard(_Utils);
 
@@ -162,6 +162,7 @@
 				this.game.load.spritesheet('enemy_orange', 'assets/enemy_orange.png', 45, 45, 6);
 				this.game.load.spritesheet('enemy_red', 'assets/enemy_red.png', 60, 60, 6);
 				this.game.load.spritesheet('coin', 'assets/coin.png', 25, 25, 10);
+				this.game.load.spritesheet('keysImg', 'assets/keys.png', 100, 47, 5);
 
 				this.game.load.audio('change_side', 'assets/sound/change_side.mp3');
 				this.game.load.audio('coin', 'assets/sound/coin.mp3');
@@ -203,6 +204,73 @@
 
 /***/ },
 /* 2 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Text = (function (_Phaser$BitmapText) {
+		_inherits(Text, _Phaser$BitmapText);
+
+		function Text(game, x, y, font, text, size, align) {
+			_classCallCheck(this, Text);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Text).call(this, game, x, y, font, text, size, align));
+
+			_this.anchor.setTo(.5, .5);
+			_this.tint = 0xFFFFFF;
+			return _this;
+		}
+
+		return Text;
+	})(Phaser.BitmapText);
+
+	exports.default = Text;
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	var changeState = exports.changeState = function changeState(game, state) {
+		game.state.start(state);
+	};
+
+	var showElement = exports.showElement = function showElement(el) {
+		el.style.visibility = 'visible';
+	};
+
+	var hideElement = exports.hideElement = function hideElement(el) {
+		el.style.visibility = 'hidden';
+	};
+
+	var isEmpty = exports.isEmpty = function isEmpty(input) {
+		return input.value.length === 0;
+	};
+
+	var center = exports.center = function center(el) {
+		return el.anchor.setTo(.5, .5);
+	};
+
+	var setScale = exports.setScale = function setScale(el, scale) {
+		return el.scale.setTo(scale, scale);
+	};
+
+/***/ },
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -213,27 +281,27 @@
 		value: true
 	});
 
-	var _Button = __webpack_require__(3);
+	var _Button = __webpack_require__(5);
 
 	var _Button2 = _interopRequireDefault(_Button);
 
-	var _BackgroundCity = __webpack_require__(4);
+	var _BackgroundCity = __webpack_require__(6);
 
 	var _BackgroundCity2 = _interopRequireDefault(_BackgroundCity);
 
-	var _MenuBackground = __webpack_require__(5);
+	var _MenuBackground = __webpack_require__(7);
 
 	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
 
-	var _Sound = __webpack_require__(6);
+	var _Sound = __webpack_require__(8);
 
 	var _Sound2 = _interopRequireDefault(_Sound);
 
-	var _Text = __webpack_require__(7);
+	var _Text = __webpack_require__(2);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
-	var _Utils = __webpack_require__(8);
+	var _Utils = __webpack_require__(3);
 
 	var Utils = _interopRequireWildcard(_Utils);
 
@@ -355,7 +423,7 @@
 	exports.default = Menu;
 
 /***/ },
-/* 3 */
+/* 5 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -392,7 +460,7 @@
 	exports.default = Button;
 
 /***/ },
-/* 4 */
+/* 6 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -425,7 +493,7 @@
 	exports.default = BackgroundCity;
 
 /***/ },
-/* 5 */
+/* 7 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -458,7 +526,7 @@
 	exports.default = MenuBackground;
 
 /***/ },
-/* 6 */
+/* 8 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -486,69 +554,6 @@
 	})(Phaser.Sound);
 
 	exports.default = Sound;
-
-/***/ },
-/* 7 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Text = (function (_Phaser$BitmapText) {
-		_inherits(Text, _Phaser$BitmapText);
-
-		function Text(game, x, y, font, text, size, align) {
-			_classCallCheck(this, Text);
-
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Text).call(this, game, x, y, font, text, size, align));
-
-			_this.anchor.setTo(.5, .5);
-			_this.tint = 0xFFFFFF;
-			return _this;
-		}
-
-		return Text;
-	})(Phaser.BitmapText);
-
-	exports.default = Text;
-
-/***/ },
-/* 8 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	var changeState = exports.changeState = function changeState(game, state) {
-		game.state.start(state);
-	};
-
-	var showElement = exports.showElement = function showElement(el) {
-		el.style.visibility = 'visible';
-	};
-
-	var hideElement = exports.hideElement = function hideElement(el) {
-		el.style.visibility = 'hidden';
-	};
-
-	var isEmpty = exports.isEmpty = function isEmpty(input) {
-		return input.value.length === 0;
-	};
-
-	var center = exports.center = function center(el) {
-		return el.anchor.setTo(.5, .5);
-	};
 
 /***/ },
 /* 9 */
@@ -590,11 +595,11 @@
 
 	var _Player2 = _interopRequireDefault(_Player);
 
-	var _BackgroundCity = __webpack_require__(4);
+	var _BackgroundCity = __webpack_require__(6);
 
 	var _BackgroundCity2 = _interopRequireDefault(_BackgroundCity);
 
-	var _Text = __webpack_require__(7);
+	var _Text = __webpack_require__(2);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
@@ -602,7 +607,7 @@
 
 	var _Coin2 = _interopRequireDefault(_Coin);
 
-	var _Sound = __webpack_require__(6);
+	var _Sound = __webpack_require__(8);
 
 	var _Sound2 = _interopRequireDefault(_Sound);
 
@@ -614,7 +619,7 @@
 
 	var _Keyboard2 = _interopRequireDefault(_Keyboard);
 
-	var _Utils = __webpack_require__(8);
+	var _Utils = __webpack_require__(3);
 
 	var Utils = _interopRequireWildcard(_Utils);
 
@@ -1569,23 +1574,23 @@
 		value: true
 	});
 
-	var _BackgroundCity = __webpack_require__(4);
+	var _BackgroundCity = __webpack_require__(6);
 
 	var _BackgroundCity2 = _interopRequireDefault(_BackgroundCity);
 
-	var _MenuBackground = __webpack_require__(5);
+	var _MenuBackground = __webpack_require__(7);
 
 	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
 
-	var _Text = __webpack_require__(7);
+	var _Text = __webpack_require__(2);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
-	var _Sound = __webpack_require__(6);
+	var _Sound = __webpack_require__(8);
 
 	var _Sound2 = _interopRequireDefault(_Sound);
 
-	var _Utils = __webpack_require__(8);
+	var _Utils = __webpack_require__(3);
 
 	var Utils = _interopRequireWildcard(_Utils);
 
@@ -1750,23 +1755,23 @@
 		value: true
 	});
 
-	var _BackgroundCity = __webpack_require__(4);
+	var _BackgroundCity = __webpack_require__(6);
 
 	var _BackgroundCity2 = _interopRequireDefault(_BackgroundCity);
 
-	var _MenuBackground = __webpack_require__(5);
+	var _MenuBackground = __webpack_require__(7);
 
 	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
 
-	var _Sound = __webpack_require__(6);
+	var _Sound = __webpack_require__(8);
 
 	var _Sound2 = _interopRequireDefault(_Sound);
 
-	var _Text = __webpack_require__(7);
+	var _Text = __webpack_require__(2);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
-	var _Utils = __webpack_require__(8);
+	var _Utils = __webpack_require__(3);
 
 	var Utils = _interopRequireWildcard(_Utils);
 
@@ -1962,17 +1967,25 @@
 		value: true
 	});
 
-	var _Text = __webpack_require__(7);
+	var _Text = __webpack_require__(2);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
-	var _Sound = __webpack_require__(6);
+	var _Sound = __webpack_require__(8);
 
 	var _Sound2 = _interopRequireDefault(_Sound);
 
-	var _Utils = __webpack_require__(8);
+	var _Utils = __webpack_require__(3);
 
 	var Utils = _interopRequireWildcard(_Utils);
+
+	var _KeysImage = __webpack_require__(25);
+
+	var _KeysImage2 = _interopRequireDefault(_KeysImage);
+
+	var _Player = __webpack_require__(11);
+
+	var _Player2 = _interopRequireDefault(_Player);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -2015,6 +2028,10 @@
 				Utils.center(this.startButton);
 				this.backButton = this.game.add.button(this.game.width / 2 - 50, this.game.height / 2 + 175, 'backButton', this.backClickHandler, this);
 				Utils.center(this.backButton);
+
+				this.keysImg = new _KeysImage2.default(this.game, this.game.width / 2 + 225, this.game.height / 2 + 50);
+				Utils.center(this.keysImg);
+				this.game.add.existing(this.keysImg);
 			}
 		}, {
 			key: 'update',
@@ -2055,15 +2072,15 @@
 		value: true
 	});
 
-	var _BackgroundCity = __webpack_require__(4);
+	var _BackgroundCity = __webpack_require__(6);
 
 	var _BackgroundCity2 = _interopRequireDefault(_BackgroundCity);
 
-	var _MenuBackground = __webpack_require__(5);
+	var _MenuBackground = __webpack_require__(7);
 
 	var _MenuBackground2 = _interopRequireDefault(_MenuBackground);
 
-	var _Text = __webpack_require__(7);
+	var _Text = __webpack_require__(2);
 
 	var _Text2 = _interopRequireDefault(_Text);
 
@@ -2071,11 +2088,11 @@
 
 	var _Coin2 = _interopRequireDefault(_Coin);
 
-	var _Utils = __webpack_require__(8);
+	var _Utils = __webpack_require__(3);
 
 	var Utils = _interopRequireWildcard(_Utils);
 
-	var _Sound = __webpack_require__(6);
+	var _Sound = __webpack_require__(8);
 
 	var _Sound2 = _interopRequireDefault(_Sound);
 
@@ -2204,6 +2221,42 @@
 	})(Phaser.State);
 
 	exports.default = Shop;
+
+/***/ },
+/* 25 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var KeysImage = (function (_Phaser$Sprite) {
+		_inherits(KeysImage, _Phaser$Sprite);
+
+		function KeysImage(game, x, y) {
+			_classCallCheck(this, KeysImage);
+
+			// animation
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(KeysImage).call(this, game, x, y, 'keysImg'));
+
+			_this.animations.add('run');
+			_this.animations.play('run', 5, true);
+			return _this;
+		}
+
+		return KeysImage;
+	})(Phaser.Sprite);
+
+	exports.default = KeysImage;
 
 /***/ }
 /******/ ]);

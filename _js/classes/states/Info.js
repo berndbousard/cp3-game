@@ -1,6 +1,8 @@
 import Text from '../objects/Text';
 import Sound from '../objects/Sound';
 import * as Utils from '../objects/Utils';
+import KeysImage from '../objects/KeysImage';
+import Player from '../objects/Player';
 
 export default class Info extends Phaser.State {
 	preload(){
@@ -26,6 +28,10 @@ export default class Info extends Phaser.State {
 			this.game.width/2 - 50, this.game.height/2 + 175, 'backButton', this.backClickHandler, this
 		);
 		Utils.center(this.backButton);
+
+		this.keysImg = new KeysImage(this.game, this.game.width/2 + 225, this.game.height/2 + 50);
+		Utils.center(this.keysImg);
+		this.game.add.existing(this.keysImg);
 	}
 	update(){
 		
