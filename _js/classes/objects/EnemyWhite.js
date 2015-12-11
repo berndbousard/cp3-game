@@ -12,4 +12,10 @@ export default class EnemyWhite extends Enemy {
 		this.scale.y = -1;
 		this.lives = 1;
 	}
+	update(){
+		this.body.velocity.x = -200;
+		if(this.position.x < -this.width){
+			this.exists = false;
+		}
+	}
 }

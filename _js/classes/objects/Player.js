@@ -18,7 +18,7 @@ export default class Player extends Phaser.Sprite {
 	}
 	update(){
 		// om de hitbox te zien
-		this.game.debug.body(this);
+		// this.game.debug.body(this);
 	}
 
 	flipDown(){

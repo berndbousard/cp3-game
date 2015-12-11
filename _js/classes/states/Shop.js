@@ -24,8 +24,8 @@ export default class Shop extends Phaser.State {
 		if(!Data.coins){
 			Data.coins = 0;
 		}
-		if(!Data.meteors){
-			Data.meteors = 0;
+		if(!Data.meteor){
+			Data.meteor = 0;
 		}
 
 		this.prices = {
@@ -44,7 +44,7 @@ export default class Shop extends Phaser.State {
 		this.bulletText = new Text(this.game, this.game.width/2 + 85, this.game.height/2 - 50, 'gamefont', Data.bullets + '\nbullets', 20, 'center');
 		this.game.add.existing(this.bulletText);
 
-		this.meteorText = new Text(this.game, this.game.width/2 + 85, this.game.height/2 + 20, 'gamefont', Data.meteors + '\nmeteors', 20, 'center');
+		this.meteorText = new Text(this.game, this.game.width/2 + 85, this.game.height/2 + 20, 'gamefont', Data.meteor + '\nmeteors', 20, 'center');
 		this.game.add.existing(this.meteorText);
 
 		this.coinText = new Text(this.game, this.game.width/2, this.game.height/2 - 150, 'gamefont', Data.coins + '\ncoins', 20, 'center');
@@ -96,9 +96,9 @@ export default class Shop extends Phaser.State {
 			errorInfo = "";
 
 			this.bulletPackSound.play();
-			Data.meteors ++;
+			Data.meteor ++;
 			Data.coins -= this.prices.meteorprice;
-			this.meteorText.text = Data.meteors + '\nbullets';
+			this.meteorText.text = Data.meteor + '\nbullets';
 			this.coinText.text = Data.coins + '\ncoins';
 		}else{
 			this.doErrorHandling("not enough money");

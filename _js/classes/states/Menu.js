@@ -6,7 +6,6 @@ import Text from '../objects/Text';
 import * as Utils from '../objects/Utils';
 import Data from '../objects/Data';
 
-
 export default class Menu extends Phaser.State {
 	preload(){
 		console.log("start menu");
@@ -19,13 +18,6 @@ export default class Menu extends Phaser.State {
 		this.cursors = this.game.input.keyboard.createCursorKeys();
 		this.cursors.down.onDown.add(this.titleFlipDown, this);
 		this.cursors.up.onDown.add(this.titleFlipUp, this);
-
-		if(!Data.bullets){
-			Data.bullets = 0;
-		}
-		if(!Data.coins){
-			Data.coins = 0;
-		}
 
 		// Images
 		this.city = new BackgroundCity(this.game, 0, 0, 750, 500, 'city');
@@ -44,7 +36,6 @@ export default class Menu extends Phaser.State {
 		this.game.add.existing(this.titleBox);
 
 		if(Data.coins){
-			console.log(Data.coins);
 			let coinsText = new Text(this.game, this.game.width/2, this.game.height/2 - 150, 'gamefont', Data.coins + '\ncoins', 20, 'center');
 			this.game.add.existing(coinsText);
 		}

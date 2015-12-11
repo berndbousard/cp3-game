@@ -58,19 +58,19 @@
 
 	var _Play2 = _interopRequireDefault(_Play);
 
-	var _Leaderboard = __webpack_require__(22);
+	var _Leaderboard = __webpack_require__(21);
 
 	var _Leaderboard2 = _interopRequireDefault(_Leaderboard);
 
-	var _Gameover = __webpack_require__(23);
+	var _Gameover = __webpack_require__(22);
 
 	var _Gameover2 = _interopRequireDefault(_Gameover);
 
-	var _Info = __webpack_require__(24);
+	var _Info = __webpack_require__(23);
 
 	var _Info2 = _interopRequireDefault(_Info);
 
-	var _Shop = __webpack_require__(26);
+	var _Shop = __webpack_require__(25);
 
 	var _Shop2 = _interopRequireDefault(_Shop);
 
@@ -164,7 +164,7 @@
 				this.game.load.spritesheet('enemy_red', 'assets/enemy_red.png', 60, 60, 6);
 				this.game.load.spritesheet('coin', 'assets/coin.png', 25, 25, 10);
 				this.game.load.spritesheet('meteor', 'assets/meteor.png', 37, 50, 6);
-				this.game.load.spritesheet('keysImg', 'assets/keys.png', 100, 47, 5);
+				this.game.load.spritesheet('keysImg', 'assets/keys.png', 120, 56, 5);
 
 				this.game.load.audio('change_side', 'assets/sound/change_side.mp3');
 				this.game.load.audio('coin', 'assets/sound/coin.mp3');
@@ -346,13 +346,6 @@
 				this.cursors.down.onDown.add(this.titleFlipDown, this);
 				this.cursors.up.onDown.add(this.titleFlipUp, this);
 
-				if (!_Data2.default.bullets) {
-					_Data2.default.bullets = 0;
-				}
-				if (!_Data2.default.coins) {
-					_Data2.default.coins = 0;
-				}
-
 				// Images
 				this.city = new _BackgroundCity2.default(this.game, 0, 0, 750, 500, 'city');
 				this.game.add.existing(this.city);
@@ -370,7 +363,6 @@
 				this.game.add.existing(this.titleBox);
 
 				if (_Data2.default.coins) {
-					console.log(_Data2.default.coins);
 					var coinsText = new _Text2.default(this.game, this.game.width / 2, this.game.height / 2 - 150, 'gamefont', _Data2.default.coins + '\ncoins', 20, 'center');
 					this.game.add.existing(coinsText);
 				}
@@ -596,12 +588,12 @@
 		_classCallCheck(this, Data);
 
 		game.data = {};
-		this.coins;
-		this.distance;
-		this.bullets;
-		this.kills;
-		this.meteor;
-		this.meteors;
+		this.coins = 1;
+		this.distance = 0;
+		this.bullets = 5;
+		this.kills = 0;
+		this.meteor = 1;
+		this.firstTimePlaying = true;
 	};
 
 	exports.default = Data;
@@ -646,10 +638,6 @@
 
 	var _BulletGroup2 = _interopRequireDefault(_BulletGroup);
 
-	var _Keyboard = __webpack_require__(16);
-
-	var _Keyboard2 = _interopRequireDefault(_Keyboard);
-
 	var _Utils = __webpack_require__(3);
 
 	var Utils = _interopRequireWildcard(_Utils);
@@ -658,19 +646,19 @@
 
 	var _Data2 = _interopRequireDefault(_Data);
 
-	var _EnemyBlack = __webpack_require__(17);
+	var _EnemyBlack = __webpack_require__(16);
 
 	var _EnemyBlack2 = _interopRequireDefault(_EnemyBlack);
 
-	var _EnemyWhite = __webpack_require__(19);
+	var _EnemyWhite = __webpack_require__(18);
 
 	var _EnemyWhite2 = _interopRequireDefault(_EnemyWhite);
 
-	var _EnemyOrange = __webpack_require__(20);
+	var _EnemyOrange = __webpack_require__(19);
 
 	var _EnemyOrange2 = _interopRequireDefault(_EnemyOrange);
 
-	var _EnemyRed = __webpack_require__(21);
+	var _EnemyRed = __webpack_require__(20);
 
 	var _EnemyRed2 = _interopRequireDefault(_EnemyRed);
 
@@ -703,14 +691,13 @@
 				this.coinSound = new _Sound2.default(this.game, 'coin');
 				this.enemyHitSound = new _Sound2.default(this.game, 'enemy_hit');
 				this.playerHitSound = new _Sound2.default(this.game, 'player_hit');
-				this.playerShootSound = new _Sound2.default(this.game, 'player_shoot', 0.5);
+				this.playerShootSound = new _Sound2.default(this.game, 'player_shoot');
 			}
 		}, {
 			key: 'create',
 			value: function create() {
-
 				// sound
-				this.backgroundSound.play();
+				// this.backgroundSound.play();
 
 				// physics
 				this.game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -719,9 +706,9 @@
 				this.cursors = this.game.input.keyboard.createCursorKeys();
 				this.spacebar = this.game.input.keyboard.addKey(32);
 				this.m = this.game.input.keyboard.addKey(77);
+
 				this.spacebar.onDown.add(this.spaceBarHandler, this);
 				this.m.onDown.add(this.mDownHandler, this);
-				this.side = 'up';
 
 				// Declarations
 				if (!_Data2.default.coins) {
@@ -744,9 +731,7 @@
 				this.gameSpeed = .95; //variable die de snelheid van de game bepaalt. hoe groter het getal hoe sneller/moeilijker. Beinvloed momenteel enkel spawnrate van enemy
 				this.delay = Phaser.Timer.SECOND * 2;
 				this.minimumDistanceBetween = 500;
-
-				//this.bossTimer = 0;
-				//this.keepUpWithBoss = []; // array om bij te houden welke bosses er al aangemaakt zijn. Idealiter blijft deze array op 0 of 1 entries.
+				this.side = 'up';
 
 				// Images
 				this.city = new _BackgroundCity2.default(this.game, 0, 0, 750, 500, 'city');
@@ -813,26 +798,7 @@
 			value: function update() {
 				var _this2 = this;
 
-				// movement
-				this.blackEnemies.forEach(function (enemy) {
-					enemy.body.velocity.x = -200;
-				});
-
-				this.whiteEnemies.forEach(function (enemy) {
-					enemy.body.velocity.x = -200;
-				});
-
-				this.orangeEnemies.forEach(function (enemy) {
-					enemy.body.velocity.x = -250;
-				});
-
-				this.redEnemies.forEach(function (enemy) {
-					enemy.body.velocity.x = -50;
-				});
-
-				this.meteorGroup.forEach(function (meteor) {
-					meteor.body.velocity.y = 100;
-				});
+				console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length, 'red ' + this.redEnemies.length);
 
 				// controls
 				if (this.cursors.down.isDown) {
@@ -886,7 +852,6 @@
 				    x = undefined,
 				    y = undefined;
 				// object pooling werkt, yes
-				console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length, 'red ' + this.redEnemies.length);
 
 				// this.enemyConfigs = {
 				// 	'black': {
@@ -997,7 +962,12 @@
 				var coin = this.coins.getFirstExists(false);
 				// positioning
 				var x = this.randomInRange(750, 800);
-				var y = this.game.height / 2;
+				var y = undefined;
+				if (Math.round(Math.random()) === 1) {
+					y = this.game.height / 2 + 50;
+				} else {
+					y = this.game.height / 2 - 50;
+				}
 				if (!coin) {
 					coin = new _Coin2.default(this.game, 0, 0);
 				}
@@ -1213,7 +1183,7 @@
 			key: 'update',
 			value: function update() {
 				// om de hitbox te zien
-				this.game.debug.body(this);
+				// this.game.debug.body(this);
 			}
 		}, {
 			key: 'flipDown',
@@ -1310,6 +1280,8 @@
 
 	'use strict';
 
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
@@ -1336,6 +1308,13 @@
 			_this.animations.play('fall', 10, true);
 			return _this;
 		}
+
+		_createClass(Meteor, [{
+			key: 'update',
+			value: function update() {
+				this.body.velocity.y = 100;
+			}
+		}]);
 
 		return Meteor;
 	})(Phaser.Sprite);
@@ -1372,16 +1351,11 @@
 
 			_this.anchor.setTo(.5, .5);
 
-			var amplitude = 200;
-
-			_this.position.y = _this.game.height / 2 - amplitude;
-			_this.body.velocity.x = -150;
-
 			_this.animations.add('rotate');
 			_this.animations.play('rotate', 15, true);
 
 			// Phaser.Tween.to(properties(moet object zijn), duration, ease, autoStart, delay, repeat, yoyo) : Phaser.Tween;
-			_this.game.add.tween(_this).to({ y: _this.game.height / 2 + amplitude }, 5000, Phaser.Easing.Linear.In, true, 0, 1000, true);
+			// this.game.add.tween(this).to({y: this.game.height/2 + amplitude}, 5000, Phaser.Easing.Linear.In, true, 0, 1000, true);
 
 			_this.exists = true;
 			return _this;
@@ -1394,6 +1368,7 @@
 				if (this.body.position.x < 0 - this.width) {
 					this.exists = false;
 				}
+				this.body.velocity.x = -150;
 			}
 		}]);
 
@@ -1468,45 +1443,17 @@
 
 /***/ },
 /* 16 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Keyboard = (function (_Phaser$Key) {
-		_inherits(Keyboard, _Phaser$Key);
-
-		function Keyboard(game, keycode) {
-			_classCallCheck(this, Keyboard);
-
-			return _possibleConstructorReturn(this, Object.getPrototypeOf(Keyboard).call(this, game, keycode));
-		}
-
-		return Keyboard;
-	})(Phaser.Key);
-
-	exports.default = Keyboard;
-
-/***/ },
-/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
 
-	var _Enemy2 = __webpack_require__(18);
+	var _Enemy2 = __webpack_require__(17);
 
 	var _Enemy3 = _interopRequireDefault(_Enemy2);
 
@@ -1536,13 +1483,23 @@
 			return _this;
 		}
 
+		_createClass(EnemyBlack, [{
+			key: 'update',
+			value: function update() {
+				this.body.velocity.x = -200;
+				if (this.position.x < -this.width) {
+					this.exists = false;
+				}
+			}
+		}]);
+
 		return EnemyBlack;
 	})(_Enemy3.default);
 
 	exports.default = EnemyBlack;
 
 /***/ },
-/* 18 */
+/* 17 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1582,12 +1539,7 @@
 
 		_createClass(Enemy, [{
 			key: 'update',
-			value: function update() {
-				this.game.debug.body(this);
-				if (this.position.x < -this.width) {
-					this.exists = false;
-				}
-			}
+			value: function update() {}
 		}, {
 			key: 'flipDown',
 			value: function flipDown() {
@@ -1608,16 +1560,18 @@
 	exports.default = Enemy;
 
 /***/ },
-/* 19 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
 
-	var _Enemy2 = __webpack_require__(18);
+	var _Enemy2 = __webpack_require__(17);
 
 	var _Enemy3 = _interopRequireDefault(_Enemy2);
 
@@ -1648,22 +1602,34 @@
 			return _this;
 		}
 
+		_createClass(EnemyWhite, [{
+			key: 'update',
+			value: function update() {
+				this.body.velocity.x = -200;
+				if (this.position.x < -this.width) {
+					this.exists = false;
+				}
+			}
+		}]);
+
 		return EnemyWhite;
 	})(_Enemy3.default);
 
 	exports.default = EnemyWhite;
 
 /***/ },
-/* 20 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
 
-	var _Enemy2 = __webpack_require__(18);
+	var _Enemy2 = __webpack_require__(17);
 
 	var _Enemy3 = _interopRequireDefault(_Enemy2);
 
@@ -1693,22 +1659,34 @@
 			return _this;
 		}
 
+		_createClass(EnemyOrange, [{
+			key: 'update',
+			value: function update() {
+				this.body.velocity.x = -250;
+				if (this.position.x < -this.width) {
+					this.exists = false;
+				}
+			}
+		}]);
+
 		return EnemyOrange;
 	})(_Enemy3.default);
 
 	exports.default = EnemyOrange;
 
 /***/ },
-/* 21 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
 
-	var _Enemy2 = __webpack_require__(18);
+	var _Enemy2 = __webpack_require__(17);
 
 	var _Enemy3 = _interopRequireDefault(_Enemy2);
 
@@ -1738,13 +1716,23 @@
 			return _this;
 		}
 
+		_createClass(EnemyRed, [{
+			key: 'update',
+			value: function update() {
+				this.body.velocity.x = -50;
+				if (this.position.x < -this.width) {
+					this.exists = false;
+				}
+			}
+		}]);
+
 		return EnemyRed;
 	})(_Enemy3.default);
 
 	exports.default = EnemyRed;
 
 /***/ },
-/* 22 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1925,7 +1913,7 @@
 	exports.default = Leaderboard;
 
 /***/ },
-/* 23 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2137,7 +2125,7 @@
 	exports.default = Gameover;
 
 /***/ },
-/* 24 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2160,7 +2148,7 @@
 
 	var Utils = _interopRequireWildcard(_Utils);
 
-	var _KeysImage = __webpack_require__(25);
+	var _KeysImage = __webpack_require__(24);
 
 	var _KeysImage2 = _interopRequireDefault(_KeysImage);
 
@@ -2242,7 +2230,7 @@
 	exports.default = Info;
 
 /***/ },
-/* 25 */
+/* 24 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2278,7 +2266,7 @@
 	exports.default = KeysImage;
 
 /***/ },
-/* 26 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2357,8 +2345,8 @@
 				if (!_Data2.default.coins) {
 					_Data2.default.coins = 0;
 				}
-				if (!_Data2.default.meteors) {
-					_Data2.default.meteors = 0;
+				if (!_Data2.default.meteor) {
+					_Data2.default.meteor = 0;
 				}
 
 				this.prices = {
@@ -2377,7 +2365,7 @@
 				this.bulletText = new _Text2.default(this.game, this.game.width / 2 + 85, this.game.height / 2 - 50, 'gamefont', _Data2.default.bullets + '\nbullets', 20, 'center');
 				this.game.add.existing(this.bulletText);
 
-				this.meteorText = new _Text2.default(this.game, this.game.width / 2 + 85, this.game.height / 2 + 20, 'gamefont', _Data2.default.meteors + '\nmeteors', 20, 'center');
+				this.meteorText = new _Text2.default(this.game, this.game.width / 2 + 85, this.game.height / 2 + 20, 'gamefont', _Data2.default.meteor + '\nmeteors', 20, 'center');
 				this.game.add.existing(this.meteorText);
 
 				this.coinText = new _Text2.default(this.game, this.game.width / 2, this.game.height / 2 - 150, 'gamefont', _Data2.default.coins + '\ncoins', 20, 'center');
@@ -2430,9 +2418,9 @@
 					errorInfo = "";
 
 					this.bulletPackSound.play();
-					_Data2.default.meteors++;
+					_Data2.default.meteor++;
 					_Data2.default.coins -= this.prices.meteorprice;
-					this.meteorText.text = _Data2.default.meteors + '\nbullets';
+					this.meteorText.text = _Data2.default.meteor + '\nbullets';
 					this.coinText.text = _Data2.default.coins + '\ncoins';
 				} else {
 					this.doErrorHandling("not enough money");

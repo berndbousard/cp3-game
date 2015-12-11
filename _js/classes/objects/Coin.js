@@ -6,16 +6,11 @@ export default class Coin extends Phaser.Sprite {
 		
 		this.anchor.setTo(.5, .5);
 
-		let amplitude = 200;
-
-		this.position.y = this.game.height/2 - amplitude;
-		this.body.velocity.x = -150;
-
 		this.animations.add('rotate');
 		this.animations.play('rotate', 15, true);
 
 		// Phaser.Tween.to(properties(moet object zijn), duration, ease, autoStart, delay, repeat, yoyo) : Phaser.Tween;
-		this.game.add.tween(this).to({y: this.game.height/2 + amplitude}, 5000, Phaser.Easing.Linear.In, true, 0, 1000, true);
+		// this.game.add.tween(this).to({y: this.game.height/2 + amplitude}, 5000, Phaser.Easing.Linear.In, true, 0, 1000, true);
 
 		this.exists = true;
 	}
@@ -24,5 +19,6 @@ export default class Coin extends Phaser.Sprite {
 		if(this.body.position.x < 0 - this.width){
 			this.exists = false;
 		}
+		this.body.velocity.x = -150;
 	}
 }

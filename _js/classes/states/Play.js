@@ -6,7 +6,6 @@ import Text from '../objects/Text';
 import Coin from '../objects/Coin';
 import Sound from '../objects/Sound';
 import BulletGroup from '../objects/BulletGroup';
-import Keyboard from '../objects/Keyboard';
 import * as Utils from '../objects/Utils';
 import Data from '../objects/Data';
 
@@ -24,12 +23,11 @@ export default class Play extends Phaser.State {
 		this.coinSound = new Sound(this.game, 'coin');
 		this.enemyHitSound = new Sound(this.game, 'enemy_hit');
 		this.playerHitSound = new Sound(this.game, 'player_hit');
-		this.playerShootSound = new Sound(this.game, 'player_shoot', 0.5);
+		this.playerShootSound = new Sound(this.game, 'player_shoot');
 	}
 	create(){
-
 		// sound
-		this.backgroundSound.play();
+		// this.backgroundSound.play();
 
 		// physics
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -38,9 +36,9 @@ export default class Play extends Phaser.State {
 		this.cursors = this.game.input.keyboard.createCursorKeys();
 		this.spacebar = this.game.input.keyboard.addKey(32);
 		this.m = this.game.input.keyboard.addKey(77);
+
 		this.spacebar.onDown.add(this.spaceBarHandler, this);
 		this.m.onDown.add(this.mDownHandler, this);
-		this.side = 'up';
 
 		// Declarations
 		if(!Data.coins){
@@ -63,9 +61,7 @@ export default class Play extends Phaser.State {
 		this.gameSpeed = .95; //variable die de snelheid van de game bepaalt. hoe groter het getal hoe sneller/moeilijker. Beinvloed momenteel enkel spawnrate van enemy
 		this.delay = Phaser.Timer.SECOND * 2;
 		this.minimumDistanceBetween = 500;
-
-		//this.bossTimer = 0;
-		//this.keepUpWithBoss = []; // array om bij te houden welke bosses er al aangemaakt zijn. Idealiter blijft deze array op 0 of 1 entries.
+		this.side = 'up';
 
 		// Images
 		this.city = new BackgroundCity(this.game, 0, 0, 750, 500, 'city');
@@ -129,27 +125,8 @@ export default class Play extends Phaser.State {
 	}
 
 	update(){
-		// movement
-		this.blackEnemies.forEach(enemy => {
-			enemy.body.velocity.x = -200;
-		});
-
-		this.whiteEnemies.forEach(enemy => {
-			enemy.body.velocity.x = -200;
-		});
-
-		this.orangeEnemies.forEach(enemy => {
-			enemy.body.velocity.x = -250;
-		});
-
-		this.redEnemies.forEach(enemy => {
-			enemy.body.velocity.x = -50;
-		});
-
-		this.meteorGroup.forEach((meteor) => {
-			meteor.body.velocity.y = 100;
-		});
-
+		console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length, 'red ' + this.redEnemies.length);
+		
 		// controls
 		if(this.cursors.down.isDown){
 			this.side = 'down';
@@ -198,7 +175,6 @@ export default class Play extends Phaser.State {
 		let color = this.generateRandomColor();
 		let enemy, x, y;
 		// object pooling werkt, yes
-		console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length, 'red ' + this.redEnemies.length);
 		
 		// this.enemyConfigs = {
 		// 	'black': {
@@ -245,8 +221,6 @@ export default class Play extends Phaser.State {
 		// 	enemy.reset(x, y);
 		// 	console.log(x, y, enemy.scale);
 		// }
-
-		
 
 		switch(color){
 			case 'black':
@@ -311,7 +285,12 @@ export default class Play extends Phaser.State {
 		let coin = this.coins.getFirstExists(false);
 		// positioning
 		let x = this.randomInRange(750, 800);
-		let y = this.game.height/2;
+		let y;
+		if(Math.round(Math.random()) === 1){
+			y = this.game.height/2 + 50;
+		}else{
+			y = this.game.height/2 - 50;
+		}
 		if(!coin){
 			coin = new Coin(this.game, 0, 0);
 		}

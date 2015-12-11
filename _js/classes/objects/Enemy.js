@@ -14,10 +14,6 @@ export default class Enemy extends Phaser.Sprite {
 		this.animations.play('walk', 8, true);
 	}
 	update(){
-		this.game.debug.body(this);
-		if(this.position.x < -this.width){
-			this.exists = false;
-		}
 	}
 	flipDown(){
 		this.body.y = this.game.height/2 +2;

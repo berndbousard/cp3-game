@@ -36,7 +36,7 @@ export default class Preload extends Phaser.State {
 		this.game.load.spritesheet('enemy_red', 'assets/enemy_red.png', 60, 60, 6);
 		this.game.load.spritesheet('coin', 'assets/coin.png', 25, 25, 10);
 		this.game.load.spritesheet('meteor', 'assets/meteor.png', 37, 50, 6);
-		this.game.load.spritesheet('keysImg', 'assets/keys.png', 100, 47, 5);
+		this.game.load.spritesheet('keysImg', 'assets/keys.png', 120, 56, 5);
 
 		this.game.load.audio('change_side' ,'assets/sound/change_side.mp3');
 		this.game.load.audio('coin' ,'assets/sound/coin.mp3');
