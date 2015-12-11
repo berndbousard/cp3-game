@@ -12,8 +12,13 @@ export default class Menu extends Phaser.State {
 		console.log("start menu");
 		// music
 		this.clickSound = new Sound(this.game, 'click');
+		this.flipSound = new Sound(this.game, 'change_side');
 	}
 	create(){
+		// easter eggs
+		this.cursors = this.game.input.keyboard.createCursorKeys();
+		this.cursors.down.onDown.add(this.titleFlipDown, this);
+		this.cursors.up.onDown.add(this.titleFlipUp, this);
 
 		if(!Data.bullets){
 			Data.bullets = 0;
@@ -58,7 +63,6 @@ export default class Menu extends Phaser.State {
 		Utils.center(this.startButton);
 	}
 	update(){
-		console.log(Data.coins);
 	}
 	shutdown(){
 		console.log("end menu");
@@ -78,5 +82,22 @@ export default class Menu extends Phaser.State {
 	shopClickHandler(){
 		this.clickSound.play();
 		Utils.changeState(this.game, 'Shop');
+	}
+	titleFlipUp(){
+		if(this.titleBox.scale.y === -1){
+			console.log('flip up');
+			this.titleBox.scale.y = 1;
+			this.titleBox.position.y = 228;
+			this.flipSound.play();
+		}
+		
+	}
+	titleFlipDown(){
+		if(this.titleBox.scale.y === 1){
+			console.log('flip down');
+			this.titleBox.scale.y = -1;
+			this.titleBox.position.y = 220;
+			this.flipSound.play();
+		}
 	}
 }

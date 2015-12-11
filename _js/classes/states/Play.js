@@ -204,25 +204,31 @@ export default class Play extends Phaser.State {
 		// 	'black': {
 		// 		'group': this.blackEnemies,
 		// 		'class': EnemyBlack,
-		// 		'getY': enemy => 255,
+		// 		'getY': enemy => 225,
 		// 		'getScale': enemy => 1
 		// 	},
 		// 	'orange': {
 		// 		'group': this.orangeEnemies,
 		// 		'class': EnemyOrange,
-		// 		'getY': enemy => {
-		// 			if(enemy.scale === -1){
-		// 				return 275;
-		// 			}
-		// 			return 225;
-		// 		},
 		// 		'getScale': enemy => {
 		// 			if(Math.random() > .5){
 		// 				return -1;
 		// 			}
 		// 			return 1;
+		// 		},
+		// 		'getY': enemy => {
+		// 			if(enemy.scale === -1){
+		// 				return 275;
+		// 			}
+		// 			return 225;
 		// 		}
-		// 	}
+		// 	},
+		// 	'white': {
+		// 		'group': this.whiteEnemies,
+		// 		'class': EnemyWhite,
+		// 		'getY': enemy => 275,
+		// 		'getScale': enemy => -1
+		// 	}	
 		// };
 
 		// const enemyConfig = this.enemyConfigs[color];
@@ -435,7 +441,7 @@ export default class Play extends Phaser.State {
 	}
 
 	generateRandomColor(){
-		let colors = ['black', 'orange', 'red', 'white'];
+		let colors = ['black', 'orange', 'red', 'white', 'black', 'white', 'black', 'white', 'black', 'white', 'black', 'white', 'orange', 'orange', 'orange'];
 		return colors[Math.round(Math.random() * (colors.length - 1))];
 	}
 	randomInRange(num1, num2){

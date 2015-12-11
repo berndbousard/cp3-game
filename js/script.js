@@ -336,10 +336,15 @@
 				console.log("start menu");
 				// music
 				this.clickSound = new _Sound2.default(this.game, 'click');
+				this.flipSound = new _Sound2.default(this.game, 'change_side');
 			}
 		}, {
 			key: 'create',
 			value: function create() {
+				// easter eggs
+				this.cursors = this.game.input.keyboard.createCursorKeys();
+				this.cursors.down.onDown.add(this.titleFlipDown, this);
+				this.cursors.up.onDown.add(this.titleFlipUp, this);
 
 				if (!_Data2.default.bullets) {
 					_Data2.default.bullets = 0;
@@ -385,9 +390,7 @@
 			}
 		}, {
 			key: 'update',
-			value: function update() {
-				console.log(_Data2.default.coins);
-			}
+			value: function update() {}
 		}, {
 			key: 'shutdown',
 			value: function shutdown() {
@@ -416,6 +419,26 @@
 			value: function shopClickHandler() {
 				this.clickSound.play();
 				Utils.changeState(this.game, 'Shop');
+			}
+		}, {
+			key: 'titleFlipUp',
+			value: function titleFlipUp() {
+				if (this.titleBox.scale.y === -1) {
+					console.log('flip up');
+					this.titleBox.scale.y = 1;
+					this.titleBox.position.y = 228;
+					this.flipSound.play();
+				}
+			}
+		}, {
+			key: 'titleFlipDown',
+			value: function titleFlipDown() {
+				if (this.titleBox.scale.y === 1) {
+					console.log('flip down');
+					this.titleBox.scale.y = -1;
+					this.titleBox.position.y = 220;
+					this.flipSound.play();
+				}
 			}
 		}]);
 
@@ -869,25 +892,31 @@
 				// 	'black': {
 				// 		'group': this.blackEnemies,
 				// 		'class': EnemyBlack,
-				// 		'getY': enemy => 255,
+				// 		'getY': enemy => 225,
 				// 		'getScale': enemy => 1
 				// 	},
 				// 	'orange': {
 				// 		'group': this.orangeEnemies,
 				// 		'class': EnemyOrange,
-				// 		'getY': enemy => {
-				// 			if(enemy.scale === -1){
-				// 				return 275;
-				// 			}
-				// 			return 225;
-				// 		},
 				// 		'getScale': enemy => {
 				// 			if(Math.random() > .5){
 				// 				return -1;
 				// 			}
 				// 			return 1;
+				// 		},
+				// 		'getY': enemy => {
+				// 			if(enemy.scale === -1){
+				// 				return 275;
+				// 			}
+				// 			return 225;
 				// 		}
-				// 	}
+				// 	},
+				// 	'white': {
+				// 		'group': this.whiteEnemies,
+				// 		'class': EnemyWhite,
+				// 		'getY': enemy => 275,
+				// 		'getScale': enemy => -1
+				// 	}	
 				// };
 
 				// const enemyConfig = this.enemyConfigs[color];
@@ -1118,7 +1147,7 @@
 		}, {
 			key: 'generateRandomColor',
 			value: function generateRandomColor() {
-				var colors = ['black', 'orange', 'red', 'white'];
+				var colors = ['black', 'orange', 'red', 'white', 'black', 'white', 'black', 'white', 'black', 'white', 'black', 'white', 'orange', 'orange', 'orange'];
 				return colors[Math.round(Math.random() * (colors.length - 1))];
 			}
 		}, {
