@@ -14,8 +14,8 @@ export default class Info extends Phaser.State {
 		// To create multi-line text insert \r, \n or \r\n escape codes into the text string.
 		// dit font heeft geen . tekens dus als je een punt typt komt er een error, geen punten dus ;)
 		// new BitmapText(game, x, y, font, text, size)`
-		let text = "Het doel\nHet doel van het spel is om zo ver mogelijk te raken\nDit doe je door zoveel mogelijk enemies te ontwijken\n\nControls\nDoor de pijltjestoesten te gebruiken kan je\nwisselen tussen bovenaan en onderaan\nGebruik de spatiebalk om te schieten";
-		this.textBox = new Text(this.game, this.game.width/2, this.game.height/2, 'gamefont', text, 20);
+		let text = "Het doel\nHet doel van het spel is om zo ver mogelijk te raken\nDit doe je door zoveel mogelijk enemies te ontwijken\n\nControls\nGebruik de pijltjestoetsen om te\nwisselen tussen bovenaan en onderaan\n\nGebruik de spatiebalk om te schieten\n\nGebruik de M om meteoren te laten regenen";
+		this.textBox = new Text(this.game, this.game.width/2, this.game.height/2 - 40, 'gamefont', text, 20);
 		this.textBox.anchor.setTo(.5, .5);
 		this.game.add.existing(this.textBox);
 		
@@ -29,9 +29,17 @@ export default class Info extends Phaser.State {
 		);
 		Utils.center(this.backButton);
 
-		this.keysImg = new KeysImage(this.game, this.game.width/2 + 225, this.game.height/2 + 50);
+		this.keysImg = new KeysImage(this.game, this.game.width/2 + 216, this.game.height/2 - 34, 'keysImg');
 		Utils.center(this.keysImg);
 		this.game.add.existing(this.keysImg);
+
+		this.spaceBarImg = new KeysImage(this.game, this.game.width/2 + 219, this.game.height/2 + 20, 'spaceBar');
+		Utils.center(this.spaceBarImg);
+		this.game.add.existing(this.spaceBarImg);
+
+		this.mKeyImg = new KeysImage(this.game, this.game.width/2 + 216, this.game.height/2 + 59, 'mKey');
+		Utils.center(this.mKeyImg);
+		this.game.add.existing(this.mKeyImg);
 	}
 	update(){
 		

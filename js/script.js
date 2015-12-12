@@ -153,6 +153,8 @@
 				this.game.load.image('shopButton', 'assets/shopButton.png');
 				this.game.load.image('bulletButton', 'assets/bulletButton.png');
 				this.game.load.image('meteorButton', 'assets/meteorButton.png');
+				this.game.load.image('muteButton', 'assets/muteButton.png');
+				this.game.load.image('unmuteButton', 'assets/unmuteButton.png');
 
 				this.game.load.bitmapFont('gamefont', 'assets/font/extra/gamefont.png', 'assets/font/extra/gamefont.fnt');
 
@@ -165,6 +167,8 @@
 				this.game.load.spritesheet('coin', 'assets/coin.png', 25, 25, 10);
 				this.game.load.spritesheet('meteor', 'assets/meteor.png', 37, 50, 6);
 				this.game.load.spritesheet('keysImg', 'assets/keys.png', 120, 56, 5);
+				this.game.load.spritesheet('spaceBar', 'assets/spaceBar.png', 176.9, 25, 3);
+				this.game.load.spritesheet('mKey', 'assets/mKey.png', 27.6, 25, 3);
 
 				this.game.load.audio('change_side', 'assets/sound/change_side.mp3');
 				this.game.load.audio('coin', 'assets/sound/coin.mp3');
@@ -697,7 +701,7 @@
 			key: 'create',
 			value: function create() {
 				// sound
-				// this.backgroundSound.play();
+				this.backgroundSound.play();
 
 				// physics
 				this.game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -730,7 +734,7 @@
 				_Data2.default.kills = 0;
 				this.gameSpeed = .95; //variable die de snelheid van de game bepaalt. hoe groter het getal hoe sneller/moeilijker. Beinvloed momenteel enkel spawnrate van enemy
 				this.delay = Phaser.Timer.SECOND * 2;
-				this.minimumDistanceBetween = 500;
+				this.minimumDistanceBetween = 300;
 				this.side = 'up';
 
 				// Images
@@ -750,21 +754,25 @@
 				this.distanceTextBox = new _Text2.default(this.game, this.game.width / 2, 50, 'gamefont', _Data2.default.distance + ' km', 30);
 				this.game.add.existing(this.distanceTextBox);
 
-				// coins score text
+				// score text
 				this.scoreTextBox = new _Text2.default(this.game, this.game.width / 2 + 300, 50, 'gamefont', _Data2.default.coins + '\ncoins', 20, 'center');
 				this.game.add.existing(this.scoreTextBox);
 
-				// bullets score text
 				this.bulletTextBox = new _Text2.default(this.game, this.game.width / 2 - 300, 50, 'gamefont', _Data2.default.bullets + '\nbullets', 20, 'center');
 				this.game.add.existing(this.bulletTextBox);
 
-				// kills score text
 				this.killsTextBox = new _Text2.default(this.game, this.game.width / 2 - 150, 50, 'gamefont', _Data2.default.kills + '\nkills', 20, 'center');
 				this.game.add.existing(this.killsTextBox);
 
-				// meteor score text
 				this.meteorTextBox = new _Text2.default(this.game, this.game.width / 2 + 150, 50, 'gamefont', _Data2.default.meteor + '\nmeteor', 20, 'center');
 				this.game.add.existing(this.meteorTextBox);
+
+				// mute
+				this.muteButton = this.game.add.button(35, this.game.height - 30, 'muteButton', this.muteClickHandler, this);
+				Utils.center(this.muteButton);
+
+				this.unmuteButton = this.game.add.button(75, this.game.height - 30, 'unmuteButton', this.unmuteClickHandler, this);
+				Utils.center(this.unmuteButton);
 
 				// bullets
 				this.bullets = this.game.add.group();
@@ -801,14 +809,14 @@
 				console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length, 'red ' + this.redEnemies.length);
 
 				// controls
-				if (this.cursors.down.isDown) {
+				if (this.cursors.down.isDown && !this.cursors.up.isDown) {
 					this.side = 'down';
 					this.player.flipDown();
 					this.redEnemies.forEach(function (oneEnemy) {
 						oneEnemy.flipDown();
 					});
 				}
-				if (this.cursors.up.isDown) {
+				if (this.cursors.up.isDown && !this.cursors.down.isDown) {
 					this.side = 'up';
 					this.player.flipUp();
 					this.redEnemies.forEach(function (oneEnemy) {
@@ -964,9 +972,9 @@
 				var x = this.randomInRange(750, 800);
 				var y = undefined;
 				if (Math.round(Math.random()) === 1) {
-					y = this.game.height / 2 + 50;
+					y = this.game.height / 2 + 30;
 				} else {
-					y = this.game.height / 2 - 50;
+					y = this.game.height / 2 - 30;
 				}
 				if (!coin) {
 					coin = new _Coin2.default(this.game, 0, 0);
@@ -1124,6 +1132,16 @@
 			key: 'randomInRange',
 			value: function randomInRange(num1, num2) {
 				return this.game.rnd.integerInRange(num1, num2);
+			}
+		}, {
+			key: 'muteClickHandler',
+			value: function muteClickHandler() {
+				this.game.sound.mute = true;
+			}
+		}, {
+			key: 'unmuteClickHandler',
+			value: function unmuteClickHandler() {
+				this.game.sound.mute = false;
 			}
 		}]);
 
@@ -2188,8 +2206,8 @@
 				// To create multi-line text insert \r, \n or \r\n escape codes into the text string.
 				// dit font heeft geen . tekens dus als je een punt typt komt er een error, geen punten dus ;)
 				// new BitmapText(game, x, y, font, text, size)`
-				var text = "Het doel\nHet doel van het spel is om zo ver mogelijk te raken\nDit doe je door zoveel mogelijk enemies te ontwijken\n\nControls\nDoor de pijltjestoesten te gebruiken kan je\nwisselen tussen bovenaan en onderaan\nGebruik de spatiebalk om te schieten";
-				this.textBox = new _Text2.default(this.game, this.game.width / 2, this.game.height / 2, 'gamefont', text, 20);
+				var text = "Het doel\nHet doel van het spel is om zo ver mogelijk te raken\nDit doe je door zoveel mogelijk enemies te ontwijken\n\nControls\nGebruik de pijltjestoetsen om te\nwisselen tussen bovenaan en onderaan\n\nGebruik de spatiebalk om te schieten\n\nGebruik de M om meteoren te laten regenen";
+				this.textBox = new _Text2.default(this.game, this.game.width / 2, this.game.height / 2 - 40, 'gamefont', text, 20);
 				this.textBox.anchor.setTo(.5, .5);
 				this.game.add.existing(this.textBox);
 
@@ -2198,9 +2216,17 @@
 				this.backButton = this.game.add.button(this.game.width / 2 - 50, this.game.height / 2 + 175, 'backButton', this.backClickHandler, this);
 				Utils.center(this.backButton);
 
-				this.keysImg = new _KeysImage2.default(this.game, this.game.width / 2 + 225, this.game.height / 2 + 50);
+				this.keysImg = new _KeysImage2.default(this.game, this.game.width / 2 + 216, this.game.height / 2 - 34, 'keysImg');
 				Utils.center(this.keysImg);
 				this.game.add.existing(this.keysImg);
+
+				this.spaceBarImg = new _KeysImage2.default(this.game, this.game.width / 2 + 219, this.game.height / 2 + 20, 'spaceBar');
+				Utils.center(this.spaceBarImg);
+				this.game.add.existing(this.spaceBarImg);
+
+				this.mKeyImg = new _KeysImage2.default(this.game, this.game.width / 2 + 216, this.game.height / 2 + 59, 'mKey');
+				Utils.center(this.mKeyImg);
+				this.game.add.existing(this.mKeyImg);
 			}
 		}, {
 			key: 'update',
@@ -2248,15 +2274,15 @@
 	var KeysImage = (function (_Phaser$Sprite) {
 		_inherits(KeysImage, _Phaser$Sprite);
 
-		function KeysImage(game, x, y) {
+		function KeysImage(game, x, y, key) {
 			_classCallCheck(this, KeysImage);
 
 			// animation
 
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(KeysImage).call(this, game, x, y, 'keysImg'));
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(KeysImage).call(this, game, x, y, key));
 
-			_this.animations.add('run');
-			_this.animations.play('run', 5, true);
+			_this.animations.add('press');
+			_this.animations.play('press', 5, true);
 			return _this;
 		}
 

@@ -25,6 +25,8 @@ export default class Preload extends Phaser.State {
 		this.game.load.image('shopButton', 'assets/shopButton.png');
 		this.game.load.image('bulletButton', 'assets/bulletButton.png');
 		this.game.load.image('meteorButton', 'assets/meteorButton.png');
+		this.game.load.image('muteButton', 'assets/muteButton.png');
+		this.game.load.image('unmuteButton', 'assets/unmuteButton.png');
 
 		this.game.load.bitmapFont('gamefont', 'assets/font/extra/gamefont.png', 'assets/font/extra/gamefont.fnt');
 
@@ -37,6 +39,8 @@ export default class Preload extends Phaser.State {
 		this.game.load.spritesheet('coin', 'assets/coin.png', 25, 25, 10);
 		this.game.load.spritesheet('meteor', 'assets/meteor.png', 37, 50, 6);
 		this.game.load.spritesheet('keysImg', 'assets/keys.png', 120, 56, 5);
+		this.game.load.spritesheet('spaceBar', 'assets/spaceBar.png', 176.9, 25, 3);
+		this.game.load.spritesheet('mKey', 'assets/mKey.png', 27.6, 25, 3);
 
 		this.game.load.audio('change_side' ,'assets/sound/change_side.mp3');
 		this.game.load.audio('coin' ,'assets/sound/coin.mp3');

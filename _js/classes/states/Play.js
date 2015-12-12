@@ -27,8 +27,8 @@ export default class Play extends Phaser.State {
 	}
 	create(){
 		// sound
-		// this.backgroundSound.play();
-
+		this.backgroundSound.play();
+		
 		// physics
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -60,7 +60,7 @@ export default class Play extends Phaser.State {
 		Data.kills = 0;
 		this.gameSpeed = .95; //variable die de snelheid van de game bepaalt. hoe groter het getal hoe sneller/moeilijker. Beinvloed momenteel enkel spawnrate van enemy
 		this.delay = Phaser.Timer.SECOND * 2;
-		this.minimumDistanceBetween = 500;
+		this.minimumDistanceBetween = 300;
 		this.side = 'up';
 
 		// Images
@@ -80,21 +80,25 @@ export default class Play extends Phaser.State {
 		this.distanceTextBox = new Text(this.game, this.game.width/2, 50, 'gamefont', Data.distance + ' km', 30);
 		this.game.add.existing(this.distanceTextBox);
 
-		// coins score text
+		// score text
 		this.scoreTextBox = new Text(this.game, this.game.width/2 + 300, 50, 'gamefont', Data.coins + '\ncoins', 20, 'center');
 		this.game.add.existing(this.scoreTextBox);
 
-		// bullets score text
 		this.bulletTextBox = new Text(this.game, this.game.width/2 - 300, 50, 'gamefont', Data.bullets + '\nbullets', 20, 'center');
 		this.game.add.existing(this.bulletTextBox);
 
-		// kills score text
 		this.killsTextBox = new Text(this.game, this.game.width/2 - 150, 50, 'gamefont', Data.kills + '\nkills', 20, 'center');
 		this.game.add.existing(this.killsTextBox);
 
-		// meteor score text
 		this.meteorTextBox = new Text(this.game, this.game.width/2 + 150, 50, 'gamefont', Data.meteor + '\nmeteor', 20, 'center');
 		this.game.add.existing(this.meteorTextBox);
+
+		// mute
+		this.muteButton = this.game.add.button(35, this.game.height - 30, 'muteButton', this.muteClickHandler, this);
+		Utils.center(this.muteButton);
+
+		this.unmuteButton = this.game.add.button(75, this.game.height - 30, 'unmuteButton', this.unmuteClickHandler, this);
+		Utils.center(this.unmuteButton);
 
 		// bullets
 		this.bullets = this.game.add.group();
@@ -128,14 +132,14 @@ export default class Play extends Phaser.State {
 		console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length, 'red ' + this.redEnemies.length);
 		
 		// controls
-		if(this.cursors.down.isDown){
+		if(this.cursors.down.isDown && !this.cursors.up.isDown){
 			this.side = 'down';
 			this.player.flipDown();
 			this.redEnemies.forEach((oneEnemy) => {
 				oneEnemy.flipDown();
 			});
 		}
-		if(this.cursors.up.isDown){
+		if(this.cursors.up.isDown && !this.cursors.down.isDown){
 			this.side = 'up';
 			this.player.flipUp();
 			this.redEnemies.forEach((oneEnemy) => {
@@ -287,9 +291,9 @@ export default class Play extends Phaser.State {
 		let x = this.randomInRange(750, 800);
 		let y;
 		if(Math.round(Math.random()) === 1){
-			y = this.game.height/2 + 50;
+			y = this.game.height/2 + 30;
 		}else{
-			y = this.game.height/2 - 50;
+			y = this.game.height/2 - 30;
 		}
 		if(!coin){
 			coin = new Coin(this.game, 0, 0);
@@ -425,5 +429,11 @@ export default class Play extends Phaser.State {
 	}
 	randomInRange(num1, num2){
 		return this.game.rnd.integerInRange(num1, num2);
+	}
+	muteClickHandler(){
+		this.game.sound.mute = true;
+	}
+	unmuteClickHandler(){
+		this.game.sound.mute = false;	
 	}
 }
