@@ -7,7 +7,7 @@
 	<link rel="shortcut icon" type="image/png" href="assets/favicon.png"/>
 </head>
 <body>
-	<script src="js/vendors/phaser.js"></script>
+	<script src="js/vendors/phaser.min.js"></script>
 	<script src="js/script.js"></script>
 </body>
 </html>
