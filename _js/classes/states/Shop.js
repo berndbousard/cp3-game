@@ -22,7 +22,7 @@ export default class Shop extends Phaser.State {
 			Data.bullets = 0;
 		}
 		if(!Data.coins){
-			Data.coins = 300;
+			Data.coins = 0;
 		}
 		if(!Data.meteor){
 			Data.meteor = 0;
@@ -34,7 +34,7 @@ export default class Shop extends Phaser.State {
 		this.prices = {
 			'bulletprice' : '2',
 			'meteorprice' : '1',
-			'rainbowprice' : '15'
+			'rainbowprice' : '30'
 		};
 
 		// Images
