@@ -15,7 +15,7 @@ export default class Coin extends Phaser.Sprite {
 		this.exists = true;
 	}
 	update(){
-		this.game.debug.body(this);
+		// this.game.debug.body(this);
 		if(this.body.position.x < 0 - this.width){
 			this.exists = false;
 		}

@@ -1382,7 +1382,7 @@
 		_createClass(Coin, [{
 			key: 'update',
 			value: function update() {
-				this.game.debug.body(this);
+				// this.game.debug.body(this);
 				if (this.body.position.x < 0 - this.width) {
 					this.exists = false;
 				}
