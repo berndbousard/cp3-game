@@ -8,6 +8,7 @@ import Sound from '../objects/Sound';
 import BulletGroup from '../objects/BulletGroup';
 import * as Utils from '../objects/Utils';
 import Data from '../objects/Data';
+import Explosion from '../objects/Explosion';
 
 import EnemyBlack from '../objects/EnemyBlack';
 import EnemyWhite from '../objects/EnemyWhite';
@@ -17,18 +18,11 @@ import EnemyRed from '../objects/EnemyRed';
 export default class Play extends Phaser.State {
 	preload(){
 		console.log('start play');
-		// we kunnen de preload functie gebruiken als een soort preload voor de sounds
-		this.backgroundSound = new Sound(this.game, 'background');
-		this.flipSound = new Sound(this.game, 'change_side');
-		this.coinSound = new Sound(this.game, 'coin');
-		this.enemyHitSound = new Sound(this.game, 'enemy_hit');
-		this.playerHitSound = new Sound(this.game, 'player_hit');
-		this.playerShootSound = new Sound(this.game, 'player_shoot');
 	}
 	create(){
-		// sound
-		this.backgroundSound.play();
-		
+		// sounds
+		this.soundSetup();
+
 		// physics
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -46,21 +40,20 @@ export default class Play extends Phaser.State {
 		}else{
 			Data.coins = Data.coins;
 		}
-		if(!Data.bullets){
-			Data.bullets = 5;
-		}else{
-			Data.bullets = Data.bullets;
-		}
 		if(!Data.meteor){
-			Data.meteor = 5;
+			Data.meteor = 0;
 		}else{
 			Data.meteor = Data.meteor;
 		}
+		if(!Data.bullets){
+			Data.bullets = 0;
+		}else{
+			Data.bullets = Data.bullets;
+		}
 		Data.distance = 0;
 		Data.kills = 0;
-		this.gameSpeed = .95; //variable die de snelheid van de game bepaalt. hoe groter het getal hoe sneller/moeilijker. Beinvloed momenteel enkel spawnrate van enemy
+		this.gameSpeed = .97; //variable die de snelheid van de game bepaalt. hoe groter het getal hoe sneller/moeilijker. Beinvloed momenteel enkel spawnrate van enemy
 		this.delay = Phaser.Timer.SECOND * 2;
-		this.minimumDistanceBetween = 300;
 		this.side = 'up';
 
 		// Images
@@ -68,7 +61,7 @@ export default class Play extends Phaser.State {
 		this.game.add.existing(this.city);
 
 		// Player
-		this.player = new Player(this.game, 50, this.game.height/2 - 43, this.flipSound);
+		this.player = new Player(this.game, 50, this.game.height/2 - 43, this.flipSound, Data.hasRainbow);
 		this.game.add.existing(this.player);
 
 		// coins
@@ -94,12 +87,9 @@ export default class Play extends Phaser.State {
 		this.game.add.existing(this.meteorTextBox);
 
 		// mute
-		this.muteButton = this.game.add.button(35, this.game.height - 30, 'muteButton', this.muteClickHandler, this);
-		Utils.center(this.muteButton);
-
-		this.unmuteButton = this.game.add.button(75, this.game.height - 30, 'unmuteButton', this.unmuteClickHandler, this);
-		Utils.center(this.unmuteButton);
-
+		this.soundButton = this.game.add.button(30, this.game.height - 45, 'unmuteButton', this.soundMuteToggleHandler, this);
+		this.game.add.existing(this.soundButton);
+ 
 		// bullets
 		this.bullets = this.game.add.group();
 
@@ -126,10 +116,13 @@ export default class Play extends Phaser.State {
 
 		this.meteorGroup = this.game.add.group();
 		this.meteorGroup.enableBody = true;
+
+		this.explosionGroup = this.game.add.group();
 	}
 
 	update(){
-		console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length, 'red ' + this.redEnemies.length);
+		// console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length, 'red ' + this.redEnemies.length);
+		console.log(this.explosionGroup.length);
 		
 		// controls
 		if(this.cursors.down.isDown && !this.cursors.up.isDown){
@@ -154,7 +147,6 @@ export default class Play extends Phaser.State {
 
 		this.allEnemies.forEach((oneEnemy) => {
 			this.game.physics.arcade.overlap(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
-			// this.game.physics.arcade.collide(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
 		});
 
 		this.bullets.forEach((oneBullet) => {
@@ -300,14 +292,11 @@ export default class Play extends Phaser.State {
 		}
 
 		coin.reset(x, y);
-		coin.body.velocity.x = -100;
 		this.coins.add(coin);
 	}
 
 	//collisions
 	enemyPlayerCollisionHandler(player, enemy){
-		// player.destroy();
-		// enemy.destroy();
 		player.pendingDestroy = true;
 		enemy.pendingDestroy = true;
 		this.playerHitSound.play();
@@ -318,26 +307,22 @@ export default class Play extends Phaser.State {
 		coin.exists = false;
 		Data.coins++;
 		Data.bullets += 5;
-		this.bulletTextBox.text = Data.bullets + '\nbullets';
+		this.updateBulletText();
 		let suffix = this.createSuffixForScore();
 		this.updateScore(suffix);
 		this.coinSound.play();
 	}
 
 	enemyBulletCollisionHandler(bullet, enemy){
-		// console.log(enemy.lives);
-		// enemy.destroy();
-		// bullet.destroy();
 		enemy.lives--;
 		if(enemy.lives < 1){
-			//enemy.destroy();
 			enemy.pendingDestroy = true;
 			Data.kills++;
 			this.killsTextBox.text = Data.kills + '\nkills';
 		}
 		
-		//bullet.destroy();
 		bullet.pendingDestroy = true;
+		this.spawnExplosion(enemy.position.x, enemy.position.y);
 		this.enemyHitSound.play();
 	}
 
@@ -347,6 +332,17 @@ export default class Play extends Phaser.State {
 		this.killsTextBox.text = Data.kills + '\nkills';
 		enemy.pendingDestroy = true;
 		this.enemyHitSound.play();
+	}
+
+	spawnExplosion(x, y){
+		let xPos = x;
+		let yPos = y;
+		let explosion = this.explosionGroup.getFirstExists(false);
+		if(!explosion){
+			explosion = new Explosion(this.game, xPos, yPos);
+		}
+		explosion.reset(xPos, yPos);
+		this.explosionGroup.add(explosion);
 	}
 
 	createSuffixForScore(){
@@ -362,14 +358,7 @@ export default class Play extends Phaser.State {
 		this.updateDistance();
 		if(Data.distance%2 === 0){
 			let delay = this.enemyTimer.delay * this.gameSpeed;
-			// console.log(this.gameSpeed);
-			// this.enemyTimer.tick = 1449055971970 - (Phaser.Timer.SECOND / this.gameSpeed);
 			this.enemyTimer.delay = delay;
-
-			// zorg dat er niet enemies elkaar overlappen en dat de player (in principe) nog kan swappen
-			if(this.enemyTimer.delay < this.minimumDistanceBetween){
-				this.enemyTimer.delay = this.minimumDistanceBetween;
-			}
 		}
 	}
 
@@ -392,35 +381,30 @@ export default class Play extends Phaser.State {
 	}
 	mDownHandler(){
 		if(Data.meteor >= 1){
-			Data.meteor--;
 			// nog een geluid
+			this.meteorSound.play();
 			this.spawnMeteor();
+			Data.meteor--;
 			this.updateMeteorText();
 		}
 	}
 	spawnMeteor(){
-		if(Data.meteor >= 1){
-			for(let i = 0; i < 3; i++){
-				let x = this.randomInRange(0, this.game.width);
-				let y = this.randomInRange(0, -75);
-				let meteor = this.meteorGroup.getFirstExists(false);
-				if(!meteor){
-					meteor = new Meteor(this.game, x, y);
-				}
-				meteor.reset(x, y);
-				meteor.body.velocity.y = 50;
-				this.meteorGroup.add(meteor);
+		for(let i = 0; i < 3; i++){
+			let x = this.randomInRange(0, this.game.width);
+			let y = this.randomInRange(0, -75);
+			let meteor = this.meteorGroup.getFirstExists(false);
+			if(!meteor){
+				meteor = new Meteor(this.game, x, y);
 			}
+			meteor.reset(x, y);
+			this.meteorGroup.add(meteor);
 		}
 	}
 	updateMeteorText(){
-		this.meteorTextBox.text = Data.meteor + '\nmeteor';
+		this.meteorTextBox.text = Data.meteor + '\nmeteors';
 	}
 	updateScore(suffix){
 		this.scoreTextBox.text = Data.coins + suffix;
-	}
-	updateDistance(){
-		this.distanceTextBox.text = Data.distance + ' km';
 	}
 
 	generateRandomColor(){
@@ -430,10 +414,34 @@ export default class Play extends Phaser.State {
 	randomInRange(num1, num2){
 		return this.game.rnd.integerInRange(num1, num2);
 	}
-	muteClickHandler(){
-		this.game.sound.mute = true;
+
+	soundMuteToggleHandler(){
+		if(this.backgroundSound.volume === 1){
+			this.backgroundSound.volume = 0;
+			this.soundButton.loadTexture('muteButton' ,null, false);
+		}else{
+			this.backgroundSound.volume = 1;
+			this.soundButton.loadTexture('unmuteButton' ,null, false);
+		}
 	}
-	unmuteClickHandler(){
-		this.game.sound.mute = false;	
+	soundSetup(){
+		this.backgroundSound = new Sound(this.game, 'background');
+		this.flipSound = new Sound(this.game, 'change_side');
+		this.coinSound = new Sound(this.game, 'coin');
+		this.enemyHitSound = new Sound(this.game, 'enemy_hit');
+		this.playerHitSound = new Sound(this.game, 'player_hit');
+		this.playerShootSound = new Sound(this.game, 'player_shoot');
+		this.meteorSound = new Sound(this.game, 'meteor');
+
+		this.backgroundSound.play();
+	}
+	updateBulletText(){
+		this.bulletTextBox.text = Data.bullets + '\nbullets';
+	}
+	updateCoinText(){
+		this.coinText.text = Data.coins + '\ncoins';
+	}
+	updateDistance(){
+		this.distanceTextBox.text = Data.distance + ' km';
 	}
 }

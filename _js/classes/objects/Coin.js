@@ -19,6 +19,6 @@ export default class Coin extends Phaser.Sprite {
 		if(this.body.position.x < 0 - this.width){
 			this.exists = false;
 		}
-		this.body.velocity.x = -150;
+		this.body.velocity.x = -100;
 	}
 }

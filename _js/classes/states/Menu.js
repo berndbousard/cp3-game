@@ -1,4 +1,3 @@
-import Button from '../objects/Button';
 import BackgroundCity from '../objects/BackgroundCity';
 import MenuBackground from '../objects/MenuBackground';
 import Sound from '../objects/Sound';
@@ -30,15 +29,15 @@ export default class Menu extends Phaser.State {
 		Utils.center(this.playerImg);
 
 		// text
-		let title = "CITYFLIP";
-		this.titleBox = new Text(this.game, this.game.width/2+5, this.game.height/2-22, 'gamefont', title, 60);
+		let titleBoxTest = "CITYFLIP";
+		this.titleBox = new Text(this.game, this.game.width/2+5, this.game.height/2-22, 'gamefont', titleBoxTest, 60);
 		Utils.center(this.titleBox);
 		this.game.add.existing(this.titleBox);
 
-		if(Data.coins){
-			let coinsText = new Text(this.game, this.game.width/2, this.game.height/2 - 150, 'gamefont', Data.coins + '\ncoins', 20, 'center');
-			this.game.add.existing(coinsText);
-		}
+		// if(Data.coins){
+		// 	let coinsText = new Text(this.game, this.game.width/2, this.game.height/2 - 150, 'gamefont', Data.coins + '\ncoins', 20, 'center');
+		// 	this.game.add.existing(coinsText);
+		// }
 		
 		// Buttons
 		this.startButton = this.game.add.button(this.game.width/2, this.game.height/2 + 75, 'startButton', this.startClickHandler, this);
@@ -76,7 +75,6 @@ export default class Menu extends Phaser.State {
 	}
 	titleFlipUp(){
 		if(this.titleBox.scale.y === -1){
-			console.log('flip up');
 			this.titleBox.scale.y = 1;
 			this.titleBox.position.y = 228;
 			this.flipSound.play();
@@ -85,7 +83,6 @@ export default class Menu extends Phaser.State {
 	}
 	titleFlipDown(){
 		if(this.titleBox.scale.y === 1){
-			console.log('flip down');
 			this.titleBox.scale.y = -1;
 			this.titleBox.position.y = 220;
 			this.flipSound.play();

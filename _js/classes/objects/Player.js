@@ -1,8 +1,15 @@
 import Bullet from '../objects/Bullet';
 
 export default class Player extends Phaser.Sprite {
-	constructor(game, x, y, flipSound){
-		super(game, x, y, 'player_black');
+	constructor(game, x, y, flipSound, hasRainbow){
+		if(hasRainbow){
+			super(game, x, y, 'player_rainbow');
+		}else{
+			super(game, x, y, 'player_black');
+		}
+
+		this.hasRainbow = hasRainbow;
+		
 
 		// collide
 		this.game.physics.arcade.enableBody(this);
@@ -26,7 +33,11 @@ export default class Player extends Phaser.Sprite {
 		// http://phaser.io/examples/v2/animation/change-texture-on-click
 		// Phaser.Sprite.loadTexture(key, frame, stopAnimation) : void;
 		if(this.body.position.y === (this.game.height/2) - 43){
-			this.loadTexture('player_white', null, false);
+			if(this.hasRainbow){
+				this.loadTexture('player_rainbow_flip', null, false);
+			}else{
+				this.loadTexture('player_white', null, false);
+			}
 			this.body.y = this.game.height/2;
 			this.flipSound.play();
 		}
@@ -34,7 +45,11 @@ export default class Player extends Phaser.Sprite {
 	flipUp(){
 		// console.log('player staat nu boven');
 		if(this.body.position.y === this.game.height/2){
-			this.loadTexture('player_black', null, false);
+			if(this.hasRainbow){
+				this.loadTexture('player_rainbow', null, false);
+			}else{
+				this.loadTexture('player_black', null, false);
+			}
 			this.body.y = (this.game.height/2) - 43;
 			this.flipSound.play();
 		}

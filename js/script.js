@@ -101,17 +101,11 @@
 		value: true
 	});
 
-	var _Text = __webpack_require__(2);
-
-	var _Text2 = _interopRequireDefault(_Text);
-
 	var _Utils = __webpack_require__(3);
 
 	var Utils = _interopRequireWildcard(_Utils);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -139,7 +133,6 @@
 				Utils.center(this.progressText);
 
 				this.game.load.onFileComplete.add(this.onFileComplete, this);
-				this.game.load.onLoadComplete.addOnce(this.onLoadComplete, this);
 
 				// load assets
 				this.game.load.image('startButton', 'assets/startButton.png');
@@ -153,6 +146,7 @@
 				this.game.load.image('shopButton', 'assets/shopButton.png');
 				this.game.load.image('bulletButton', 'assets/bulletButton.png');
 				this.game.load.image('meteorButton', 'assets/meteorButton.png');
+				this.game.load.image('rainbowButton', 'assets/rainbowButton.png');
 				this.game.load.image('muteButton', 'assets/muteButton.png');
 				this.game.load.image('unmuteButton', 'assets/unmuteButton.png');
 
@@ -160,6 +154,8 @@
 
 				this.game.load.spritesheet('player_black', 'assets/player_black.png', 42, 44, 14);
 				this.game.load.spritesheet('player_white', 'assets/player_white.png', 42, 44, 14);
+				this.game.load.spritesheet('player_rainbow', 'assets/player_rainbow.png', 42, 44, 14);
+				this.game.load.spritesheet('player_rainbow_flip', 'assets/player_rainbow_flip.png', 42, 44, 14);
 				this.game.load.spritesheet('enemy_black', 'assets/enemy_black.png', 45, 45, 6);
 				this.game.load.spritesheet('enemy_white', 'assets/enemy_white.png', 45, 45, 6);
 				this.game.load.spritesheet('enemy_orange', 'assets/enemy_orange.png', 45, 45, 6);
@@ -167,8 +163,9 @@
 				this.game.load.spritesheet('coin', 'assets/coin.png', 25, 25, 10);
 				this.game.load.spritesheet('meteor', 'assets/meteor.png', 37, 50, 6);
 				this.game.load.spritesheet('keysImg', 'assets/keys.png', 120, 56, 5);
-				this.game.load.spritesheet('spaceBar', 'assets/spaceBar.png', 176.9, 25, 3);
-				this.game.load.spritesheet('mKey', 'assets/mKey.png', 27.6, 25, 3);
+				this.game.load.spritesheet('spaceBar', 'assets/spaceBar.png', 170, 25, 3);
+				this.game.load.spritesheet('mKey', 'assets/mKey.png', 29, 25, 2);
+				this.game.load.spritesheet('explosion', 'assets/explosion.png', 41, 41, 7);
 
 				this.game.load.audio('change_side', 'assets/sound/change_side.mp3');
 				this.game.load.audio('coin', 'assets/sound/coin.mp3');
@@ -179,10 +176,14 @@
 				this.game.load.audio('click', 'assets/sound/click.mp3');
 				this.game.load.audio('bulletPackSound', 'assets/sound/ammoSound.mp3');
 				this.game.load.audio('background', 'assets/sound/background2.mp3');
+				this.game.load.audio('error', 'assets/sound/error.mp3');
+				this.game.load.audio('meteor', 'assets/sound/meteor2.mp3');
 			}
 		}, {
 			key: 'create',
-			value: function create() {}
+			value: function create() {
+				Utils.changeState(this.game, 'Menu');
+			}
 		}, {
 			key: 'update',
 			value: function update() {}
@@ -192,14 +193,11 @@
 				this.progressText.text = progress + '%';
 			}
 		}, {
-			key: 'onLoadComplete',
-			value: function onLoadComplete() {
-				Utils.changeState(this.game, 'Menu');
-			}
-		}, {
 			key: 'shutdown',
 			value: function shutdown() {
 				console.log('end preload');
+				this.progressText.destroy();
+				this.progressText = null;
 			}
 		}]);
 
@@ -287,10 +285,6 @@
 		value: true
 	});
 
-	var _Button = __webpack_require__(5);
-
-	var _Button2 = _interopRequireDefault(_Button);
-
 	var _BackgroundCity = __webpack_require__(6);
 
 	var _BackgroundCity2 = _interopRequireDefault(_BackgroundCity);
@@ -361,15 +355,15 @@
 				Utils.center(this.playerImg);
 
 				// text
-				var title = "CITYFLIP";
-				this.titleBox = new _Text2.default(this.game, this.game.width / 2 + 5, this.game.height / 2 - 22, 'gamefont', title, 60);
+				var titleBoxTest = "CITYFLIP";
+				this.titleBox = new _Text2.default(this.game, this.game.width / 2 + 5, this.game.height / 2 - 22, 'gamefont', titleBoxTest, 60);
 				Utils.center(this.titleBox);
 				this.game.add.existing(this.titleBox);
 
-				if (_Data2.default.coins) {
-					var coinsText = new _Text2.default(this.game, this.game.width / 2, this.game.height / 2 - 150, 'gamefont', _Data2.default.coins + '\ncoins', 20, 'center');
-					this.game.add.existing(coinsText);
-				}
+				// if(Data.coins){
+				// 	let coinsText = new Text(this.game, this.game.width/2, this.game.height/2 - 150, 'gamefont', Data.coins + '\ncoins', 20, 'center');
+				// 	this.game.add.existing(coinsText);
+				// }
 
 				// Buttons
 				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 + 75, 'startButton', this.startClickHandler, this);
@@ -420,7 +414,6 @@
 			key: 'titleFlipUp',
 			value: function titleFlipUp() {
 				if (this.titleBox.scale.y === -1) {
-					console.log('flip up');
 					this.titleBox.scale.y = 1;
 					this.titleBox.position.y = 228;
 					this.flipSound.play();
@@ -430,7 +423,6 @@
 			key: 'titleFlipDown',
 			value: function titleFlipDown() {
 				if (this.titleBox.scale.y === 1) {
-					console.log('flip down');
 					this.titleBox.scale.y = -1;
 					this.titleBox.position.y = 220;
 					this.flipSound.play();
@@ -444,43 +436,7 @@
 	exports.default = Menu;
 
 /***/ },
-/* 5 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Button = (function (_Phaser$Button) {
-		_inherits(Button, _Phaser$Button);
-
-		function Button(game, x, y, key, callback, callbackContext) {
-			_classCallCheck(this, Button);
-
-			return _possibleConstructorReturn(this, Object.getPrototypeOf(Button).call(this, game, x, y, key, callback, callbackContext));
-		}
-
-		_createClass(Button, [{
-			key: "startClickHandler",
-			value: function startClickHandler() {}
-		}]);
-
-		return Button;
-	})(Phaser.Button);
-
-	exports.default = Button;
-
-/***/ },
+/* 5 */,
 /* 6 */
 /***/ function(module, exports) {
 
@@ -597,7 +553,7 @@
 		this.bullets = 5;
 		this.kills = 0;
 		this.meteor = 1;
-		this.firstTimePlaying = true;
+		this.hasRainbow;
 	};
 
 	exports.default = Data;
@@ -650,6 +606,10 @@
 
 	var _Data2 = _interopRequireDefault(_Data);
 
+	var _Explosion = __webpack_require__(26);
+
+	var _Explosion2 = _interopRequireDefault(_Explosion);
+
 	var _EnemyBlack = __webpack_require__(16);
 
 	var _EnemyBlack2 = _interopRequireDefault(_EnemyBlack);
@@ -689,19 +649,12 @@
 			key: 'preload',
 			value: function preload() {
 				console.log('start play');
-				// we kunnen de preload functie gebruiken als een soort preload voor de sounds
-				this.backgroundSound = new _Sound2.default(this.game, 'background');
-				this.flipSound = new _Sound2.default(this.game, 'change_side');
-				this.coinSound = new _Sound2.default(this.game, 'coin');
-				this.enemyHitSound = new _Sound2.default(this.game, 'enemy_hit');
-				this.playerHitSound = new _Sound2.default(this.game, 'player_hit');
-				this.playerShootSound = new _Sound2.default(this.game, 'player_shoot');
 			}
 		}, {
 			key: 'create',
 			value: function create() {
-				// sound
-				this.backgroundSound.play();
+				// sounds
+				this.soundSetup();
 
 				// physics
 				this.game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -720,21 +673,20 @@
 				} else {
 					_Data2.default.coins = _Data2.default.coins;
 				}
-				if (!_Data2.default.bullets) {
-					_Data2.default.bullets = 5;
-				} else {
-					_Data2.default.bullets = _Data2.default.bullets;
-				}
 				if (!_Data2.default.meteor) {
-					_Data2.default.meteor = 5;
+					_Data2.default.meteor = 0;
 				} else {
 					_Data2.default.meteor = _Data2.default.meteor;
 				}
+				if (!_Data2.default.bullets) {
+					_Data2.default.bullets = 0;
+				} else {
+					_Data2.default.bullets = _Data2.default.bullets;
+				}
 				_Data2.default.distance = 0;
 				_Data2.default.kills = 0;
-				this.gameSpeed = .95; //variable die de snelheid van de game bepaalt. hoe groter het getal hoe sneller/moeilijker. Beinvloed momenteel enkel spawnrate van enemy
+				this.gameSpeed = .97; //variable die de snelheid van de game bepaalt. hoe groter het getal hoe sneller/moeilijker. Beinvloed momenteel enkel spawnrate van enemy
 				this.delay = Phaser.Timer.SECOND * 2;
-				this.minimumDistanceBetween = 300;
 				this.side = 'up';
 
 				// Images
@@ -742,7 +694,7 @@
 				this.game.add.existing(this.city);
 
 				// Player
-				this.player = new _Player2.default(this.game, 50, this.game.height / 2 - 43, this.flipSound);
+				this.player = new _Player2.default(this.game, 50, this.game.height / 2 - 43, this.flipSound, _Data2.default.hasRainbow);
 				this.game.add.existing(this.player);
 
 				// coins
@@ -768,11 +720,8 @@
 				this.game.add.existing(this.meteorTextBox);
 
 				// mute
-				this.muteButton = this.game.add.button(35, this.game.height - 30, 'muteButton', this.muteClickHandler, this);
-				Utils.center(this.muteButton);
-
-				this.unmuteButton = this.game.add.button(75, this.game.height - 30, 'unmuteButton', this.unmuteClickHandler, this);
-				Utils.center(this.unmuteButton);
+				this.soundButton = this.game.add.button(30, this.game.height - 45, 'unmuteButton', this.soundMuteToggleHandler, this);
+				this.game.add.existing(this.soundButton);
 
 				// bullets
 				this.bullets = this.game.add.group();
@@ -800,13 +749,16 @@
 
 				this.meteorGroup = this.game.add.group();
 				this.meteorGroup.enableBody = true;
+
+				this.explosionGroup = this.game.add.group();
 			}
 		}, {
 			key: 'update',
 			value: function update() {
 				var _this2 = this;
 
-				console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length, 'red ' + this.redEnemies.length);
+				// console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length, 'red ' + this.redEnemies.length);
+				console.log(this.explosionGroup.length);
 
 				// controls
 				if (this.cursors.down.isDown && !this.cursors.up.isDown) {
@@ -831,7 +783,6 @@
 
 				this.allEnemies.forEach(function (oneEnemy) {
 					_this2.game.physics.arcade.overlap(_this2.player, oneEnemy, _this2.enemyPlayerCollisionHandler, null, _this2);
-					// this.game.physics.arcade.collide(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
 				});
 
 				this.bullets.forEach(function (oneBullet) {
@@ -981,7 +932,6 @@
 				}
 
 				coin.reset(x, y);
-				coin.body.velocity.x = -100;
 				this.coins.add(coin);
 			}
 
@@ -990,8 +940,6 @@
 		}, {
 			key: 'enemyPlayerCollisionHandler',
 			value: function enemyPlayerCollisionHandler(player, enemy) {
-				// player.destroy();
-				// enemy.destroy();
 				player.pendingDestroy = true;
 				enemy.pendingDestroy = true;
 				this.playerHitSound.play();
@@ -1003,7 +951,7 @@
 				coin.exists = false;
 				_Data2.default.coins++;
 				_Data2.default.bullets += 5;
-				this.bulletTextBox.text = _Data2.default.bullets + '\nbullets';
+				this.updateBulletText();
 				var suffix = this.createSuffixForScore();
 				this.updateScore(suffix);
 				this.coinSound.play();
@@ -1011,19 +959,15 @@
 		}, {
 			key: 'enemyBulletCollisionHandler',
 			value: function enemyBulletCollisionHandler(bullet, enemy) {
-				// console.log(enemy.lives);
-				// enemy.destroy();
-				// bullet.destroy();
 				enemy.lives--;
 				if (enemy.lives < 1) {
-					//enemy.destroy();
 					enemy.pendingDestroy = true;
 					_Data2.default.kills++;
 					this.killsTextBox.text = _Data2.default.kills + '\nkills';
 				}
 
-				//bullet.destroy();
 				bullet.pendingDestroy = true;
+				this.spawnExplosion(enemy.position.x, enemy.position.y);
 				this.enemyHitSound.play();
 			}
 		}, {
@@ -1034,6 +978,18 @@
 				this.killsTextBox.text = _Data2.default.kills + '\nkills';
 				enemy.pendingDestroy = true;
 				this.enemyHitSound.play();
+			}
+		}, {
+			key: 'spawnExplosion',
+			value: function spawnExplosion(x, y) {
+				var xPos = x;
+				var yPos = y;
+				var explosion = this.explosionGroup.getFirstExists(false);
+				if (!explosion) {
+					explosion = new _Explosion2.default(this.game, xPos, yPos);
+				}
+				explosion.reset(xPos, yPos);
+				this.explosionGroup.add(explosion);
 			}
 		}, {
 			key: 'createSuffixForScore',
@@ -1051,14 +1007,7 @@
 				this.updateDistance();
 				if (_Data2.default.distance % 2 === 0) {
 					var delay = this.enemyTimer.delay * this.gameSpeed;
-					// console.log(this.gameSpeed);
-					// this.enemyTimer.tick = 1449055971970 - (Phaser.Timer.SECOND / this.gameSpeed);
 					this.enemyTimer.delay = delay;
-
-					// zorg dat er niet enemies elkaar overlappen en dat de player (in principe) nog kan swappen
-					if (this.enemyTimer.delay < this.minimumDistanceBetween) {
-						this.enemyTimer.delay = this.minimumDistanceBetween;
-					}
 				}
 			}
 		}, {
@@ -1084,43 +1033,36 @@
 			key: 'mDownHandler',
 			value: function mDownHandler() {
 				if (_Data2.default.meteor >= 1) {
-					_Data2.default.meteor--;
 					// nog een geluid
+					this.meteorSound.play();
 					this.spawnMeteor();
+					_Data2.default.meteor--;
 					this.updateMeteorText();
 				}
 			}
 		}, {
 			key: 'spawnMeteor',
 			value: function spawnMeteor() {
-				if (_Data2.default.meteor >= 1) {
-					for (var i = 0; i < 3; i++) {
-						var x = this.randomInRange(0, this.game.width);
-						var y = this.randomInRange(0, -75);
-						var meteor = this.meteorGroup.getFirstExists(false);
-						if (!meteor) {
-							meteor = new _Meteor2.default(this.game, x, y);
-						}
-						meteor.reset(x, y);
-						meteor.body.velocity.y = 50;
-						this.meteorGroup.add(meteor);
+				for (var i = 0; i < 3; i++) {
+					var x = this.randomInRange(0, this.game.width);
+					var y = this.randomInRange(0, -75);
+					var meteor = this.meteorGroup.getFirstExists(false);
+					if (!meteor) {
+						meteor = new _Meteor2.default(this.game, x, y);
 					}
+					meteor.reset(x, y);
+					this.meteorGroup.add(meteor);
 				}
 			}
 		}, {
 			key: 'updateMeteorText',
 			value: function updateMeteorText() {
-				this.meteorTextBox.text = _Data2.default.meteor + '\nmeteor';
+				this.meteorTextBox.text = _Data2.default.meteor + '\nmeteors';
 			}
 		}, {
 			key: 'updateScore',
 			value: function updateScore(suffix) {
 				this.scoreTextBox.text = _Data2.default.coins + suffix;
-			}
-		}, {
-			key: 'updateDistance',
-			value: function updateDistance() {
-				this.distanceTextBox.text = _Data2.default.distance + ' km';
 			}
 		}, {
 			key: 'generateRandomColor',
@@ -1134,14 +1076,43 @@
 				return this.game.rnd.integerInRange(num1, num2);
 			}
 		}, {
-			key: 'muteClickHandler',
-			value: function muteClickHandler() {
-				this.game.sound.mute = true;
+			key: 'soundMuteToggleHandler',
+			value: function soundMuteToggleHandler() {
+				if (this.backgroundSound.volume === 1) {
+					this.backgroundSound.volume = 0;
+					this.soundButton.loadTexture('muteButton', null, false);
+				} else {
+					this.backgroundSound.volume = 1;
+					this.soundButton.loadTexture('unmuteButton', null, false);
+				}
 			}
 		}, {
-			key: 'unmuteClickHandler',
-			value: function unmuteClickHandler() {
-				this.game.sound.mute = false;
+			key: 'soundSetup',
+			value: function soundSetup() {
+				this.backgroundSound = new _Sound2.default(this.game, 'background');
+				this.flipSound = new _Sound2.default(this.game, 'change_side');
+				this.coinSound = new _Sound2.default(this.game, 'coin');
+				this.enemyHitSound = new _Sound2.default(this.game, 'enemy_hit');
+				this.playerHitSound = new _Sound2.default(this.game, 'player_hit');
+				this.playerShootSound = new _Sound2.default(this.game, 'player_shoot');
+				this.meteorSound = new _Sound2.default(this.game, 'meteor');
+
+				this.backgroundSound.play();
+			}
+		}, {
+			key: 'updateBulletText',
+			value: function updateBulletText() {
+				this.bulletTextBox.text = _Data2.default.bullets + '\nbullets';
+			}
+		}, {
+			key: 'updateCoinText',
+			value: function updateCoinText() {
+				this.coinText.text = _Data2.default.coins + '\ncoins';
+			}
+		}, {
+			key: 'updateDistance',
+			value: function updateDistance() {
+				this.distanceTextBox.text = _Data2.default.distance + ' km';
 			}
 		}]);
 
@@ -1177,13 +1148,18 @@
 	var Player = (function (_Phaser$Sprite) {
 		_inherits(Player, _Phaser$Sprite);
 
-		function Player(game, x, y, flipSound) {
+		function Player(game, x, y, flipSound, hasRainbow) {
 			_classCallCheck(this, Player);
 
+			if (hasRainbow) {
+				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Player).call(this, game, x, y, 'player_rainbow'));
+			} else {
+				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Player).call(this, game, x, y, 'player_black'));
+			}
+
+			_this.hasRainbow = hasRainbow;
+
 			// collide
-
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Player).call(this, game, x, y, 'player_black'));
-
 			_this.game.physics.arcade.enableBody(_this);
 			_this.body.immovable = true;
 			_this.body.allowGravity = false;
@@ -1194,7 +1170,7 @@
 			// animation
 			_this.animations.add('run');
 			_this.animations.play('run', 20, true);
-			return _this;
+			return _possibleConstructorReturn(_this);
 		}
 
 		_createClass(Player, [{
@@ -1210,7 +1186,11 @@
 				// http://phaser.io/examples/v2/animation/change-texture-on-click
 				// Phaser.Sprite.loadTexture(key, frame, stopAnimation) : void;
 				if (this.body.position.y === this.game.height / 2 - 43) {
-					this.loadTexture('player_white', null, false);
+					if (this.hasRainbow) {
+						this.loadTexture('player_rainbow_flip', null, false);
+					} else {
+						this.loadTexture('player_white', null, false);
+					}
 					this.body.y = this.game.height / 2;
 					this.flipSound.play();
 				}
@@ -1220,7 +1200,11 @@
 			value: function flipUp() {
 				// console.log('player staat nu boven');
 				if (this.body.position.y === this.game.height / 2) {
-					this.loadTexture('player_black', null, false);
+					if (this.hasRainbow) {
+						this.loadTexture('player_rainbow', null, false);
+					} else {
+						this.loadTexture('player_black', null, false);
+					}
 					this.body.y = this.game.height / 2 - 43;
 					this.flipSound.play();
 				}
@@ -1324,12 +1308,17 @@
 
 			_this.animations.add('fall');
 			_this.animations.play('fall', 10, true);
+
+			_this.exists = true;
 			return _this;
 		}
 
 		_createClass(Meteor, [{
 			key: 'update',
 			value: function update() {
+				if (this.position.y > this.game.height + this.height) {
+					this.exists = false;
+				}
 				this.body.velocity.y = 100;
 			}
 		}]);
@@ -1386,7 +1375,7 @@
 				if (this.body.position.x < 0 - this.width) {
 					this.exists = false;
 				}
-				this.body.velocity.x = -150;
+				this.body.velocity.x = -100;
 			}
 		}]);
 
@@ -1806,13 +1795,11 @@
 			key: 'preload',
 			value: function preload() {
 				console.log('start leaderboard');
-				// music
-				this.clickSound = new _Sound2.default(this.game, 'click');
 			}
 		}, {
 			key: 'create',
 			value: function create() {
-
+				this.soundSetup();
 				// Build table with results
 				this.getJSON('http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=getScores&t=' + Date.now());
 
@@ -1919,9 +1906,14 @@
 			key: 'giveError',
 			value: function giveError(error) {
 				// game, x, y, font, text, size, align
-				var text = 'We vermoeden dat je\ngeen internet hebt\nOm topscores te laden hebben\nwe jammergenoeg internet nodig';
-				var errorText = new _Text2.default(this.game, this.game.width / 2, this.game.height / 2, 'gamefont', text, 15, 'center');
+				var errorText = new _Text2.default(this.game, this.game.width / 2, this.game.height / 2, 'gamefont', error, 15, 'center');
 				this.game.add.existing(errorText);
+			}
+		}, {
+			key: 'soundSetup',
+			value: function soundSetup() {
+				// music
+				this.clickSound = new _Sound2.default(this.game, 'click');
 			}
 		}]);
 
@@ -2001,21 +1993,33 @@
 			value: function create() {
 				var _this2 = this;
 
-				// music
-				this.clickSound = new _Sound2.default(this.game, 'click');
+				// sound
+				this.soundSetup();
 
 				this.createForm();
 				leaderboardNameInput = document.getElementById("text");
 				leaderboardSubmit = document.getElementById("submit");
 				leaderboard = document.getElementById("form");
+
+				// listener
+				// om enters op te vangen
 				leaderboard.addEventListener('submit', function (event) {
 					event.preventDefault();
 					_this2.leaderboardSubmitHandler();
 				});
-				// not sure about this
+
 				leaderboardSubmit.addEventListener('submit', function (event) {
 					event.preventDefault();
 					_this2.leaderboardSubmitHandler();
+				});
+
+				// om de spatie en m toets te laten werken in HTML input
+				leaderboardNameInput.addEventListener('focus', function () {
+					_this2.game.input.enabled = false;
+				});
+
+				leaderboardNameInput.addEventListener('blur', function () {
+					_this2.game.input.enabled = true;
 				});
 
 				// Images
@@ -2046,6 +2050,7 @@
 			value: function shutdown() {
 				console.log('end gameover');
 				leaderboard.remove();
+				this.game.input.enabled = true;
 			}
 		}, {
 			key: 'createForm',
@@ -2059,7 +2064,7 @@
 				var formNameInput = document.createElement('input');
 				formNameInput.setAttribute('type', 'text');
 				formNameInput.setAttribute('name', 'name');
-				formNameInput.setAttribute('placeholder', 'username');
+				formNameInput.setAttribute('placeholder', 'Uw naam');
 				formNameInput.setAttribute('maxlength', '10');
 				formNameInput.id = 'text';
 
@@ -2098,21 +2103,19 @@
 
 				this.clickSound.play();
 				var req = new XMLHttpRequest();
-				// req.responseType = 'json';
 				req.addEventListener('load', function () {
 					if (req.status === 200) {
 						Utils.hideElement(form);
+						_this3.resetStats();
 						Utils.changeState(_this3.game, 'Leaderboard');
 					} else {
-						alert('ja, lap al kapot, theeft lang geduurd');
+						alert('ja, lap tis kapot, het heeft lang geduurd');
 					}
 				});
 				var url = form.getAttribute('action') + '&t=' + Date.now();
 				req.open('post', url, true);
 				req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
 				req.send(new FormData(form));
-				// Het lijkt dat hij 2x pusht naar de DDB maar als ik een event listener eraan
-				// Koppen dan zien we het maar 1 keer maar zit wel 2x id DDB
 			}
 		}, {
 			key: 'leaderboardSubmitHandler',
@@ -2127,13 +2130,29 @@
 			value: function startClickHandler() {
 				this.clickSound.play();
 				Utils.hideElement(form);
+				this.resetStats();
 				Utils.changeState(this.game, 'Play');
 			}
 		}, {
 			key: 'backClickHandler',
 			value: function backClickHandler() {
 				this.clickSound.play();
+				this.resetStats();
 				Utils.changeState(this.game, 'Menu');
+			}
+		}, {
+			key: 'resetStats',
+			value: function resetStats() {
+				_Data2.default.distance = 0;
+				_Data2.default.bullets = 0;
+				_Data2.default.kills = 0;
+				_Data2.default.meteor = 0;
+			}
+		}, {
+			key: 'soundSetup',
+			value: function soundSetup() {
+				// music
+				this.clickSound = new _Sound2.default(this.game, 'click');
 			}
 		}]);
 
@@ -2206,9 +2225,9 @@
 				// To create multi-line text insert \r, \n or \r\n escape codes into the text string.
 				// dit font heeft geen . tekens dus als je een punt typt komt er een error, geen punten dus ;)
 				// new BitmapText(game, x, y, font, text, size)`
-				var text = "Het doel\nHet doel van het spel is om zo ver mogelijk te raken\nDit doe je door zoveel mogelijk enemies te ontwijken\n\nControls\nGebruik de pijltjestoetsen om te\nwisselen tussen bovenaan en onderaan\n\nGebruik de spatiebalk om te schieten\n\nGebruik de M om meteoren te laten regenen";
-				this.textBox = new _Text2.default(this.game, this.game.width / 2, this.game.height / 2 - 40, 'gamefont', text, 20);
-				this.textBox.anchor.setTo(.5, .5);
+				var textBoxText = "Het doel\nHet doel van het spel is om zo ver mogelijk te raken\nDit doe je door zoveel mogelijk enemies te ontwijken\n\nControls\nGebruik de pijltjestoetsen om te\nwisselen tussen bovenaan en onderaan\n\nGebruik de spatiebalk om te schieten\n\nGebruik de M om meteoren te laten regenen";
+				this.textBox = new _Text2.default(this.game, this.game.width / 2, this.game.height / 2 - 40, 'gamefont', textBoxText, 20);
+				Utils.center(this.textBox);
 				this.game.add.existing(this.textBox);
 
 				this.startButton = this.game.add.button(this.game.width / 2 + 50, this.game.height / 2 + 175, 'startButton', this.startClickHandler, this);
@@ -2282,7 +2301,7 @@
 			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(KeysImage).call(this, game, x, y, key));
 
 			_this.animations.add('press');
-			_this.animations.play('press', 5, true);
+			_this.animations.play('press', 3, true);
 			return _this;
 		}
 
@@ -2314,10 +2333,6 @@
 	var _Text = __webpack_require__(2);
 
 	var _Text2 = _interopRequireDefault(_Text);
-
-	var _Coin = __webpack_require__(14);
-
-	var _Coin2 = _interopRequireDefault(_Coin);
 
 	var _Utils = __webpack_require__(3);
 
@@ -2360,6 +2375,7 @@
 				// game, key, volume, loop
 				this.clickSound = new _Sound2.default(this.game, 'click');
 				this.bulletPackSound = new _Sound2.default(this.game, 'bulletPackSound');
+				this.errorSound = new _Sound2.default(this.game, 'error');
 			}
 		}, {
 			key: 'create',
@@ -2369,15 +2385,19 @@
 					_Data2.default.bullets = 0;
 				}
 				if (!_Data2.default.coins) {
-					_Data2.default.coins = 0;
+					_Data2.default.coins = 300;
 				}
 				if (!_Data2.default.meteor) {
 					_Data2.default.meteor = 0;
 				}
+				if (!_Data2.default.hasRainbow) {
+					_Data2.default.hasRainbow = false;
+				}
 
 				this.prices = {
 					'bulletprice': '2',
-					'meteorprice': '1'
+					'meteorprice': '1',
+					'rainbowprice': '15'
 				};
 
 				// Images
@@ -2388,34 +2408,60 @@
 				this.game.add.existing(this.menuBackground);
 
 				// text
-				this.bulletText = new _Text2.default(this.game, this.game.width / 2 + 85, this.game.height / 2 - 50, 'gamefont', _Data2.default.bullets + '\nbullets', 20, 'center');
+				this.bulletText = new _Text2.default(this.game, this.game.width / 2 + 85, this.game.height / 2 - 50 - 30, 'gamefont', _Data2.default.bullets + '\nbullets', 20, 'center');
 				this.game.add.existing(this.bulletText);
 
-				this.meteorText = new _Text2.default(this.game, this.game.width / 2 + 85, this.game.height / 2 + 20, 'gamefont', _Data2.default.meteor + '\nmeteors', 20, 'center');
+				this.meteorText = new _Text2.default(this.game, this.game.width / 2 + 85, this.game.height / 2 + 20 - 20, 'gamefont', _Data2.default.meteor + '\nmeteors', 20, 'center');
 				this.game.add.existing(this.meteorText);
 
-				this.coinText = new _Text2.default(this.game, this.game.width / 2, this.game.height / 2 - 150, 'gamefont', _Data2.default.coins + '\ncoins', 20, 'center');
+				this.coinText = new _Text2.default(this.game, this.game.width / 2, this.game.height / 2 - 160, 'gamefont', _Data2.default.coins + '\ncoins', 20, 'center');
 				this.game.add.existing(this.coinText);
 
-				// Buttons
-				this.priceBullets = new _Text2.default(this.game, this.game.width / 2 - 80, this.game.height / 2 - 82, 'gamefont', 'price: ' + this.prices.bulletprice, 14, 'center');
+				this.errorText = new _Text2.default(this.game, this.game.width / 2 + 5, this.game.height / 2 - 225, 'gamefont', '', 14, 'center');
+				this.game.add.existing(this.errorText);
+
+				var rainboxInnerText = undefined;
+				if (_Data2.default.hasRainbow) {
+					rainboxInnerText = 'equiped';
+				} else {
+					rainboxInnerText = 'not\nequiped';
+				}
+				this.rainbowText = new _Text2.default(this.game, this.game.width / 2 + 85, this.game.height / 2 + 20 - 10 + 75, 'gamefont', rainboxInnerText, 20, 'center');
+				this.game.add.existing(this.rainbowText);
+
+				// prijzen/hoeveelheden
+				this.priceBullets = new _Text2.default(this.game, this.game.width / 2 - 80, this.game.height / 2 - 82 - 30, 'gamefont', 'prijs: ' + this.prices.bulletprice, 14, 'center');
 				this.game.add.existing(this.priceBullets);
 
-				this.bulletButton = this.game.add.button(this.game.width / 2 - 45, this.game.height / 2 - 50, 'bulletButton', this.bulletButtonClickHandler, this);
-				Utils.center(this.bulletButton);
+				this.amountBullets = new _Text2.default(this.game, this.game.width / 2 - 5, this.game.height / 2 - 82 - 30, 'gamefont', 'aantal: ' + 5, 14, 'center');
+				this.game.add.existing(this.amountBullets);
 
-				this.priceMeteors = new _Text2.default(this.game, this.game.width / 2 - 80, this.game.height / 2 - 12, 'gamefont', 'price: ' + this.prices.meteorprice, 14, 'center');
+				this.priceMeteors = new _Text2.default(this.game, this.game.width / 2 - 80, this.game.height / 2 - 12 - 20, 'gamefont', 'prijs: ' + this.prices.meteorprice, 14, 'center');
 				this.game.add.existing(this.priceMeteors);
 
-				this.meteorButton = this.game.add.button(this.game.width / 2 - 45, this.game.height / 2 + 20, 'meteorButton', this.meteorButtonClickHandler, this);
-				Utils.center(this.meteorButton);
+				this.priceRainbow = new _Text2.default(this.game, this.game.width / 2 - 80, this.game.height / 2 - 12 - 10 + 75, 'gamefont', 'prijs: ' + this.prices.rainbowprice, 14, 'center');
+				this.game.add.existing(this.priceRainbow);
+				// this.amountRainbow = new Text(this.game, this.game.width/2 - 5, this.game.height/2 - 12 - 10 + 75, 'gamefont', 'aantal: ' + 1, 14, 'center');
+				// this.game.add.existing(this.amountRainbow);
 
-				// Game State Buttons
+				this.amountMeteors = new _Text2.default(this.game, this.game.width / 2 - 5, this.game.height / 2 - 12 - 20, 'gamefont', 'aantal: ' + 1, 14, 'center');
+				this.game.add.existing(this.amountMeteors);
+
+				// buttons
 				this.startButton = this.game.add.button(this.game.width / 2 + 50, this.game.height / 2 + 150, 'startButton', this.startClickHandler, this);
 				Utils.center(this.startButton);
 
 				this.backButton = this.game.add.button(this.game.width / 2 - 50, this.game.height / 2 + 150, 'backButton', this.backClickHandler, this);
 				Utils.center(this.backButton);
+
+				this.meteorButton = this.game.add.button(this.game.width / 2 - 45, this.game.height / 2 + 20 - 20, 'meteorButton', this.meteorButtonClickHandler, this);
+				Utils.center(this.meteorButton);
+
+				this.rainbowButton = this.game.add.button(this.game.width / 2 - 45, this.game.height / 2 + 20 - 10 + 75, 'rainbowButton', this.rainbowButtonClickHandler, this);
+				Utils.center(this.rainbowButton);
+
+				this.bulletButton = this.game.add.button(this.game.width / 2 - 45, this.game.height / 2 - 50 - 30, 'bulletButton', this.bulletButtonClickHandler, this);
+				Utils.center(this.bulletButton);
 			}
 		}, {
 			key: 'update',
@@ -2424,32 +2470,48 @@
 			key: 'bulletButtonClickHandler',
 			value: function bulletButtonClickHandler() {
 				if (_Data2.default.coins >= this.prices.bulletprice) {
-					this.doErrorHandling("no error");
-					errorInfo = "";
-
 					this.bulletPackSound.play();
 					_Data2.default.bullets += 5;
 					_Data2.default.coins -= this.prices.bulletprice;
-					this.bulletText.text = _Data2.default.bullets + '\nbullets';
-					this.coinText.text = _Data2.default.coins + '\ncoins';
+					this.updateBulletText();
+					this.updateCoinText();
 				} else {
-					this.doErrorHandling("not enough money");
+					this.errorSound.play();
+					this.doErrorHandling('je hebt niet genoeg coins');
 				}
 			}
 		}, {
 			key: 'meteorButtonClickHandler',
 			value: function meteorButtonClickHandler() {
 				if (_Data2.default.coins >= this.prices.meteorprice) {
-					this.doErrorHandling("no error");
-					errorInfo = "";
-
 					this.bulletPackSound.play();
 					_Data2.default.meteor++;
 					_Data2.default.coins -= this.prices.meteorprice;
-					this.meteorText.text = _Data2.default.meteor + '\nbullets';
-					this.coinText.text = _Data2.default.coins + '\ncoins';
+					this.updateMeteorText();
+					this.updateCoinText();
 				} else {
-					this.doErrorHandling("not enough money");
+					this.errorSound.play();
+					this.doErrorHandling('je hebt niet genoeg coins');
+				}
+			}
+		}, {
+			key: 'rainbowButtonClickHandler',
+			value: function rainbowButtonClickHandler() {
+				if (_Data2.default.hasRainbow) {
+					this.errorSound.play();
+					this.doErrorHandling('je hebt al een rainbow suit');
+					return;
+				}
+
+				if (_Data2.default.coins >= this.prices.rainbowprice) {
+					this.bulletPackSound.play();
+					_Data2.default.hasRainbow = true;
+					_Data2.default.coins -= this.prices.rainbowprice;
+					this.updateCoinText();
+					this.updateRainbowText();
+				} else {
+					this.errorSound.play();
+					this.doErrorHandling('je hebt niet genoeg coins');
 				}
 			}
 		}, {
@@ -2471,15 +2533,28 @@
 			}
 		}, {
 			key: 'doErrorHandling',
-			value: function doErrorHandling(check) {
-				if (check == "no error") {
-					errorInfo = "";
-				}
-				if (check == "not enough money") {
-					errorInfo = "not enough money in store";
-				}
-				this.errorText = new _Text2.default(this.game, this.game.width / 2 + 5, this.game.height / 2 + 85, 'gamefont', errorInfo, 14, 'center');
-				this.game.add.existing(this.errorText);
+			value: function doErrorHandling(error) {
+				this.errorText.text = error;
+			}
+		}, {
+			key: 'updateBulletText',
+			value: function updateBulletText() {
+				this.bulletText.text = _Data2.default.bullets + '\nbullets';
+			}
+		}, {
+			key: 'updateCoinText',
+			value: function updateCoinText() {
+				this.coinText.text = _Data2.default.coins + '\ncoins';
+			}
+		}, {
+			key: 'updateMeteorText',
+			value: function updateMeteorText() {
+				this.meteorText.text = _Data2.default.meteor + '\nmeteors';
+			}
+		}, {
+			key: 'updateRainbowText',
+			value: function updateRainbowText() {
+				this.rainbowText.text = 'equiped';
 			}
 		}]);
 
@@ -2487,6 +2562,61 @@
 	})(Phaser.State);
 
 	exports.default = Shop;
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _Utils = __webpack_require__(3);
+
+	var Utils = _interopRequireWildcard(_Utils);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Explosion = (function (_Phaser$Sprite) {
+		_inherits(Explosion, _Phaser$Sprite);
+
+		function Explosion(game, x, y) {
+			_classCallCheck(this, Explosion);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Explosion).call(this, game, x, y, 'explosion'));
+
+			_this.animations.add('explode');
+			_this.animations.play('explode', 40, false, true);
+
+			Utils.center(_this);
+
+			_this.exists = true;
+			return _this;
+		}
+
+		_createClass(Explosion, [{
+			key: 'update',
+			value: function update() {
+				if (this.animations.currentFrame.index > 5) {
+					this.destroy();
+				}
+			}
+		}]);
+
+		return Explosion;
+	})(Phaser.Sprite);
+
+	exports.default = Explosion;
 
 /***/ }
 /******/ ]);

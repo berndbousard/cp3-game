@@ -4,6 +4,6 @@ export default class KeysImage extends Phaser.Sprite {
 
 		// animation
 		this.animations.add('press');
-		this.animations.play('press', 5, true);
+		this.animations.play('press', 3, true);
 	}
 }

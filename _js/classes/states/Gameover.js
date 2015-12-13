@@ -17,21 +17,34 @@ export default class Gameover extends Phaser.State {
 		console.log('start gameover');
 	}
 	create(){
-		// music
-		this.clickSound = new Sound(this.game, 'click');
+
+		// sound
+		this.soundSetup();
 
 		this.createForm();
 		leaderboardNameInput = document.getElementById("text");
 		leaderboardSubmit = document.getElementById("submit");
 		leaderboard = document.getElementById("form");
+
+		// listener
+		// om enters op te vangen
 		leaderboard.addEventListener('submit', (event) => {
 			event.preventDefault();
 			this.leaderboardSubmitHandler();
 		});
-		// not sure about this
+
 		leaderboardSubmit.addEventListener('submit', (event) => {
 			event.preventDefault();
 			this.leaderboardSubmitHandler();
+		});
+
+		// om de spatie en m toets te laten werken in HTML input
+		leaderboardNameInput.addEventListener('focus', () => {
+			this.game.input.enabled = false;
+		});
+
+		leaderboardNameInput.addEventListener('blur', () => {
+			this.game.input.enabled = true;
 		});
 
 		// Images
@@ -42,13 +55,10 @@ export default class Gameover extends Phaser.State {
 		this.game.add.existing(this.menuBackground);
 
 		// Buttons
-		this.startButton = this.game.add.button(
-			this.game.width/2,this.game.height/2 + 150,'startButton',this.startClickHandler,this);
+		this.startButton = this.game.add.button(this.game.width/2,this.game.height/2 + 150,'startButton',this.startClickHandler,this);
 		Utils.center(this.startButton);
 
-		this.backButton = this.game.add.button(
-			this.game.width/2 - 75, this.game.height/2 + 150, 'backButton', this.backClickHandler, this
-		);
+		this.backButton = this.game.add.button(this.game.width/2 - 75, this.game.height/2 + 150, 'backButton', this.backClickHandler, this);
 		Utils.center(this.backButton);
 
 		// score and distance
@@ -57,11 +67,14 @@ export default class Gameover extends Phaser.State {
 		this.visibleDistance = new Text(this.game, this.game.width/2 + 80, 200, 'gamefont', 'You ran\n' + Data.distance + ' km', 20, 'center');
 		this.game.add.existing(this.visibleDistance);
 	}
+
 	update(){
 	}
+
 	shutdown(){
 		console.log('end gameover');
 		leaderboard.remove();
+		this.game.input.enabled = true;
 	}
 
 	createForm(){
@@ -74,7 +87,7 @@ export default class Gameover extends Phaser.State {
 		let formNameInput = document.createElement('input');
 		formNameInput.setAttribute('type', 'text');
 		formNameInput.setAttribute('name', 'name');
-		formNameInput.setAttribute('placeholder', 'username');
+		formNameInput.setAttribute('placeholder', 'Uw naam');
 		formNameInput.setAttribute('maxlength', '10');
 		formNameInput.id = 'text';
 
@@ -110,21 +123,19 @@ export default class Gameover extends Phaser.State {
 	submitInputHandler(name){
 		this.clickSound.play();
 		let req = new XMLHttpRequest();
-		// req.responseType = 'json';
 		req.addEventListener('load', () => {
 			if(req.status === 200){
 				Utils.hideElement(form);
+				this.resetStats();
 				Utils.changeState(this.game, 'Leaderboard');
 			}else{
-				alert('ja, lap al kapot, theeft lang geduurd');
+				alert('ja, lap tis kapot, het heeft lang geduurd');
 			}
 		});
 		let url = `${form.getAttribute('action')}&t=${Date.now()}`;
 		req.open('post', url, true);
 		req.setRequestHeader('X_REQUESTED_WITH', 'xmlhttprequest');
 		req.send(new FormData(form));
-		// Het lijkt dat hij 2x pusht naar de DDB maar als ik een event listener eraan
-		// Koppen dan zien we het maar 1 keer maar zit wel 2x id DDB
 	}
 
 	leaderboardSubmitHandler(){
@@ -133,13 +144,29 @@ export default class Gameover extends Phaser.State {
 			this.submitInputHandler(name);
 		}
 	}
+
 	startClickHandler() {
 		this.clickSound.play();
 		Utils.hideElement(form);
+		this.resetStats();
 		Utils.changeState(this.game, 'Play');
 	}
+
 	backClickHandler() {
 		this.clickSound.play();
+		this.resetStats();
 		Utils.changeState(this.game, 'Menu');
+	}
+
+	resetStats(){
+		Data.distance = 0;
+		Data.bullets = 0;
+		Data.kills = 0;
+		Data.meteor = 0;
+	}
+
+	soundSetup(){
+		// music
+		this.clickSound = new Sound(this.game, 'click');
 	}
 }

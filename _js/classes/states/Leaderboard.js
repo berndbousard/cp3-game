@@ -9,11 +9,10 @@ let leaderboardTabel;
 export default class Leaderboard extends Phaser.State {
 	preload(){
 		console.log('start leaderboard');
-		// music
-		this.clickSound = new Sound(this.game, 'click');
+		
 	}
 	create(){
-
+		this.soundSetup();
 		// Build table with results
 		this.getJSON(`http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=getScores&t=${Date.now()}`);
 
@@ -25,12 +24,9 @@ export default class Leaderboard extends Phaser.State {
 		this.game.add.existing(this.menuBackground);
 
 		// Buttons
-		this.startButton = this.game.add.button(
-			this.game.width/2 + 50,this.game.height/2 + 150,'startButton', this.startClickHandler,this);
+		this.startButton = this.game.add.button(this.game.width/2 + 50,this.game.height/2 + 150,'startButton', this.startClickHandler,this);
 		Utils.center(this.startButton);
-		this.backButton = this.game.add.button(
-			this.game.width/2 - 50, this.game.height/2 + 150, 'backButton', this.backClickHandler, this
-		);
+		this.backButton = this.game.add.button(this.game.width/2 - 50, this.game.height/2 + 150, 'backButton', this.backClickHandler, this);
 		Utils.center(this.backButton);
 
 	}
@@ -113,8 +109,11 @@ export default class Leaderboard extends Phaser.State {
 	}
 	giveError(error){
 		// game, x, y, font, text, size, align
-		let text ='We vermoeden dat je\ngeen internet hebt\nOm topscores te laden hebben\nwe jammergenoeg internet nodig';
-		let errorText = new Text(this.game, this.game.width/2, this.game.height/2, 'gamefont', text, 15, 'center');
+		let errorText = new Text(this.game, this.game.width/2, this.game.height/2, 'gamefont', error, 15, 'center');
 		this.game.add.existing(errorText);
+	}
+	soundSetup(){
+		// music
+		this.clickSound = new Sound(this.game, 'click');
 	}
 }

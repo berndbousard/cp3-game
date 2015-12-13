@@ -6,6 +6,6 @@ export default class Data {
 		this.bullets = 5;
 		this.kills = 0;
 		this.meteor = 1;
-		this.firstTimePlaying = true;
+		this.hasRainbow;
 	}
 }
