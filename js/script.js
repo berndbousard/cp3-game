@@ -757,7 +757,7 @@
 				var _this2 = this;
 
 				// console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length, 'red ' + this.redEnemies.length);
-				console.log(this.explosionGroup.length);
+				console.log(this.bulletGroup.length);
 
 				// controls
 				if (this.cursors.down.isDown && !this.cursors.up.isDown) {
