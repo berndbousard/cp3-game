@@ -26,6 +26,10 @@ export default class Preload extends Phaser.State {
 		this.game.load.image('rainbowButton', 'assets/rainbowButton.png');
 		this.game.load.image('muteButton', 'assets/muteButton.png');
 		this.game.load.image('unmuteButton', 'assets/unmuteButton.png');
+		this.game.load.image('displayScore', 'assets/displayScore.png');
+		this.game.load.image('displayBullets', 'assets/displayBullets.png');
+		this.game.load.image('displayKills', 'assets/displayKills.png');
+		this.game.load.image('displayMeteors', 'assets/displayMeteors.png');
 
 		this.game.load.bitmapFont('gamefont', 'assets/font/extra/gamefont.png', 'assets/font/extra/gamefont.fnt');
 
