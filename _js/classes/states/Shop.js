@@ -5,18 +5,14 @@ import * as Utils from '../objects/Utils';
 import Sound from '../objects/Sound';
 import Data from '../objects/Data';
 
-let errorInfo;
-
 export default class Shop extends Phaser.State {
 	preload(){
 		console.log("start shop");
-		// music
-		// game, key, volume, loop
-		this.clickSound = new Sound(this.game, 'click');
-		this.bulletPackSound = new Sound(this.game, 'bulletPackSound');
-		this.errorSound = new Sound(this.game, 'error');
 	}
+	
 	create(){
+		this.soundSetup();
+
 		// Als de gebruiker zonder te spelen naar de shop gaat
 		if(!Data.bullets){
 			Data.bullets = 0;
@@ -78,12 +74,9 @@ export default class Shop extends Phaser.State {
 
 		this.priceRainbow = new Text(this.game, this.game.width/2 - 80, this.game.height/2 - 12 - 10 + 75, 'gamefont', 'prijs: ' + this.prices.rainbowprice, 14, 'center');
 		this.game.add.existing(this.priceRainbow);
-		// this.amountRainbow = new Text(this.game, this.game.width/2 - 5, this.game.height/2 - 12 - 10 + 75, 'gamefont', 'aantal: ' + 1, 14, 'center');
-		// this.game.add.existing(this.amountRainbow);
 
 		this.amountMeteors = new Text(this.game, this.game.width/2 - 5, this.game.height/2 - 12  - 20, 'gamefont', 'aantal: ' + 1, 14, 'center');
 		this.game.add.existing(this.amountMeteors);
-
 
 		// buttons
 		this.startButton = this.game.add.button(this.game.width/2 + 50,this.game.height/2 + 150, 'startButton', this.startClickHandler,this);
@@ -167,16 +160,28 @@ export default class Shop extends Phaser.State {
 	doErrorHandling(error){
 		this.errorText.text = error;
 	}
+
 	updateBulletText(){
 		this.bulletText.text = Data.bullets + '\nbullets';
 	}
+
 	updateCoinText(){
 		this.coinText.text = Data.coins + '\ncoins';
 	}
+
 	updateMeteorText(){
 		this.meteorText.text = Data.meteor + '\nmeteors';
 	}
+
 	updateRainbowText(){
 		this.rainbowText.text = 'equiped';
+	}
+
+	soundSetup(){
+		// music
+		// game, key, volume, loop
+		this.clickSound = new Sound(this.game, 'click');
+		this.bulletPackSound = new Sound(this.game, 'bulletPackSound');
+		this.errorSound = new Sound(this.game, 'error');
 	}
 }

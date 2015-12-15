@@ -321,7 +321,8 @@ export default class Play extends Phaser.State {
 			this.killsTextBox.text = Data.kills + '\nkills';
 		}
 		
-		bullet.pendingDestroy = true;
+		// bullet.pendingDestroy = true;
+		bullet.exists = false;
 		this.spawnExplosion(enemy.position.x, enemy.position.y);
 		this.enemyHitSound.play();
 	}

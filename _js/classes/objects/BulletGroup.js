@@ -13,7 +13,9 @@ export default class BulletGroup extends Phaser.Group {
 		this.exists = true;
 	}
 	update(){
-		this.game.debug.body(this);
+		if(this.bullet.position.x > this.game.width){
+			this.exists = false;
+		}
 	}
 
 	reset(x, y){

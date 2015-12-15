@@ -56,15 +56,19 @@ export default class Preload extends Phaser.State {
 		this.game.load.audio('error' ,'assets/sound/error.mp3');
 		this.game.load.audio('meteor', 'assets/sound/meteor2.mp3');
 	}
+
 	create(){
 		Utils.changeState(this.game, 'Menu');
 	}
+
 	update(){
 		
 	}
+
 	onFileComplete(progress){
 		this.progressText.text = progress + '%';
 	}
+	
 	shutdown(){
 		console.log('end preload');
 		this.progressText.destroy();

@@ -425,7 +425,7 @@
 
 			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BackgroundCity).call(this, game, x, y, width, height, key));
 
-			_this.autoScroll(-120, 0);
+			_this.autoScroll(-100, 0);
 			return _this;
 		}
 
@@ -965,7 +965,8 @@
 					this.killsTextBox.text = _Data2.default.kills + '\nkills';
 				}
 
-				bullet.pendingDestroy = true;
+				// bullet.pendingDestroy = true;
+				bullet.exists = false;
 				this.spawnExplosion(enemy.position.x, enemy.position.y);
 				this.enemyHitSound.play();
 			}
@@ -1428,7 +1429,9 @@
 		_createClass(BulletGroup, [{
 			key: 'update',
 			value: function update() {
-				this.game.debug.body(this);
+				if (this.bullet.position.x > this.game.width) {
+					this.exists = false;
+				}
 			}
 		}, {
 			key: 'reset',
@@ -2410,8 +2413,6 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var errorInfo = undefined;
-
 	var Shop = (function (_Phaser$State) {
 		_inherits(Shop, _Phaser$State);
 
@@ -2425,15 +2426,12 @@
 			key: 'preload',
 			value: function preload() {
 				console.log("start shop");
-				// music
-				// game, key, volume, loop
-				this.clickSound = new _Sound2.default(this.game, 'click');
-				this.bulletPackSound = new _Sound2.default(this.game, 'bulletPackSound');
-				this.errorSound = new _Sound2.default(this.game, 'error');
 			}
 		}, {
 			key: 'create',
 			value: function create() {
+				this.soundSetup();
+
 				// Als de gebruiker zonder te spelen naar de shop gaat
 				if (!_Data2.default.bullets) {
 					_Data2.default.bullets = 0;
@@ -2495,8 +2493,6 @@
 
 				this.priceRainbow = new _Text2.default(this.game, this.game.width / 2 - 80, this.game.height / 2 - 12 - 10 + 75, 'gamefont', 'prijs: ' + this.prices.rainbowprice, 14, 'center');
 				this.game.add.existing(this.priceRainbow);
-				// this.amountRainbow = new Text(this.game, this.game.width/2 - 5, this.game.height/2 - 12 - 10 + 75, 'gamefont', 'aantal: ' + 1, 14, 'center');
-				// this.game.add.existing(this.amountRainbow);
 
 				this.amountMeteors = new _Text2.default(this.game, this.game.width / 2 - 5, this.game.height / 2 - 12 - 20, 'gamefont', 'aantal: ' + 1, 14, 'center');
 				this.game.add.existing(this.amountMeteors);
@@ -2609,6 +2605,15 @@
 			key: 'updateRainbowText',
 			value: function updateRainbowText() {
 				this.rainbowText.text = 'equiped';
+			}
+		}, {
+			key: 'soundSetup',
+			value: function soundSetup() {
+				// music
+				// game, key, volume, loop
+				this.clickSound = new _Sound2.default(this.game, 'click');
+				this.bulletPackSound = new _Sound2.default(this.game, 'bulletPackSound');
+				this.errorSound = new _Sound2.default(this.game, 'error');
 			}
 		}]);
 
