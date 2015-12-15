@@ -58,19 +58,19 @@
 
 	var _Play2 = _interopRequireDefault(_Play);
 
-	var _Leaderboard = __webpack_require__(21);
+	var _Leaderboard = __webpack_require__(20);
 
 	var _Leaderboard2 = _interopRequireDefault(_Leaderboard);
 
-	var _Gameover = __webpack_require__(22);
+	var _Gameover = __webpack_require__(21);
 
 	var _Gameover2 = _interopRequireDefault(_Gameover);
 
-	var _Info = __webpack_require__(23);
+	var _Info = __webpack_require__(22);
 
 	var _Info2 = _interopRequireDefault(_Info);
 
-	var _Shop = __webpack_require__(25);
+	var _Shop = __webpack_require__(24);
 
 	var _Shop2 = _interopRequireDefault(_Shop);
 
@@ -593,9 +593,9 @@
 
 	var _Sound2 = _interopRequireDefault(_Sound);
 
-	var _BulletGroup = __webpack_require__(14);
+	var _Bullet = __webpack_require__(11);
 
-	var _BulletGroup2 = _interopRequireDefault(_BulletGroup);
+	var _Bullet2 = _interopRequireDefault(_Bullet);
 
 	var _Utils = __webpack_require__(2);
 
@@ -605,23 +605,23 @@
 
 	var _Data2 = _interopRequireDefault(_Data);
 
-	var _Explosion = __webpack_require__(15);
+	var _Explosion = __webpack_require__(14);
 
 	var _Explosion2 = _interopRequireDefault(_Explosion);
 
-	var _EnemyBlack = __webpack_require__(16);
+	var _EnemyBlack = __webpack_require__(15);
 
 	var _EnemyBlack2 = _interopRequireDefault(_EnemyBlack);
 
-	var _EnemyWhite = __webpack_require__(18);
+	var _EnemyWhite = __webpack_require__(17);
 
 	var _EnemyWhite2 = _interopRequireDefault(_EnemyWhite);
 
-	var _EnemyOrange = __webpack_require__(19);
+	var _EnemyOrange = __webpack_require__(18);
 
 	var _EnemyOrange2 = _interopRequireDefault(_EnemyOrange);
 
-	var _EnemyRed = __webpack_require__(20);
+	var _EnemyRed = __webpack_require__(19);
 
 	var _EnemyRed2 = _interopRequireDefault(_EnemyRed);
 
@@ -662,7 +662,6 @@
 				this.cursors = this.game.input.keyboard.createCursorKeys();
 				this.spacebar = this.game.input.keyboard.addKey(32);
 				this.m = this.game.input.keyboard.addKey(77);
-
 				this.spacebar.onDown.add(this.spaceBarHandler, this);
 				this.m.onDown.add(this.mDownHandler, this);
 
@@ -678,7 +677,7 @@
 					_Data2.default.meteor = _Data2.default.meteor;
 				}
 				if (!_Data2.default.bullets) {
-					_Data2.default.bullets = 0;
+					_Data2.default.bullets = 10;
 				} else {
 					_Data2.default.bullets = _Data2.default.bullets;
 				}
@@ -723,7 +722,7 @@
 				this.game.add.existing(this.soundButton);
 
 				// bullets
-				this.bullets = this.game.add.group();
+				this.allBullets = this.game.add.group();
 
 				// All enemies
 				this.allEnemies = this.game.add.group();
@@ -757,9 +756,9 @@
 				var _this2 = this;
 
 				// console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length, 'red ' + this.redEnemies.length);
+				// controls
 				console.log(this.explosionGroup.length);
 
-				// controls
 				if (this.cursors.down.isDown && !this.cursors.up.isDown) {
 					this.side = 'down';
 					this.player.flipDown();
@@ -784,7 +783,7 @@
 					_this2.game.physics.arcade.overlap(_this2.player, oneEnemy, _this2.enemyPlayerCollisionHandler, null, _this2);
 				});
 
-				this.bullets.forEach(function (oneBullet) {
+				this.allBullets.forEach(function (oneBullet) {
 					_this2.allEnemies.forEach(function (oneEnemy) {
 						_this2.game.physics.arcade.collide(oneBullet, oneEnemy, _this2.enemyBulletCollisionHandler, null, _this2);
 					});
@@ -862,7 +861,6 @@
 						enemy = this.blackEnemies.getFirstExists(false);
 						if (!enemy) {
 							enemy = new _EnemyBlack2.default(this.game, 0, 0);
-							enemy.body.velocity.x = -200;
 							this.blackEnemies.add(enemy);
 						}
 						y = 225;
@@ -872,7 +870,6 @@
 						enemy = this.whiteEnemies.getFirstExists(false);
 						if (!enemy) {
 							enemy = new _EnemyWhite2.default(this.game, 0, 0);
-							enemy.body.velocity.x = -200;
 							this.whiteEnemies.add(enemy);
 						}
 						y = 275;
@@ -882,7 +879,6 @@
 						enemy = this.orangeEnemies.getFirstExists(false);
 						if (!enemy) {
 							enemy = new _EnemyOrange2.default(this.game, 0, 0);
-							enemy.body.velocity.x = -200;
 							this.orangeEnemies.add(enemy);
 						}
 						if (Math.random() > .5) {
@@ -898,7 +894,6 @@
 						enemy = this.redEnemies.getFirstExists(false);
 						if (!enemy) {
 							enemy = new _EnemyRed2.default(this.game, 0, 0);
-							enemy.body.velocity.x = -200;
 							this.redEnemies.add(enemy);
 						}
 
@@ -982,13 +977,13 @@
 		}, {
 			key: 'spawnExplosion',
 			value: function spawnExplosion(x, y) {
-				var xPos = x;
-				var yPos = y;
 				var explosion = this.explosionGroup.getFirstExists(false);
 				if (!explosion) {
-					explosion = new _Explosion2.default(this.game, xPos, yPos);
+					explosion = new _Explosion2.default(this.game, 0, 0);
 				}
-				explosion.reset(xPos, yPos);
+				explosion.reset(x, y);
+				explosion.resetAnimation();
+				explosion.animations.play('explode', 40, false, true);
 				this.explosionGroup.add(explosion);
 			}
 		}, {
@@ -1015,13 +1010,15 @@
 			value: function spaceBarHandler() {
 				// shoot
 				if (_Data2.default.bullets >= 1) {
-					var bullet = this.bullets.getFirstExists(false);
+					var bullet = this.allBullets.getFirstExists(false);
 					if (!bullet) {
-						bullet = new _BulletGroup2.default(this.game, this.bullets, this.player.x, this.player.y);
+						bullet = new _Bullet2.default(this.game, 0, 0);
+						// bullet = new BulletGroup(this.game, this.allBullets, this.player.x, this.player.y);
 					}
-					var x = this.player.x - 10;
-					var y = this.player.y - 105;
+					var x = this.player.x + 40;
+					var y = this.player.y + this.player.height / 2;
 					bullet.reset(x, y);
+					this.allBullets.add(bullet);
 
 					_Data2.default.bullets--;
 					this.bulletTextBox.text = _Data2.default.bullets + '\nbullets';
@@ -1261,13 +1258,18 @@
 			_this.game.physics.arcade.enableBody(_this);
 			_this.body.allowGravity = false;
 			_this.body.immovable = true;
+
+			_this.exists = true;
 			return _this;
 		}
 
 		_createClass(Bullet, [{
 			key: 'update',
 			value: function update() {
-				this.game.debug.body(this);
+				if (this.position.x > this.game.width) {
+					this.exists = false;
+				}
+				this.body.velocity.x = 200;
 			}
 		}]);
 
@@ -1396,72 +1398,6 @@
 		value: true
 	});
 
-	var _Bullet = __webpack_require__(11);
-
-	var _Bullet2 = _interopRequireDefault(_Bullet);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var BulletGroup = (function (_Phaser$Group) {
-		_inherits(BulletGroup, _Phaser$Group);
-
-		function BulletGroup(game, parent, x, y) {
-			_classCallCheck(this, BulletGroup);
-
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BulletGroup).call(this, game, parent));
-
-			_this.bullet = new _Bullet2.default(_this.game, 0, 0);
-			_this.bullet.anchor.setTo(.5, .5);
-			_this.add(_this.bullet);
-
-			_this.setAll('body.velocity.x', 200);
-
-			_this.exists = true;
-			return _this;
-		}
-
-		_createClass(BulletGroup, [{
-			key: 'update',
-			value: function update() {
-				if (this.bullet.position.x > this.game.width) {
-					this.exists = false;
-				}
-			}
-		}, {
-			key: 'reset',
-			value: function reset(x, y) {
-				this.bullet.position.x = x;
-				this.bullet.position.y = y;
-
-				this.x = x;
-				this.y = y;
-				this.exists = true;
-			}
-		}]);
-
-		return BulletGroup;
-	})(Phaser.Group);
-
-	exports.default = BulletGroup;
-
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
 	var _Utils = __webpack_require__(2);
 
 	var Utils = _interopRequireWildcard(_Utils);
@@ -1494,9 +1430,15 @@
 		_createClass(Explosion, [{
 			key: 'update',
 			value: function update() {
-				if (this.animations.currentFrame.index > 5) {
-					this.destroy();
+				if (this.animations.currentFrame.index === 6) {
+					// this.destroy();
+					this.exists = false;
 				}
+			}
+		}, {
+			key: 'resetAnimation',
+			value: function resetAnimation() {
+				this.animations.currentFrame.index = 0;
 			}
 		}]);
 
@@ -1506,7 +1448,7 @@
 	exports.default = Explosion;
 
 /***/ },
-/* 16 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1517,7 +1459,7 @@
 		value: true
 	});
 
-	var _Enemy2 = __webpack_require__(17);
+	var _Enemy2 = __webpack_require__(16);
 
 	var _Enemy3 = _interopRequireDefault(_Enemy2);
 
@@ -1563,7 +1505,7 @@
 	exports.default = EnemyBlack;
 
 /***/ },
-/* 17 */
+/* 16 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1624,7 +1566,7 @@
 	exports.default = Enemy;
 
 /***/ },
-/* 18 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1635,7 +1577,7 @@
 		value: true
 	});
 
-	var _Enemy2 = __webpack_require__(17);
+	var _Enemy2 = __webpack_require__(16);
 
 	var _Enemy3 = _interopRequireDefault(_Enemy2);
 
@@ -1682,7 +1624,7 @@
 	exports.default = EnemyWhite;
 
 /***/ },
-/* 19 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1693,7 +1635,7 @@
 		value: true
 	});
 
-	var _Enemy2 = __webpack_require__(17);
+	var _Enemy2 = __webpack_require__(16);
 
 	var _Enemy3 = _interopRequireDefault(_Enemy2);
 
@@ -1739,7 +1681,7 @@
 	exports.default = EnemyOrange;
 
 /***/ },
-/* 20 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1750,7 +1692,7 @@
 		value: true
 	});
 
-	var _Enemy2 = __webpack_require__(17);
+	var _Enemy2 = __webpack_require__(16);
 
 	var _Enemy3 = _interopRequireDefault(_Enemy2);
 
@@ -1796,7 +1738,7 @@
 	exports.default = EnemyRed;
 
 /***/ },
-/* 21 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1980,7 +1922,7 @@
 	exports.default = Leaderboard;
 
 /***/ },
-/* 22 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2219,7 +2161,7 @@
 	exports.default = Gameover;
 
 /***/ },
-/* 23 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2242,7 +2184,7 @@
 
 	var Utils = _interopRequireWildcard(_Utils);
 
-	var _KeysImage = __webpack_require__(24);
+	var _KeysImage = __webpack_require__(23);
 
 	var _KeysImage2 = _interopRequireDefault(_KeysImage);
 
@@ -2332,7 +2274,7 @@
 	exports.default = Info;
 
 /***/ },
-/* 24 */
+/* 23 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2368,7 +2310,7 @@
 	exports.default = KeysImage;
 
 /***/ },
-/* 25 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

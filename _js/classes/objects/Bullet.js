@@ -8,8 +8,13 @@ export default class Bullet extends Phaser.Sprite {
 		this.game.physics.arcade.enableBody(this);
 		this.body.allowGravity = false;
 		this.body.immovable = true;
+
+		this.exists = true;
 	}
 	update(){
-		this.game.debug.body(this);
+		if(this.position.x > this.game.width){
+			this.exists = false;
+		}
+		this.body.velocity.x = 200;
 	}
 }

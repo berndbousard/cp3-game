@@ -12,8 +12,13 @@ export default class Explosion extends Phaser.Sprite {
 		this.exists = true;
 	}
 	update(){
-		if(this.animations.currentFrame.index > 5){
-			this.destroy();
+		if(this.animations.currentFrame.index === 6){
+			// this.destroy();
+			this.exists = false;
 		}
+	}
+
+	resetAnimation(){
+		this.animations.currentFrame.index = 0;
 	}
 }

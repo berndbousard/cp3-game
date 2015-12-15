@@ -5,7 +5,7 @@ import Meteor from '../objects/Meteor';
 import Text from '../objects/Text';
 import Coin from '../objects/Coin';
 import Sound from '../objects/Sound';
-import BulletGroup from '../objects/BulletGroup';
+import Bullet from '../objects/Bullet';
 import * as Utils from '../objects/Utils';
 import Data from '../objects/Data';
 import Explosion from '../objects/Explosion';
@@ -30,7 +30,6 @@ export default class Play extends Phaser.State {
 		this.cursors = this.game.input.keyboard.createCursorKeys();
 		this.spacebar = this.game.input.keyboard.addKey(32);
 		this.m = this.game.input.keyboard.addKey(77);
-
 		this.spacebar.onDown.add(this.spaceBarHandler, this);
 		this.m.onDown.add(this.mDownHandler, this);
 
@@ -46,7 +45,7 @@ export default class Play extends Phaser.State {
 			Data.meteor = Data.meteor;
 		}
 		if(!Data.bullets){
-			Data.bullets = 0;
+			Data.bullets = 10;
 		}else{
 			Data.bullets = Data.bullets;
 		}
@@ -91,7 +90,7 @@ export default class Play extends Phaser.State {
 		this.game.add.existing(this.soundButton);
  
 		// bullets
-		this.bullets = this.game.add.group();
+		this.allBullets = this.game.add.group();
 
 		// All enemies
 		this.allEnemies = this.game.add.group();
@@ -122,9 +121,9 @@ export default class Play extends Phaser.State {
 
 	update(){
 		// console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length, 'red ' + this.redEnemies.length);
-		console.log(this.explosionGroup.length);
-		
 		// controls
+		console.log(this.explosionGroup.length);
+
 		if(this.cursors.down.isDown && !this.cursors.up.isDown){
 			this.side = 'down';
 			this.player.flipDown();
@@ -149,7 +148,7 @@ export default class Play extends Phaser.State {
 			this.game.physics.arcade.overlap(this.player, oneEnemy, this.enemyPlayerCollisionHandler, null, this);
 		});
 
-		this.bullets.forEach((oneBullet) => {
+		this.allBullets.forEach((oneBullet) => {
 			this.allEnemies.forEach((oneEnemy) => {
 				this.game.physics.arcade.collide(oneBullet, oneEnemy, this.enemyBulletCollisionHandler, null, this);
 			});
@@ -223,7 +222,6 @@ export default class Play extends Phaser.State {
 				enemy = this.blackEnemies.getFirstExists(false);
 				if(!enemy){
 					enemy = new EnemyBlack(this.game, 0, 0);
-					enemy.body.velocity.x = -200;
 					this.blackEnemies.add(enemy);
 				}
 				y = 225;
@@ -233,7 +231,6 @@ export default class Play extends Phaser.State {
 				enemy = this.whiteEnemies.getFirstExists(false);
 				if(!enemy){
 					enemy = new EnemyWhite(this.game, 0, 0);
-					enemy.body.velocity.x = -200;
 					this.whiteEnemies.add(enemy);
 				}
 				y = 275;
@@ -243,7 +240,6 @@ export default class Play extends Phaser.State {
 				enemy = this.orangeEnemies.getFirstExists(false);
 				if(!enemy){
 					enemy = new EnemyOrange(this.game, 0, 0);
-					enemy.body.velocity.x = -200;
 					this.orangeEnemies.add(enemy);
 				}
 				if(Math.random() > .5){
@@ -259,7 +255,6 @@ export default class Play extends Phaser.State {
 				enemy = this.redEnemies.getFirstExists(false);
 				if(!enemy){
 					enemy = new EnemyRed(this.game, 0, 0);
-					enemy.body.velocity.x = -200;
 					this.redEnemies.add(enemy);
 				}
 
@@ -274,7 +269,6 @@ export default class Play extends Phaser.State {
 		}
 		x = this.randomInRange(750, 800);
 		enemy.reset(x, y);
-		
 	}
 
 	spawnCoin(){
@@ -336,13 +330,13 @@ export default class Play extends Phaser.State {
 	}
 
 	spawnExplosion(x, y){
-		let xPos = x;
-		let yPos = y;
 		let explosion = this.explosionGroup.getFirstExists(false);
 		if(!explosion){
-			explosion = new Explosion(this.game, xPos, yPos);
+			explosion = new Explosion(this.game, 0, 0);
 		}
-		explosion.reset(xPos, yPos);
+		explosion.reset(x, y);
+		explosion.resetAnimation();
+		explosion.animations.play('explode', 40, false, true);
 		this.explosionGroup.add(explosion);
 	}
 
@@ -366,13 +360,15 @@ export default class Play extends Phaser.State {
 	spaceBarHandler(){
 		// shoot
 		if(Data.bullets >= 1){
-			let bullet = this.bullets.getFirstExists(false);
+			let bullet = this.allBullets.getFirstExists(false);
 			if(!bullet){
-				bullet = new BulletGroup(this.game, this.bullets, this.player.x, this.player.y);
+				bullet = new Bullet(this.game, 0, 0);
+				// bullet = new BulletGroup(this.game, this.allBullets, this.player.x, this.player.y);
 			}
-			let x = this.player.x - 10;
-			let y = this.player.y - 105;
+			let x = this.player.x + 40;
+			let y = this.player.y + this.player.height/2;
 			bullet.reset(x, y);
+			this.allBullets.add(bullet);
 
 			Data.bullets--;
 			this.bulletTextBox.text = Data.bullets + '\nbullets';
