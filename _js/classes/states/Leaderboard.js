@@ -9,8 +9,8 @@ let leaderboardTabel;
 export default class Leaderboard extends Phaser.State {
 	preload(){
 		console.log('start leaderboard');
-		
 	}
+
 	create(){
 		this.soundSetup();
 		// Build table with results
@@ -30,8 +30,10 @@ export default class Leaderboard extends Phaser.State {
 		Utils.center(this.backButton);
 
 	}
+
 	update(){
 	}
+
 	shutdown(){
 		console.log('end leaderboard');
 		if(leaderboardTabel){
@@ -103,15 +105,18 @@ export default class Leaderboard extends Phaser.State {
 		this.clickSound.play();
 		Utils.changeState(this.game, 'Play');
 	}
+
 	backClickHandler() {
 		this.clickSound.play();
 		Utils.changeState(this.game, 'Menu');
 	}
+
 	giveError(error){
 		// game, x, y, font, text, size, align
 		let errorText = new Text(this.game, this.game.width/2, this.game.height/2, 'gamefont', error, 15, 'center');
 		this.game.add.existing(errorText);
 	}
+
 	soundSetup(){
 		// music
 		this.clickSound = new Sound(this.game, 'click');

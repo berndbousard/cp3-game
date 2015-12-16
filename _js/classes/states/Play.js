@@ -19,6 +19,7 @@ export default class Play extends Phaser.State {
 	preload(){
 		console.log('start play');
 	}
+	
 	create(){
 		// sounds
 		this.soundSetup();
@@ -45,13 +46,13 @@ export default class Play extends Phaser.State {
 			Data.meteor = Data.meteor;
 		}
 		if(!Data.bullets){
-			Data.bullets = 10;
+			Data.bullets = 2;
 		}else{
 			Data.bullets = Data.bullets;
 		}
 		Data.distance = 0;
 		Data.kills = 0;
-		this.gameSpeed = .97; //variable die de snelheid van de game bepaalt. hoe groter het getal hoe sneller/moeilijker. Beinvloed momenteel enkel spawnrate van enemy
+		this.gameSpeed = .97; //variable die bepaalt met hoeveel de delay wordt verminderd
 		this.delay = Phaser.Timer.SECOND * 2;
 		this.side = 'up';
 
@@ -380,6 +381,7 @@ export default class Play extends Phaser.State {
 			this.playerShootSound.play();
 		}
 	}
+
 	mDownHandler(){
 		if(Data.meteor >= 1){
 			// nog een geluid
@@ -389,9 +391,10 @@ export default class Play extends Phaser.State {
 			this.updateScores("meteor");
 		}
 	}
+
 	spawnMeteor(){
 		for(let i = 0; i < 3; i++){
-			let x = this.randomInRange(0, this.game.width);
+			let x = this.randomInRange(this.player.x, this.game.width);
 			let y = this.randomInRange(0, -75);
 			let meteor = this.meteorGroup.getFirstExists(false);
 			if(!meteor){
@@ -406,6 +409,7 @@ export default class Play extends Phaser.State {
 		let colors = ['black', 'orange', 'red', 'white', 'black', 'white', 'black', 'white', 'black', 'white', 'black', 'white', 'orange', 'orange', 'orange'];
 		return colors[Math.round(Math.random() * (colors.length - 1))];
 	}
+
 	randomInRange(num1, num2){
 		return this.game.rnd.integerInRange(num1, num2);
 	}
@@ -413,12 +417,13 @@ export default class Play extends Phaser.State {
 	soundMuteToggleHandler(){
 		if(this.backgroundSound.volume === 1){
 			this.backgroundSound.volume = 0;
-			this.soundButton.loadTexture('muteButton' ,null, false);
+			this.soundButton.loadTexture('muteButton', null, false);
 		}else{
 			this.backgroundSound.volume = 1;
-			this.soundButton.loadTexture('unmuteButton' ,null, false);
+			this.soundButton.loadTexture('unmuteButton', null, false);
 		}
 	}
+
 	soundSetup(){
 		this.backgroundSound = new Sound(this.game, 'background');
 		this.flipSound = new Sound(this.game, 'change_side');
@@ -430,43 +435,44 @@ export default class Play extends Phaser.State {
 
 		this.backgroundSound.play();
 	}
+
 	updateScores(value){
 		switch(value){
 			case "score":
-			if(Data.coins === 1){
-				this.scoreTextBox.text = Data.coins + ' coin';
-			}else{
-				this.scoreTextBox.text = Data.coins + ' coins';
-			}
-			break;
+				if(Data.coins === 1){
+					this.scoreTextBox.text = Data.coins + ' coin';
+				}else{
+					this.scoreTextBox.text = Data.coins + ' coins';
+				}
+				break;
 
 			case "bullet":
-			if(Data.bullets === 1){
-				this.bulletTextBox.text = Data.bullets + ' bullet';
-			}else{
-				this.bulletTextBox.text = Data.bullets + ' bullets';
-			}
-			break;
+				if(Data.bullets === 1){
+					this.bulletTextBox.text = Data.bullets + ' bullet';
+				}else{
+					this.bulletTextBox.text = Data.bullets + ' bullets';
+				}
+				break;
 
 			case "kill":
-			if(Data.kills === 1){
-				this.killsTextBox.text = Data.kills + ' kill';
-			}else{
-				this.killsTextBox.text = Data.kills + ' kills';
-			}
-			break;
+				if(Data.kills === 1){
+					this.killsTextBox.text = Data.kills + ' kill';
+				}else{
+					this.killsTextBox.text = Data.kills + ' kills';
+				}
+				break;
 
 			case "meteor":
-			if(Data.meteor === 1){
-				this.meteorTextBox.text = Data.meteor + ' meteor';
-			}else{
-				this.meteorTextBox.text = Data.meteor + ' meteors';
-			}
-			break;
+				if(Data.meteor === 1){
+					this.meteorTextBox.text = Data.meteor + ' meteor';
+				}else{
+					this.meteorTextBox.text = Data.meteor + ' meteors';
+				}
+				break;
 
 			case "distance":
-			this.distanceTextBox.text = Data.distance + ' km';
-			break;
+				this.distanceTextBox.text = Data.distance + ' km';
+				break;
 		}
 	}
 }

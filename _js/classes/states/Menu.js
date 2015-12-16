@@ -3,7 +3,7 @@ import MenuBackground from '../objects/MenuBackground';
 import Sound from '../objects/Sound';
 import Text from '../objects/Text';
 import * as Utils from '../objects/Utils';
-import Data from '../objects/Data';
+// import Data from '../objects/Data';
 
 export default class Menu extends Phaser.State {
 	preload(){

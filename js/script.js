@@ -174,7 +174,6 @@
 				this.game.load.audio('change_side', 'assets/sound/change_side.mp3');
 				this.game.load.audio('coin', 'assets/sound/coin.mp3');
 				this.game.load.audio('enemy_hit', 'assets/sound/enemy_hit.wav');
-				// this.game.load.audio('step' ,'assets/sound/step.mp3');
 				this.game.load.audio('player_hit', 'assets/sound/player_hit.mp3');
 				this.game.load.audio('player_shoot', 'assets/sound/shot.mp3');
 				this.game.load.audio('click', 'assets/sound/click.mp3');
@@ -275,10 +274,6 @@
 
 	var Utils = _interopRequireWildcard(_Utils);
 
-	var _Data = __webpack_require__(8);
-
-	var _Data2 = _interopRequireDefault(_Data);
-
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -288,6 +283,8 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	// import Data from '../objects/Data';
 
 	var Menu = (function (_Phaser$State) {
 		_inherits(Menu, _Phaser$State);
@@ -687,13 +684,13 @@
 					_Data2.default.meteor = _Data2.default.meteor;
 				}
 				if (!_Data2.default.bullets) {
-					_Data2.default.bullets = 10;
+					_Data2.default.bullets = 2;
 				} else {
 					_Data2.default.bullets = _Data2.default.bullets;
 				}
 				_Data2.default.distance = 0;
 				_Data2.default.kills = 0;
-				this.gameSpeed = .97; //variable die de snelheid van de game bepaalt. hoe groter het getal hoe sneller/moeilijker. Beinvloed momenteel enkel spawnrate van enemy
+				this.gameSpeed = .97; //variable die bepaalt met hoeveel de delay wordt verminderd
 				this.delay = Phaser.Timer.SECOND * 2;
 				this.side = 'up';
 
@@ -1053,7 +1050,7 @@
 			key: 'spawnMeteor',
 			value: function spawnMeteor() {
 				for (var i = 0; i < 3; i++) {
-					var x = this.randomInRange(0, this.game.width);
+					var x = this.randomInRange(this.player.x, this.game.width);
 					var y = this.randomInRange(0, -75);
 					var meteor = this.meteorGroup.getFirstExists(false);
 					if (!meteor) {
@@ -2136,7 +2133,7 @@
 						_this3.resetStats();
 						Utils.changeState(_this3.game, 'Leaderboard');
 					} else {
-						alert('ja, lap tis kapot, het heeft lang geduurd');
+						alert('Er is een fout gebeurd, probeer het later nog eens.');
 					}
 				});
 				var url = form.getAttribute('action') + '&t=' + Date.now();
@@ -2247,6 +2244,7 @@
 		}, {
 			key: 'create',
 			value: function create() {
+				this.soundSetup();
 				// To create multi-line text insert \r, \n or \r\n escape codes into the text string.
 				// dit font heeft geen . tekens dus als je een punt typt komt er een error, geen punten dus ;)
 				// new BitmapText(game, x, y, font, text, size)`

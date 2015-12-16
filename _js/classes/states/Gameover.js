@@ -16,6 +16,7 @@ export default class Gameover extends Phaser.State {
 	preload(){
 		console.log('start gameover');
 	}
+	
 	create(){
 
 		// sound
@@ -129,7 +130,7 @@ export default class Gameover extends Phaser.State {
 				this.resetStats();
 				Utils.changeState(this.game, 'Leaderboard');
 			}else{
-				alert('ja, lap tis kapot, het heeft lang geduurd');
+				alert('Er is een fout gebeurd, probeer het later nog eens.');
 			}
 		});
 		let url = `${form.getAttribute('action')}&t=${Date.now()}`;

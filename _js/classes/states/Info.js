@@ -8,7 +8,9 @@ export default class Info extends Phaser.State {
 	preload(){
 		console.log('start info');
 	}
+
 	create(){
+		this.soundSetup();
 		// To create multi-line text insert \r, \n or \r\n escape codes into the text string.
 		// dit font heeft geen . tekens dus als je een punt typt komt er een error, geen punten dus ;)
 		// new BitmapText(game, x, y, font, text, size)`
@@ -34,20 +36,25 @@ export default class Info extends Phaser.State {
 		Utils.center(this.mKeyImg);
 		this.game.add.existing(this.mKeyImg);
 	}
+
 	update(){
 		
 	}
+
 	shutdown(){
 		console.log('end info');	
 	}
+
 	startClickHandler() {
 		this.clickSound.play();
 		Utils.changeState(this.game, 'Play');
 	}
+
 	backClickHandler() {
 		this.clickSound.play();
 		Utils.changeState(this.game, 'Menu');
 	}
+
 	soundSetup(){
 		// music
 		this.clickSound = new Sound(this.game, 'click');
