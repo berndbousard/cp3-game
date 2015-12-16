@@ -15,6 +15,6 @@ export default class Bullet extends Phaser.Sprite {
 		if(this.position.x > this.game.width){
 			this.exists = false;
 		}
-		this.body.velocity.x = 200;
+		this.body.velocity.x = 250;
 	}
 }

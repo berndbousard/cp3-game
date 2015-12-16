@@ -9,8 +9,6 @@ export default class Info extends Phaser.State {
 		console.log('start info');
 	}
 	create(){
-		// music
-		this.clickSound = new Sound(this.game, 'click');
 		// To create multi-line text insert \r, \n or \r\n escape codes into the text string.
 		// dit font heeft geen . tekens dus als je een punt typt komt er een error, geen punten dus ;)
 		// new BitmapText(game, x, y, font, text, size)`
@@ -49,5 +47,9 @@ export default class Info extends Phaser.State {
 	backClickHandler() {
 		this.clickSound.play();
 		Utils.changeState(this.game, 'Menu');
+	}
+	soundSetup(){
+		// music
+		this.clickSound = new Sound(this.game, 'click');
 	}
 }

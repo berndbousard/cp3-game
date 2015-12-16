@@ -8,11 +8,10 @@ import Data from '../objects/Data';
 export default class Menu extends Phaser.State {
 	preload(){
 		console.log("start menu");
-		// music
-		this.clickSound = new Sound(this.game, 'click');
-		this.flipSound = new Sound(this.game, 'change_side');
 	}
 	create(){
+		this.soundSetup();
+
 		// easter eggs
 		this.cursors = this.game.input.keyboard.createCursorKeys();
 		this.cursors.down.onDown.add(this.titleFlipDown, this);
@@ -29,8 +28,8 @@ export default class Menu extends Phaser.State {
 		Utils.center(this.playerImg);
 
 		// text
-		let titleBoxTest = "CITYFLIP";
-		this.titleBox = new Text(this.game, this.game.width/2+5, this.game.height/2-22, 'gamefont', titleBoxTest, 60);
+		let titleBoxText = "CITYFLIP";
+		this.titleBox = new Text(this.game, this.game.width/2+5, this.game.height/2-22, 'gamefont', titleBoxText, 60);
 		Utils.center(this.titleBox);
 		this.game.add.existing(this.titleBox);
 
@@ -79,7 +78,6 @@ export default class Menu extends Phaser.State {
 			this.titleBox.position.y = 228;
 			this.flipSound.play();
 		}
-		
 	}
 	titleFlipDown(){
 		if(this.titleBox.scale.y === 1){
@@ -87,5 +85,10 @@ export default class Menu extends Phaser.State {
 			this.titleBox.position.y = 220;
 			this.flipSound.play();
 		}
+	}
+	soundSetup(){
+		// music
+		this.clickSound = new Sound(this.game, 'click');
+		this.flipSound = new Sound(this.game, 'change_side');
 	}
 }

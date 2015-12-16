@@ -170,7 +170,7 @@
 				this.game.load.audio('change_side', 'assets/sound/change_side.mp3');
 				this.game.load.audio('coin', 'assets/sound/coin.mp3');
 				this.game.load.audio('enemy_hit', 'assets/sound/enemy_hit.wav');
-				this.game.load.audio('step', 'assets/sound/step.mp3');
+				// this.game.load.audio('step' ,'assets/sound/step.mp3');
 				this.game.load.audio('player_hit', 'assets/sound/player_hit.mp3');
 				this.game.load.audio('player_shoot', 'assets/sound/shot.mp3');
 				this.game.load.audio('click', 'assets/sound/click.mp3');
@@ -298,13 +298,12 @@
 			key: 'preload',
 			value: function preload() {
 				console.log("start menu");
-				// music
-				this.clickSound = new _Sound2.default(this.game, 'click');
-				this.flipSound = new _Sound2.default(this.game, 'change_side');
 			}
 		}, {
 			key: 'create',
 			value: function create() {
+				this.soundSetup();
+
 				// easter eggs
 				this.cursors = this.game.input.keyboard.createCursorKeys();
 				this.cursors.down.onDown.add(this.titleFlipDown, this);
@@ -321,8 +320,8 @@
 				Utils.center(this.playerImg);
 
 				// text
-				var titleBoxTest = "CITYFLIP";
-				this.titleBox = new _Text2.default(this.game, this.game.width / 2 + 5, this.game.height / 2 - 22, 'gamefont', titleBoxTest, 60);
+				var titleBoxText = "CITYFLIP";
+				this.titleBox = new _Text2.default(this.game, this.game.width / 2 + 5, this.game.height / 2 - 22, 'gamefont', titleBoxText, 60);
 				Utils.center(this.titleBox);
 				this.game.add.existing(this.titleBox);
 
@@ -393,6 +392,13 @@
 					this.titleBox.position.y = 220;
 					this.flipSound.play();
 				}
+			}
+		}, {
+			key: 'soundSetup',
+			value: function soundSetup() {
+				// music
+				this.clickSound = new _Sound2.default(this.game, 'click');
+				this.flipSound = new _Sound2.default(this.game, 'change_side');
 			}
 		}]);
 
@@ -1269,7 +1275,7 @@
 				if (this.position.x > this.game.width) {
 					this.exists = false;
 				}
-				this.body.velocity.x = 200;
+				this.body.velocity.x = 250;
 			}
 		}]);
 
@@ -2219,8 +2225,6 @@
 		}, {
 			key: 'create',
 			value: function create() {
-				// music
-				this.clickSound = new _Sound2.default(this.game, 'click');
 				// To create multi-line text insert \r, \n or \r\n escape codes into the text string.
 				// dit font heeft geen . tekens dus als je een punt typt komt er een error, geen punten dus ;)
 				// new BitmapText(game, x, y, font, text, size)`
@@ -2265,6 +2269,12 @@
 			value: function backClickHandler() {
 				this.clickSound.play();
 				Utils.changeState(this.game, 'Menu');
+			}
+		}, {
+			key: 'soundSetup',
+			value: function soundSetup() {
+				// music
+				this.clickSound = new _Sound2.default(this.game, 'click');
 			}
 		}]);
 
