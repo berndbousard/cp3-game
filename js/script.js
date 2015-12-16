@@ -304,45 +304,10 @@
 			key: 'create',
 			value: function create() {
 				this.soundSetup();
-
-				// easter eggs
-				this.cursors = this.game.input.keyboard.createCursorKeys();
-				this.cursors.down.onDown.add(this.titleFlipDown, this);
-				this.cursors.up.onDown.add(this.titleFlipUp, this);
-
-				// Images
-				this.city = new _BackgroundCity2.default(this.game, 0, 0, 750, 500, 'city');
-				this.game.add.existing(this.city);
-
-				this.menuBackground = new _MenuBackground2.default(this.game, this.game.width / 2, this.game.height / 2);
-				this.game.add.existing(this.menuBackground);
-
-				this.playerImg = this.game.add.sprite(this.game.width / 2, this.game.height / 2 - 90, 'player_menu');
-				Utils.center(this.playerImg);
-
-				// text
-				var titleBoxText = 'CITYFLIP';
-				this.titleBox = new _Text2.default(this.game, this.game.width / 2 + 5, this.game.height / 2 - 22, 'gamefont', titleBoxText, 60);
-				Utils.center(this.titleBox);
-				this.game.add.existing(this.titleBox);
-
-				// if(Data.coins){
-				// 	let coinsText = new Text(this.game, this.game.width/2, this.game.height/2 - 150, 'gamefont', Data.coins + '\ncoins', 20, 'center');
-				// 	this.game.add.existing(coinsText);
-				// }
-
-				// Buttons
-				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 + 75, 'startButton', this.startClickHandler, this);
-				Utils.center(this.startButton);
-
-				this.leaderboardButton = this.game.add.button(this.game.width / 2 - 100, this.game.height / 2 + 150, 'leaderboardButton', this.leaderboardClickHandler, this);
-				Utils.center(this.leaderboardButton);
-
-				this.infoButton = this.game.add.button(this.game.width / 2 + 100, this.game.height / 2 + 150, 'infoButton', this.infoClickHandler, this);
-				Utils.center(this.infoButton);
-
-				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 + 150, 'shopButton', this.shopClickHandler, this);
-				Utils.center(this.startButton);
+				this.initControls();
+				this.initBackground();
+				this.initTitle();
+				this.initButtons();
 			}
 		}, {
 			key: 'update',
@@ -400,6 +365,43 @@
 				// music
 				this.clickSound = new _Sound2.default(this.game, 'click');
 				this.flipSound = new _Sound2.default(this.game, 'change_side');
+			}
+		}, {
+			key: 'initControls',
+			value: function initControls() {
+				this.cursors = this.game.input.keyboard.createCursorKeys();
+				this.cursors.down.onDown.add(this.titleFlipDown, this);
+				this.cursors.up.onDown.add(this.titleFlipUp, this);
+			}
+		}, {
+			key: 'initBackground',
+			value: function initBackground() {
+				this.city = new _BackgroundCity2.default(this.game, 0, 0, 750, 500, 'city');
+				this.game.add.existing(this.city);
+				this.menuBackground = new _MenuBackground2.default(this.game, this.game.width / 2, this.game.height / 2);
+				this.game.add.existing(this.menuBackground);
+				this.playerImg = this.game.add.sprite(this.game.width / 2, this.game.height / 2 - 90, 'player_menu');
+				Utils.center(this.playerImg);
+			}
+		}, {
+			key: 'initTitle',
+			value: function initTitle() {
+				var titleBoxText = 'CITYFLIP';
+				this.titleBox = new _Text2.default(this.game, this.game.width / 2 + 5, this.game.height / 2 - 22, 'gamefont', titleBoxText, 60);
+				Utils.center(this.titleBox);
+				this.game.add.existing(this.titleBox);
+			}
+		}, {
+			key: 'initButtons',
+			value: function initButtons() {
+				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 + 75, 'startButton', this.startClickHandler, this);
+				Utils.center(this.startButton);
+				this.leaderboardButton = this.game.add.button(this.game.width / 2 - 100, this.game.height / 2 + 150, 'leaderboardButton', this.leaderboardClickHandler, this);
+				Utils.center(this.leaderboardButton);
+				this.infoButton = this.game.add.button(this.game.width / 2 + 100, this.game.height / 2 + 150, 'infoButton', this.infoClickHandler, this);
+				Utils.center(this.infoButton);
+				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 + 150, 'shopButton', this.shopClickHandler, this);
+				Utils.center(this.startButton);
 			}
 		}]);
 
@@ -640,114 +642,25 @@
 				this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
 				// controls
-				this.cursors = this.game.input.keyboard.createCursorKeys();
-				this.spacebar = this.game.input.keyboard.addKey(32);
-				this.m = this.game.input.keyboard.addKey(77);
-				this.spacebar.onDown.add(this.spaceBarHandler, this);
-				this.m.onDown.add(this.mDownHandler, this);
-
-				// Declarations
-				if (!_Data2.default.coins) {
-					_Data2.default.coins = 0;
-				} else {
-					_Data2.default.coins = _Data2.default.coins;
-				}
-				if (!_Data2.default.meteor) {
-					_Data2.default.meteor = 0;
-				} else {
-					_Data2.default.meteor = _Data2.default.meteor;
-				}
-				if (!_Data2.default.bullets) {
-					_Data2.default.bullets = 2;
-				} else {
-					_Data2.default.bullets = _Data2.default.bullets;
-				}
-				_Data2.default.distance = 0;
-				_Data2.default.kills = 0;
-				this.gameSpeed = .97; //variable die bepaalt met hoeveel de delay wordt verminderd
-				this.delay = Phaser.Timer.SECOND * 2;
-				this.side = 'up';
-
-				// Images
-				this.city = new _BackgroundCity2.default(this.game, 0, 0, 750, 500, 'city');
-				this.game.add.existing(this.city);
-
-				// Player
-				this.player = new _Player2.default(this.game, 50, this.game.height / 2 - 43, this.flipSound, _Data2.default.hasRainbow);
-				this.game.add.existing(this.player);
-
-				// coins
-				this.coins = this.game.add.group();
-				this.coinTimer = this.game.time.events.loop(Phaser.Timer.SECOND * 5, this.spawnCoin, this);
-
-				// distance score text
-				this.distanceTimer = this.game.time.events.loop(Phaser.Timer.SECOND / 1.2, this.increaseDistance, this);
-				this.distanceTextBox = new _Text2.default(this.game, this.game.width / 2, 50, 'gamefont', _Data2.default.distance + ' km', 34);
-				this.game.add.existing(this.distanceTextBox);
-
-				// display for score
-				this.scoreTextBox = new _Text2.default(this.game, this.game.width / 2 + 300, 65, 'gamefont', _Data2.default.coins + ' coins', 18, 'center');
-				this.game.add.existing(this.scoreTextBox);
-				this.scoreImg = this.game.add.sprite(this.game.width / 2 + 300, 35, 'displayScore');
-				Utils.center(this.scoreImg);
-
-				// display for bullets
-				this.bulletTextBox = new _Text2.default(this.game, this.game.width / 2 - 300, 65, 'gamefont', _Data2.default.bullets + ' bullets', 18, 'center');
-				this.game.add.existing(this.bulletTextBox);
-				this.bulletImg = this.game.add.sprite(this.game.width / 2 - 300, 35, 'displayBullets');
-				Utils.center(this.bulletImg);
-
-				// display for kills
-				this.killsTextBox = new _Text2.default(this.game, this.game.width / 2 + 157, 65, 'gamefont', _Data2.default.kills + ' kills', 18, 'center');
-				this.game.add.existing(this.killsTextBox);
-				this.killsImg = this.game.add.sprite(this.game.width / 2 + 157, 35, 'displayKills');
-				Utils.center(this.killsImg);
-
-				// display for meteors
-				this.meteorTextBox = new _Text2.default(this.game, this.game.width / 2 - 157, 65, 'gamefont', _Data2.default.meteor + ' meteors', 18, 'center');
-				this.game.add.existing(this.meteorTextBox);
-				this.meteorsImg = this.game.add.sprite(this.game.width / 2 - 157, 35, 'displayMeteors');
-				Utils.center(this.meteorsImg);
-
-				// mute
-				this.soundButton = this.game.add.button(30, this.game.height - 45, 'unmuteButton', this.soundMuteToggleHandler, this);
-				this.game.add.existing(this.soundButton);
-
-				// bullets
-				this.allBullets = this.game.add.group();
-
-				// All enemies
-				this.allEnemies = this.game.add.group();
-				this.enemyTimer = this.game.time.events.loop(this.delay, this.spawnEnemy, this);
-
-				// testblack
-				this.blackEnemies = this.game.add.group();
-				this.blackEnemies.enableBody = true;
-				this.allEnemies.add(this.blackEnemies);
-
-				this.whiteEnemies = this.game.add.group();
-				this.whiteEnemies.enableBody = true;
-				this.allEnemies.add(this.whiteEnemies);
-
-				this.orangeEnemies = this.game.add.group();
-				this.orangeEnemies.enableBody = true;
-				this.allEnemies.add(this.orangeEnemies);
-
-				this.redEnemies = this.game.add.group();
-				this.redEnemies.enableBody = true;
-				this.allEnemies.add(this.redEnemies);
-
-				this.meteorGroup = this.game.add.group();
-				this.meteorGroup.enableBody = true;
-
-				this.explosionGroup = this.game.add.group();
+				this.initControls();
+				this.initData();
+				this.initBackground();
+				this.initPlayer();
+				this.initCoins();
+				this.initDistance();
+				this.initScore();
+				this.initBullets();
+				this.initKills();
+				this.initMeteors();
+				this.initEnemies();
+				this.initBullets();
+				this.initExplosions();
+				this.initSoundButton();
 			}
 		}, {
 			key: 'update',
 			value: function update() {
 				var _this2 = this;
-
-				// console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length, 'red ' + this.redEnemies.length);
 
 				// controls
 				if (this.cursors.down.isDown && !this.cursors.up.isDown) {
@@ -1109,6 +1022,134 @@
 						this.distanceTextBox.text = _Data2.default.distance + ' km';
 						break;
 				}
+			}
+		}, {
+			key: 'initControls',
+			value: function initControls() {
+				this.cursors = this.game.input.keyboard.createCursorKeys();
+				this.spacebar = this.game.input.keyboard.addKey(32);
+				this.m = this.game.input.keyboard.addKey(77);
+				this.spacebar.onDown.add(this.spaceBarHandler, this);
+				this.m.onDown.add(this.mDownHandler, this);
+			}
+		}, {
+			key: 'initData',
+			value: function initData() {
+				if (!_Data2.default.coins) {
+					_Data2.default.coins = 0;
+				} else {
+					_Data2.default.coins = _Data2.default.coins;
+				}
+				if (!_Data2.default.meteor) {
+					_Data2.default.meteor = 0;
+				} else {
+					_Data2.default.meteor = _Data2.default.meteor;
+				}
+				if (!_Data2.default.bullets) {
+					_Data2.default.bullets = 2;
+				} else {
+					_Data2.default.bullets = _Data2.default.bullets;
+				}
+				_Data2.default.distance = 0;
+				_Data2.default.kills = 0;
+				this.gameSpeed = .97; //variable die bepaalt met hoeveel de delay wordt verminderd
+				this.delay = Phaser.Timer.SECOND * 2;
+				this.side = 'up';
+			}
+		}, {
+			key: 'initBackground',
+			value: function initBackground() {
+				this.city = new _BackgroundCity2.default(this.game, 0, 0, 750, 500, 'city');
+				this.game.add.existing(this.city);
+			}
+		}, {
+			key: 'initPlayer',
+			value: function initPlayer() {
+				this.player = new _Player2.default(this.game, 50, this.game.height / 2 - 43, this.flipSound, _Data2.default.hasRainbow);
+				this.game.add.existing(this.player);
+			}
+		}, {
+			key: 'initCoins',
+			value: function initCoins() {
+				this.coins = this.game.add.group();
+				this.coinTimer = this.game.time.events.loop(Phaser.Timer.SECOND * 5, this.spawnCoin, this);
+			}
+		}, {
+			key: 'initDistance',
+			value: function initDistance() {
+				this.distanceTimer = this.game.time.events.loop(Phaser.Timer.SECOND / 1.2, this.increaseDistance, this);
+				this.distanceTextBox = new _Text2.default(this.game, this.game.width / 2, 50, 'gamefont', _Data2.default.distance + ' km', 34);
+				this.game.add.existing(this.distanceTextBox);
+			}
+		}, {
+			key: 'initScore',
+			value: function initScore() {
+				this.scoreTextBox = new _Text2.default(this.game, this.game.width / 2 + 300, 65, 'gamefont', _Data2.default.coins + ' coins', 18, 'center');
+				this.game.add.existing(this.scoreTextBox);
+				this.scoreImg = this.game.add.sprite(this.game.width / 2 + 300, 35, 'displayScore');
+				Utils.center(this.scoreImg);
+			}
+		}, {
+			key: 'initBullets',
+			value: function initBullets() {
+				this.bulletTextBox = new _Text2.default(this.game, this.game.width / 2 - 300, 65, 'gamefont', _Data2.default.bullets + ' bullets', 18, 'center');
+				this.game.add.existing(this.bulletTextBox);
+				this.bulletImg = this.game.add.sprite(this.game.width / 2 - 300, 35, 'displayBullets');
+				Utils.center(this.bulletImg);
+				this.allBullets = this.game.add.group();
+			}
+		}, {
+			key: 'initKills',
+			value: function initKills() {
+				this.killsTextBox = new _Text2.default(this.game, this.game.width / 2 + 157, 65, 'gamefont', _Data2.default.kills + ' kills', 18, 'center');
+				this.game.add.existing(this.killsTextBox);
+				this.killsImg = this.game.add.sprite(this.game.width / 2 + 157, 35, 'displayKills');
+				Utils.center(this.killsImg);
+			}
+		}, {
+			key: 'initMeteors',
+			value: function initMeteors() {
+				this.meteorTextBox = new _Text2.default(this.game, this.game.width / 2 - 157, 65, 'gamefont', _Data2.default.meteor + ' meteors', 18, 'center');
+				this.game.add.existing(this.meteorTextBox);
+				this.meteorsImg = this.game.add.sprite(this.game.width / 2 - 157, 35, 'displayMeteors');
+				Utils.center(this.meteorsImg);
+				this.meteorGroup = this.game.add.group();
+				this.meteorGroup.enableBody = true;
+			}
+		}, {
+			key: 'initEnemies',
+			value: function initEnemies() {
+				// All enemies
+				this.allEnemies = this.game.add.group();
+				this.enemyTimer = this.game.time.events.loop(this.delay, this.spawnEnemy, this);
+
+				// testblack
+				this.blackEnemies = this.game.add.group();
+				this.blackEnemies.enableBody = true;
+				this.allEnemies.add(this.blackEnemies);
+
+				this.whiteEnemies = this.game.add.group();
+				this.whiteEnemies.enableBody = true;
+				this.allEnemies.add(this.whiteEnemies);
+
+				this.orangeEnemies = this.game.add.group();
+				this.orangeEnemies.enableBody = true;
+				this.allEnemies.add(this.orangeEnemies);
+
+				this.redEnemies = this.game.add.group();
+				this.redEnemies.enableBody = true;
+				this.allEnemies.add(this.redEnemies);
+			}
+		}, {
+			key: 'initExplosions',
+			value: function initExplosions() {
+				this.explosionGroup = this.game.add.group();
+			}
+		}, {
+			key: 'initSoundButton',
+			value: function initSoundButton() {
+				this.soundButton = this.game.add.button(30, this.game.height - 45, 'unmuteButton', this.soundMuteToggleHandler, this);
+				this.game.add.existing(this.soundButton);
 			}
 		}]);
 
@@ -1826,19 +1867,8 @@
 				this.soundSetup();
 				// Build table with results
 				this.getJSON('http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=getScores&t=' + Date.now());
-
-				// Images
-				this.city = new _BackgroundCity2.default(this.game, 0, 0, 750, 500, 'city');
-				this.game.add.existing(this.city);
-
-				this.menuBackground = new _MenuBackground2.default(this.game, this.game.width / 2, this.game.height / 2);
-				this.game.add.existing(this.menuBackground);
-
-				// Buttons
-				this.startButton = this.game.add.button(this.game.width / 2 + 50, this.game.height / 2 + 150, 'startButton', this.startClickHandler, this);
-				Utils.center(this.startButton);
-				this.backButton = this.game.add.button(this.game.width / 2 - 50, this.game.height / 2 + 150, 'backButton', this.backClickHandler, this);
-				Utils.center(this.backButton);
+				this.initBackground();
+				this.initButtons();
 			}
 		}, {
 			key: 'update',
@@ -1939,6 +1969,22 @@
 				// music
 				this.clickSound = new _Sound2.default(this.game, 'click');
 			}
+		}, {
+			key: 'initBackground',
+			value: function initBackground() {
+				this.city = new _BackgroundCity2.default(this.game, 0, 0, 750, 500, 'city');
+				this.game.add.existing(this.city);
+				this.menuBackground = new _MenuBackground2.default(this.game, this.game.width / 2, this.game.height / 2);
+				this.game.add.existing(this.menuBackground);
+			}
+		}, {
+			key: 'initButtons',
+			value: function initButtons() {
+				this.startButton = this.game.add.button(this.game.width / 2 + 50, this.game.height / 2 + 150, 'startButton', this.startClickHandler, this);
+				Utils.center(this.startButton);
+				this.backButton = this.game.add.button(this.game.width / 2 - 50, this.game.height / 2 + 150, 'backButton', this.backClickHandler, this);
+				Utils.center(this.backButton);
+			}
 		}]);
 
 		return Leaderboard;
@@ -2014,56 +2060,17 @@
 		}, {
 			key: 'create',
 			value: function create() {
-				var _this2 = this;
 
 				// sound
 				this.soundSetup();
 
 				this.createForm();
-				leaderboardNameInput = document.getElementById('text');
-				leaderboardSubmit = document.getElementById('submit');
-				leaderboard = document.getElementById('form');
+				this.initDom();
 
-				// listener
-				// om enters op te vangen
-				leaderboard.addEventListener('submit', function (event) {
-					event.preventDefault();
-					_this2.leaderboardSubmitHandler();
-				});
-
-				leaderboardSubmit.addEventListener('submit', function (event) {
-					event.preventDefault();
-					_this2.leaderboardSubmitHandler();
-				});
-
-				// om de spatie en m toets te laten werken in HTML input
-				leaderboardNameInput.addEventListener('focus', function () {
-					_this2.game.input.enabled = false;
-				});
-
-				leaderboardNameInput.addEventListener('blur', function () {
-					_this2.game.input.enabled = true;
-				});
-
-				// Images
-				this.city = new _BackgroundCity2.default(this.game, 0, 0, 750, 500, 'city');
-				this.game.add.existing(this.city);
-
-				this.menuBackground = new _MenuBackground2.default(this.game, this.game.width / 2, this.game.height / 2);
-				this.game.add.existing(this.menuBackground);
-
-				// Buttons
-				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 + 150, 'startButton', this.startClickHandler, this);
-				Utils.center(this.startButton);
-
-				this.backButton = this.game.add.button(this.game.width / 2 - 75, this.game.height / 2 + 150, 'backButton', this.backClickHandler, this);
-				Utils.center(this.backButton);
-
-				// score and distance
-				this.visibleScore = new _Text2.default(this.game, this.game.width / 2 - 50, 200, 'gamefont', 'Your score\n' + _Data2.default.coins, 20, 'center');
-				this.game.add.existing(this.visibleScore);
-				this.visibleDistance = new _Text2.default(this.game, this.game.width / 2 + 80, 200, 'gamefont', 'You ran\n' + _Data2.default.distance + ' km', 20, 'center');
-				this.game.add.existing(this.visibleDistance);
+				this.initListeners();
+				this.initImages();
+				this.initButtons();
+				this.initText();
 			}
 		}, {
 			key: 'update',
@@ -2122,15 +2129,15 @@
 		}, {
 			key: 'submitInputHandler',
 			value: function submitInputHandler() {
-				var _this3 = this;
+				var _this2 = this;
 
 				this.clickSound.play();
 				var req = new XMLHttpRequest();
 				req.addEventListener('load', function () {
 					if (req.status === 200) {
 						Utils.hideElement(form);
-						_this3.resetStats();
-						Utils.changeState(_this3.game, 'Leaderboard');
+						_this2.resetStats();
+						Utils.changeState(_this2.game, 'Leaderboard');
 					} else {
 						alert('Er is een fout gebeurd, probeer het later nog eens.');
 					}
@@ -2176,6 +2183,63 @@
 			value: function soundSetup() {
 				// music
 				this.clickSound = new _Sound2.default(this.game, 'click');
+			}
+		}, {
+			key: 'initListeners',
+			value: function initListeners() {
+				var _this3 = this;
+
+				leaderboard.addEventListener('submit', function (event) {
+					event.preventDefault();
+					_this3.leaderboardSubmitHandler();
+				});
+
+				leaderboardSubmit.addEventListener('submit', function (event) {
+					event.preventDefault();
+					_this3.leaderboardSubmitHandler();
+				});
+
+				// om de spatie en m toets te laten werken in HTML input
+				leaderboardNameInput.addEventListener('focus', function () {
+					_this3.game.input.enabled = false;
+				});
+
+				leaderboardNameInput.addEventListener('blur', function () {
+					_this3.game.input.enabled = true;
+				});
+			}
+		}, {
+			key: 'initImages',
+			value: function initImages() {
+				this.city = new _BackgroundCity2.default(this.game, 0, 0, 750, 500, 'city');
+				this.game.add.existing(this.city);
+
+				this.menuBackground = new _MenuBackground2.default(this.game, this.game.width / 2, this.game.height / 2);
+				this.game.add.existing(this.menuBackground);
+			}
+		}, {
+			key: 'initButtons',
+			value: function initButtons() {
+				this.startButton = this.game.add.button(this.game.width / 2, this.game.height / 2 + 150, 'startButton', this.startClickHandler, this);
+				Utils.center(this.startButton);
+
+				this.backButton = this.game.add.button(this.game.width / 2 - 75, this.game.height / 2 + 150, 'backButton', this.backClickHandler, this);
+				Utils.center(this.backButton);
+			}
+		}, {
+			key: 'initText',
+			value: function initText() {
+				this.visibleScore = new _Text2.default(this.game, this.game.width / 2 - 50, 200, 'gamefont', 'Your score\n' + _Data2.default.coins, 20, 'center');
+				this.game.add.existing(this.visibleScore);
+				this.visibleDistance = new _Text2.default(this.game, this.game.width / 2 + 80, 200, 'gamefont', 'You ran\n' + _Data2.default.distance + ' km', 20, 'center');
+				this.game.add.existing(this.visibleDistance);
+			}
+		}, {
+			key: 'initDom',
+			value: function initDom() {
+				leaderboardNameInput = document.getElementById('text');
+				leaderboardSubmit = document.getElementById('submit');
+				leaderboard = document.getElementById('form');
 			}
 		}]);
 
@@ -2240,30 +2304,9 @@
 			key: 'create',
 			value: function create() {
 				this.soundSetup();
-				// To create multi-line text insert \r, \n or \r\n escape codes into the text string.
-				// dit font heeft geen . tekens dus als je een punt typt komt er een error, geen punten dus ;)
-				// new BitmapText(game, x, y, font, text, size)`
-				var textBoxText = 'Het doel\nHet doel van het spel is om zo ver mogelijk te raken\nDit doe je door zoveel mogelijk enemies te ontwijken\n\nControls\nGebruik de pijltjestoetsen om te\nwisselen tussen bovenaan en onderaan\n\nGebruik de spatiebalk om te schieten\n\nGebruik de M om meteoren te laten regenen';
-				this.textBox = new _Text2.default(this.game, this.game.width / 2, this.game.height / 2 - 40, 'gamefont', textBoxText, 20);
-				Utils.center(this.textBox);
-				this.game.add.existing(this.textBox);
-
-				this.startButton = this.game.add.button(this.game.width / 2 + 50, this.game.height / 2 + 175, 'startButton', this.startClickHandler, this);
-				Utils.center(this.startButton);
-				this.backButton = this.game.add.button(this.game.width / 2 - 50, this.game.height / 2 + 175, 'backButton', this.backClickHandler, this);
-				Utils.center(this.backButton);
-
-				this.keysImg = new _KeysImage2.default(this.game, this.game.width / 2 + 216, this.game.height / 2 - 34, 'keysImg');
-				Utils.center(this.keysImg);
-				this.game.add.existing(this.keysImg);
-
-				this.spaceBarImg = new _KeysImage2.default(this.game, this.game.width / 2 + 219, this.game.height / 2 + 20, 'spaceBar');
-				Utils.center(this.spaceBarImg);
-				this.game.add.existing(this.spaceBarImg);
-
-				this.mKeyImg = new _KeysImage2.default(this.game, this.game.width / 2 + 216, this.game.height / 2 + 59, 'mKey');
-				Utils.center(this.mKeyImg);
-				this.game.add.existing(this.mKeyImg);
+				this.initText();
+				this.initButtons();
+				this.initImages();
 			}
 		}, {
 			key: 'update',
@@ -2290,6 +2333,37 @@
 			value: function soundSetup() {
 				// music
 				this.clickSound = new _Sound2.default(this.game, 'click');
+			}
+		}, {
+			key: 'initText',
+			value: function initText() {
+				var textBoxText = 'Het doel\nHet doel van het spel is om zo ver mogelijk te raken\nDit doe je door zoveel mogelijk enemies te ontwijken\n\nControls\nGebruik de pijltjestoetsen om te\nwisselen tussen bovenaan en onderaan\n\nGebruik de spatiebalk om te schieten\n\nGebruik de M om meteoren te laten regenen';
+				this.textBox = new _Text2.default(this.game, this.game.width / 2, this.game.height / 2 - 40, 'gamefont', textBoxText, 20);
+				Utils.center(this.textBox);
+				this.game.add.existing(this.textBox);
+			}
+		}, {
+			key: 'initImages',
+			value: function initImages() {
+				this.keysImg = new _KeysImage2.default(this.game, this.game.width / 2 + 216, this.game.height / 2 - 34, 'keysImg');
+				Utils.center(this.keysImg);
+				this.game.add.existing(this.keysImg);
+
+				this.spaceBarImg = new _KeysImage2.default(this.game, this.game.width / 2 + 219, this.game.height / 2 + 20, 'spaceBar');
+				Utils.center(this.spaceBarImg);
+				this.game.add.existing(this.spaceBarImg);
+
+				this.mKeyImg = new _KeysImage2.default(this.game, this.game.width / 2 + 216, this.game.height / 2 + 59, 'mKey');
+				Utils.center(this.mKeyImg);
+				this.game.add.existing(this.mKeyImg);
+			}
+		}, {
+			key: 'initButtons',
+			value: function initButtons() {
+				this.startButton = this.game.add.button(this.game.width / 2 + 50, this.game.height / 2 + 175, 'startButton', this.startClickHandler, this);
+				Utils.center(this.startButton);
+				this.backButton = this.game.add.button(this.game.width / 2 - 50, this.game.height / 2 + 175, 'backButton', this.backClickHandler, this);
+				Utils.center(this.backButton);
 			}
 		}]);
 
@@ -2398,87 +2472,16 @@
 			key: 'create',
 			value: function create() {
 				this.soundSetup();
-
-				// Als de gebruiker zonder te spelen naar de shop gaat
-				if (!_Data2.default.bullets) {
-					_Data2.default.bullets = 0;
-				}
-				if (!_Data2.default.coins) {
-					_Data2.default.coins = 0;
-				}
-				if (!_Data2.default.meteor) {
-					_Data2.default.meteor = 0;
-				}
-				if (!_Data2.default.hasRainbow) {
-					_Data2.default.hasRainbow = false;
-				}
-
-				this.prices = {
-					'bulletprice': '2',
-					'meteorprice': '1',
-					'rainbowprice': '30'
-				};
-
-				// Images
-				this.city = new _BackgroundCity2.default(this.game, 0, 0, 750, 500, 'city');
-				this.game.add.existing(this.city);
-
-				this.menuBackground = new _MenuBackground2.default(this.game, this.game.width / 2, this.game.height / 2);
-				this.game.add.existing(this.menuBackground);
-
-				// text
-				this.bulletText = new _Text2.default(this.game, this.game.width / 2 + 85, this.game.height / 2 - 50 - 30, 'gamefont', _Data2.default.bullets + '\nbullets', 20, 'center');
-				this.game.add.existing(this.bulletText);
-
-				this.meteorText = new _Text2.default(this.game, this.game.width / 2 + 85, this.game.height / 2 + 20 - 20, 'gamefont', _Data2.default.meteor + '\nmeteors', 20, 'center');
-				this.game.add.existing(this.meteorText);
-
-				this.coinText = new _Text2.default(this.game, this.game.width / 2, this.game.height / 2 - 160, 'gamefont', _Data2.default.coins + '\ncoins', 20, 'center');
-				this.game.add.existing(this.coinText);
-
-				this.errorText = new _Text2.default(this.game, this.game.width / 2 + 5, this.game.height / 2 - 225, 'gamefont', '', 14, 'center');
-				this.game.add.existing(this.errorText);
-
-				var rainboxInnerText = undefined;
-				if (_Data2.default.hasRainbow) {
-					rainboxInnerText = 'equiped';
-				} else {
-					rainboxInnerText = 'not\nequiped';
-				}
-				this.rainbowText = new _Text2.default(this.game, this.game.width / 2 + 85, this.game.height / 2 + 20 - 10 + 75, 'gamefont', rainboxInnerText, 20, 'center');
-				this.game.add.existing(this.rainbowText);
-
-				// prijzen/hoeveelheden
-				this.priceBullets = new _Text2.default(this.game, this.game.width / 2 - 80, this.game.height / 2 - 82 - 30, 'gamefont', 'prijs: ' + this.prices.bulletprice, 14, 'center');
-				this.game.add.existing(this.priceBullets);
-
-				this.amountBullets = new _Text2.default(this.game, this.game.width / 2 - 5, this.game.height / 2 - 82 - 30, 'gamefont', 'aantal: ' + 5, 14, 'center');
-				this.game.add.existing(this.amountBullets);
-
-				this.priceMeteors = new _Text2.default(this.game, this.game.width / 2 - 80, this.game.height / 2 - 12 - 20, 'gamefont', 'prijs: ' + this.prices.meteorprice, 14, 'center');
-				this.game.add.existing(this.priceMeteors);
-
-				this.priceRainbow = new _Text2.default(this.game, this.game.width / 2 - 80, this.game.height / 2 - 12 - 10 + 75, 'gamefont', 'prijs: ' + this.prices.rainbowprice, 14, 'center');
-				this.game.add.existing(this.priceRainbow);
-
-				this.amountMeteors = new _Text2.default(this.game, this.game.width / 2 - 5, this.game.height / 2 - 12 - 20, 'gamefont', 'aantal: ' + 1, 14, 'center');
-				this.game.add.existing(this.amountMeteors);
-
-				// buttons
-				this.startButton = this.game.add.button(this.game.width / 2 + 50, this.game.height / 2 + 150, 'startButton', this.startClickHandler, this);
-				Utils.center(this.startButton);
-
-				this.backButton = this.game.add.button(this.game.width / 2 - 50, this.game.height / 2 + 150, 'backButton', this.backClickHandler, this);
-				Utils.center(this.backButton);
-
-				this.meteorButton = this.game.add.button(this.game.width / 2 - 45, this.game.height / 2 + 20 - 20, 'meteorButton', this.meteorButtonClickHandler, this);
-				Utils.center(this.meteorButton);
-
-				this.rainbowButton = this.game.add.button(this.game.width / 2 - 45, this.game.height / 2 + 20 - 10 + 75, 'rainbowButton', this.rainbowButtonClickHandler, this);
-				Utils.center(this.rainbowButton);
-
-				this.bulletButton = this.game.add.button(this.game.width / 2 - 45, this.game.height / 2 - 50 - 30, 'bulletButton', this.bulletButtonClickHandler, this);
-				Utils.center(this.bulletButton);
+				this.initData();
+				this.initPrices();
+				this.initBackgroundCity();
+				this.initBackgroundMenu();
+				this.initBullet();
+				this.initMeteor();
+				this.initCoin();
+				this.initRainbow();
+				this.initError();
+				this.initButtons();
 			}
 		}, {
 			key: 'update',
@@ -2581,6 +2584,103 @@
 				this.clickSound = new _Sound2.default(this.game, 'click');
 				this.bulletPackSound = new _Sound2.default(this.game, 'bulletPackSound');
 				this.errorSound = new _Sound2.default(this.game, 'error');
+			}
+		}, {
+			key: 'initData',
+			value: function initData() {
+				if (!_Data2.default.bullets) {
+					_Data2.default.bullets = 0;
+				}
+				if (!_Data2.default.coins) {
+					_Data2.default.coins = 0;
+				}
+				if (!_Data2.default.meteor) {
+					_Data2.default.meteor = 0;
+				}
+				if (!_Data2.default.hasRainbow) {
+					_Data2.default.hasRainbow = false;
+				}
+			}
+		}, {
+			key: 'initPrices',
+			value: function initPrices() {
+				this.prices = {
+					'bulletprice': '2',
+					'meteorprice': '1',
+					'rainbowprice': '30'
+				};
+			}
+		}, {
+			key: 'initBackgroundCity',
+			value: function initBackgroundCity() {
+				this.city = new _BackgroundCity2.default(this.game, 0, 0, 750, 500, 'city');
+				this.game.add.existing(this.city);
+			}
+		}, {
+			key: 'initBackgroundMenu',
+			value: function initBackgroundMenu() {
+				this.menuBackground = new _MenuBackground2.default(this.game, this.game.width / 2, this.game.height / 2);
+				this.game.add.existing(this.menuBackground);
+			}
+		}, {
+			key: 'initBullet',
+			value: function initBullet() {
+				this.bulletText = new _Text2.default(this.game, this.game.width / 2 + 85, this.game.height / 2 - 50 - 30, 'gamefont', _Data2.default.bullets + '\nbullets', 20, 'center');
+				this.game.add.existing(this.bulletText);
+				this.priceBullets = new _Text2.default(this.game, this.game.width / 2 - 80, this.game.height / 2 - 82 - 30, 'gamefont', 'prijs: ' + this.prices.bulletprice, 14, 'center');
+				this.game.add.existing(this.priceBullets);
+				this.amountBullets = new _Text2.default(this.game, this.game.width / 2 - 5, this.game.height / 2 - 82 - 30, 'gamefont', 'aantal: ' + 5, 14, 'center');
+				this.game.add.existing(this.amountBullets);
+				this.bulletButton = this.game.add.button(this.game.width / 2 - 45, this.game.height / 2 - 50 - 30, 'bulletButton', this.bulletButtonClickHandler, this);
+				Utils.center(this.bulletButton);
+			}
+		}, {
+			key: 'initMeteor',
+			value: function initMeteor() {
+				this.meteorText = new _Text2.default(this.game, this.game.width / 2 + 85, this.game.height / 2 + 20 - 20, 'gamefont', _Data2.default.meteor + '\nmeteors', 20, 'center');
+				this.game.add.existing(this.meteorText);
+				this.priceMeteors = new _Text2.default(this.game, this.game.width / 2 - 80, this.game.height / 2 - 12 - 20, 'gamefont', 'prijs: ' + this.prices.meteorprice, 14, 'center');
+				this.game.add.existing(this.priceMeteors);
+				this.amountMeteors = new _Text2.default(this.game, this.game.width / 2 - 5, this.game.height / 2 - 12 - 20, 'gamefont', 'aantal: ' + 1, 14, 'center');
+				this.game.add.existing(this.amountMeteors);
+				this.meteorButton = this.game.add.button(this.game.width / 2 - 45, this.game.height / 2 + 20 - 20, 'meteorButton', this.meteorButtonClickHandler, this);
+				Utils.center(this.meteorButton);
+			}
+		}, {
+			key: 'initCoin',
+			value: function initCoin() {
+				this.coinText = new _Text2.default(this.game, this.game.width / 2, this.game.height / 2 - 160, 'gamefont', _Data2.default.coins + '\ncoins', 20, 'center');
+				this.game.add.existing(this.coinText);
+			}
+		}, {
+			key: 'initRainbow',
+			value: function initRainbow() {
+				var rainboxInnerText = undefined;
+				if (_Data2.default.hasRainbow) {
+					rainboxInnerText = 'equiped';
+				} else {
+					rainboxInnerText = 'not\nequiped';
+				}
+				this.rainbowText = new _Text2.default(this.game, this.game.width / 2 + 85, this.game.height / 2 + 20 - 10 + 75, 'gamefont', rainboxInnerText, 20, 'center');
+				this.game.add.existing(this.rainbowText);
+				this.priceRainbow = new _Text2.default(this.game, this.game.width / 2 - 80, this.game.height / 2 - 12 - 10 + 75, 'gamefont', 'prijs: ' + this.prices.rainbowprice, 14, 'center');
+				this.game.add.existing(this.priceRainbow);
+				this.rainbowButton = this.game.add.button(this.game.width / 2 - 45, this.game.height / 2 + 20 - 10 + 75, 'rainbowButton', this.rainbowButtonClickHandler, this);
+				Utils.center(this.rainbowButton);
+			}
+		}, {
+			key: 'initError',
+			value: function initError() {
+				this.errorText = new _Text2.default(this.game, this.game.width / 2 + 5, this.game.height / 2 - 225, 'gamefont', '', 14, 'center');
+				this.game.add.existing(this.errorText);
+			}
+		}, {
+			key: 'initButtons',
+			value: function initButtons() {
+				this.startButton = this.game.add.button(this.game.width / 2 + 50, this.game.height / 2 + 150, 'startButton', this.startClickHandler, this);
+				Utils.center(this.startButton);
+				this.backButton = this.game.add.button(this.game.width / 2 - 50, this.game.height / 2 + 150, 'backButton', this.backClickHandler, this);
+				Utils.center(this.backButton);
 			}
 		}]);
 

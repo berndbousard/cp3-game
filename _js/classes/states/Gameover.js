@@ -10,7 +10,6 @@ let leaderboardNameInput;
 let leaderboardSubmit;
 let leaderboard;
 
-
 export default class Gameover extends Phaser.State {
 	preload(){
 		// console.log('start gameover');
@@ -22,50 +21,12 @@ export default class Gameover extends Phaser.State {
 		this.soundSetup();
 
 		this.createForm();
-		leaderboardNameInput = document.getElementById('text');
-		leaderboardSubmit = document.getElementById('submit');
-		leaderboard = document.getElementById('form');
+		this.initDom();
 
-		// listener
-		// om enters op te vangen
-		leaderboard.addEventListener('submit', (event) => {
-			event.preventDefault();
-			this.leaderboardSubmitHandler();
-		});
-
-		leaderboardSubmit.addEventListener('submit', (event) => {
-			event.preventDefault();
-			this.leaderboardSubmitHandler();
-		});
-
-		// om de spatie en m toets te laten werken in HTML input
-		leaderboardNameInput.addEventListener('focus', () => {
-			this.game.input.enabled = false;
-		});
-
-		leaderboardNameInput.addEventListener('blur', () => {
-			this.game.input.enabled = true;
-		});
-
-		// Images
-		this.city = new BackgroundCity(this.game, 0, 0, 750, 500, 'city');
-		this.game.add.existing(this.city);
-
-		this.menuBackground = new MenuBackground(this.game, this.game.width/2, this.game.height/2);
-		this.game.add.existing(this.menuBackground);
-
-		// Buttons
-		this.startButton = this.game.add.button(this.game.width/2,this.game.height/2 + 150,'startButton',this.startClickHandler,this);
-		Utils.center(this.startButton);
-
-		this.backButton = this.game.add.button(this.game.width/2 - 75, this.game.height/2 + 150, 'backButton', this.backClickHandler, this);
-		Utils.center(this.backButton);
-
-		// score and distance
-		this.visibleScore = new Text(this.game, this.game.width/2 - 50, 200, 'gamefont', 'Your score\n' + Data.coins, 20, 'center');
-		this.game.add.existing(this.visibleScore);
-		this.visibleDistance = new Text(this.game, this.game.width/2 + 80, 200, 'gamefont', 'You ran\n' + Data.distance + ' km', 20, 'center');
-		this.game.add.existing(this.visibleDistance);
+		this.initListeners();
+		this.initImages();
+		this.initButtons();
+		this.initText();
 	}
 
 	update(){
@@ -168,5 +129,55 @@ export default class Gameover extends Phaser.State {
 	soundSetup(){
 		// music
 		this.clickSound = new Sound(this.game, 'click');
+	}
+
+	initListeners(){
+		leaderboard.addEventListener('submit', (event) => {
+			event.preventDefault();
+			this.leaderboardSubmitHandler();
+		});
+
+		leaderboardSubmit.addEventListener('submit', (event) => {
+			event.preventDefault();
+			this.leaderboardSubmitHandler();
+		});
+
+		// om de spatie en m toets te laten werken in HTML input
+		leaderboardNameInput.addEventListener('focus', () => {
+			this.game.input.enabled = false;
+		});
+
+		leaderboardNameInput.addEventListener('blur', () => {
+			this.game.input.enabled = true;
+		});
+	}
+
+	initImages(){
+		this.city = new BackgroundCity(this.game, 0, 0, 750, 500, 'city');
+		this.game.add.existing(this.city);
+
+		this.menuBackground = new MenuBackground(this.game, this.game.width/2, this.game.height/2);
+		this.game.add.existing(this.menuBackground);
+	}
+
+	initButtons(){
+		this.startButton = this.game.add.button(this.game.width/2,this.game.height/2 + 150,'startButton',this.startClickHandler,this);
+		Utils.center(this.startButton);
+
+		this.backButton = this.game.add.button(this.game.width/2 - 75, this.game.height/2 + 150, 'backButton', this.backClickHandler, this);
+		Utils.center(this.backButton);
+	}
+
+	initText(){
+		this.visibleScore = new Text(this.game, this.game.width/2 - 50, 200, 'gamefont', 'Your score\n' + Data.coins, 20, 'center');
+		this.game.add.existing(this.visibleScore);
+		this.visibleDistance = new Text(this.game, this.game.width/2 + 80, 200, 'gamefont', 'You ran\n' + Data.distance + ' km', 20, 'center');
+		this.game.add.existing(this.visibleDistance);
+	}
+
+	initDom(){
+		leaderboardNameInput = document.getElementById('text');
+		leaderboardSubmit = document.getElementById('submit');
+		leaderboard = document.getElementById('form');
 	}
 }

@@ -15,20 +15,8 @@ export default class Leaderboard extends Phaser.State {
 		this.soundSetup();
 		// Build table with results
 		this.getJSON(`http://student.howest.be/bernd.bousard/20152016/CPIII/CITYFLIP/index.php?page=getScores&t=${Date.now()}`);
-
-		// Images
-		this.city = new BackgroundCity(this.game, 0, 0, 750, 500, 'city');
-		this.game.add.existing(this.city);
-
-		this.menuBackground = new MenuBackground(this.game, this.game.width/2, this.game.height/2);
-		this.game.add.existing(this.menuBackground);
-
-		// Buttons
-		this.startButton = this.game.add.button(this.game.width/2 + 50,this.game.height/2 + 150,'startButton', this.startClickHandler,this);
-		Utils.center(this.startButton);
-		this.backButton = this.game.add.button(this.game.width/2 - 50, this.game.height/2 + 150, 'backButton', this.backClickHandler, this);
-		Utils.center(this.backButton);
-
+		this.initBackground();
+		this.initButtons();
 	}
 
 	update(){
@@ -120,5 +108,19 @@ export default class Leaderboard extends Phaser.State {
 	soundSetup(){
 		// music
 		this.clickSound = new Sound(this.game, 'click');
+	}
+
+	initBackground(){
+		this.city = new BackgroundCity(this.game, 0, 0, 750, 500, 'city');
+		this.game.add.existing(this.city);
+		this.menuBackground = new MenuBackground(this.game, this.game.width/2, this.game.height/2);
+		this.game.add.existing(this.menuBackground);
+	}
+
+	initButtons(){
+		this.startButton = this.game.add.button(this.game.width/2 + 50,this.game.height/2 + 150,'startButton', this.startClickHandler,this);
+		Utils.center(this.startButton);
+		this.backButton = this.game.add.button(this.game.width/2 - 50, this.game.height/2 + 150, 'backButton', this.backClickHandler, this);
+		Utils.center(this.backButton);
 	}
 }

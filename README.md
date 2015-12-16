@@ -44,7 +44,7 @@ compatiebele JS. Deze gebruiken we via de Terminal.
 Onze database staat online. Je kan eventueel een sql dump downloaden om de structuur daarvan te raadplegen. Er worden AJAX calls gebruikt om het spel vlot te doen werken, dit met behulp van JSON.
 
 
-## Hoe project opzetten
+## Het project opzetten
 1. Clone/download dit project naar je locale computer.
   * open terminal en typ het volgende commando
   ```
@@ -65,7 +65,7 @@ Onze database staat online. Je kan eventueel een sql dump downloaden om de struc
     ```
     webpack -w
     ```
-5. importeer de database in je localhost om scores te kunnen wegschrijven/ophalen
+5. importeer de database in je localhost om scores te kunnen wegschrijven/ophalen. Deze database heet 'cityflip_scores' te noemen met als login 'cityflipuser' en 'cityflippass' 
 
 ## De code
 De code wordt opgesplitst in states, met daarin verwijzing naar klasses:

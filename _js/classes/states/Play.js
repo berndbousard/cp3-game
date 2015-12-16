@@ -28,112 +28,23 @@ export default class Play extends Phaser.State {
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
 		// controls
-		this.cursors = this.game.input.keyboard.createCursorKeys();
-		this.spacebar = this.game.input.keyboard.addKey(32);
-		this.m = this.game.input.keyboard.addKey(77);
-		this.spacebar.onDown.add(this.spaceBarHandler, this);
-		this.m.onDown.add(this.mDownHandler, this);
-
-		// Declarations
-		if(!Data.coins){
-			Data.coins = 0;
-		}else{
-			Data.coins = Data.coins;
-		}
-		if(!Data.meteor){
-			Data.meteor = 0;
-		}else{
-			Data.meteor = Data.meteor;
-		}
-		if(!Data.bullets){
-			Data.bullets = 2;
-		}else{
-			Data.bullets = Data.bullets;
-		}
-		Data.distance = 0;
-		Data.kills = 0;
-		this.gameSpeed = .97; //variable die bepaalt met hoeveel de delay wordt verminderd
-		this.delay = Phaser.Timer.SECOND * 2;
-		this.side = 'up';
-
-		// Images
-		this.city = new BackgroundCity(this.game, 0, 0, 750, 500, 'city');
-		this.game.add.existing(this.city);
-
-		// Player
-		this.player = new Player(this.game, 50, this.game.height/2 - 43, this.flipSound, Data.hasRainbow);
-		this.game.add.existing(this.player);
-
-		// coins
-		this.coins = this.game.add.group();
-		this.coinTimer = this.game.time.events.loop(Phaser.Timer.SECOND * 5, this.spawnCoin, this);
-
-		// distance score text
-		this.distanceTimer = this.game.time.events.loop(Phaser.Timer.SECOND / 1.2, this.increaseDistance, this);
-		this.distanceTextBox = new Text(this.game, this.game.width/2, 50, 'gamefont', Data.distance + ' km', 34);
-		this.game.add.existing(this.distanceTextBox);
-
-		// display for score
-		this.scoreTextBox = new Text(this.game, this.game.width/2 + 300, 65, 'gamefont', Data.coins + ' coins', 18, 'center');
-		this.game.add.existing(this.scoreTextBox);
-		this.scoreImg = this.game.add.sprite(this.game.width/2 + 300, 35, 'displayScore');
-		Utils.center(this.scoreImg);
-
-		// display for bullets
-		this.bulletTextBox = new Text(this.game, this.game.width/2 - 300, 65, 'gamefont', Data.bullets + ' bullets', 18, 'center');
-		this.game.add.existing(this.bulletTextBox);
-		this.bulletImg = this.game.add.sprite(this.game.width/2 - 300, 35, 'displayBullets');
-		Utils.center(this.bulletImg);
-
-		// display for kills
-		this.killsTextBox = new Text(this.game, this.game.width/2 + 157, 65, 'gamefont', Data.kills + ' kills', 18, 'center');
-		this.game.add.existing(this.killsTextBox);
-		this.killsImg = this.game.add.sprite(this.game.width/2 + 157, 35, 'displayKills');
-		Utils.center(this.killsImg);
-
-		// display for meteors
-		this.meteorTextBox = new Text(this.game, this.game.width/2 - 157, 65, 'gamefont', Data.meteor + ' meteors', 18, 'center');
-		this.game.add.existing(this.meteorTextBox);
-		this.meteorsImg = this.game.add.sprite(this.game.width/2 - 157, 35, 'displayMeteors');
-		Utils.center(this.meteorsImg);
-
-		// mute
-		this.soundButton = this.game.add.button(30, this.game.height - 45, 'unmuteButton', this.soundMuteToggleHandler, this);
-		this.game.add.existing(this.soundButton);
- 
-		// bullets
-		this.allBullets = this.game.add.group();
-
-		// All enemies
-		this.allEnemies = this.game.add.group();
-		this.enemyTimer = this.game.time.events.loop(this.delay, this.spawnEnemy, this);
-
-		// testblack
-		this.blackEnemies = this.game.add.group();
-		this.blackEnemies.enableBody = true;
-		this.allEnemies.add(this.blackEnemies);
-
-		this.whiteEnemies = this.game.add.group();
-		this.whiteEnemies.enableBody = true;
-		this.allEnemies.add(this.whiteEnemies);
-
-		this.orangeEnemies = this.game.add.group();
-		this.orangeEnemies.enableBody = true;
-		this.allEnemies.add(this.orangeEnemies);
-
-		this.redEnemies = this.game.add.group();
-		this.redEnemies.enableBody = true;
-		this.allEnemies.add(this.redEnemies);
-
-		this.meteorGroup = this.game.add.group();
-		this.meteorGroup.enableBody = true;
-
-		this.explosionGroup = this.game.add.group();
+		this.initControls();
+		this.initData();
+		this.initBackground();
+		this.initPlayer();
+		this.initCoins();
+		this.initDistance();
+		this.initScore();
+		this.initBullets();
+		this.initKills();
+		this.initMeteors();
+		this.initEnemies();
+		this.initBullets();
+		this.initExplosions();
+		this.initSoundButton();
 	}
 
 	update(){
-		// console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length, 'red ' + this.redEnemies.length);
-		
 		// controls
 		if(this.cursors.down.isDown && !this.cursors.up.isDown){
 			this.side = 'down';
@@ -474,5 +385,120 @@ export default class Play extends Phaser.State {
 			this.distanceTextBox.text = Data.distance + ' km';
 			break;
 		}
+	}
+
+	initControls(){
+		this.cursors = this.game.input.keyboard.createCursorKeys();
+		this.spacebar = this.game.input.keyboard.addKey(32);
+		this.m = this.game.input.keyboard.addKey(77);
+		this.spacebar.onDown.add(this.spaceBarHandler, this);
+		this.m.onDown.add(this.mDownHandler, this);
+	}
+
+	initData(){
+		if(!Data.coins){
+			Data.coins = 0;
+		}else{
+			Data.coins = Data.coins;
+		}
+		if(!Data.meteor){
+			Data.meteor = 0;
+		}else{
+			Data.meteor = Data.meteor;
+		}
+		if(!Data.bullets){
+			Data.bullets = 2;
+		}else{
+			Data.bullets = Data.bullets;
+		}
+		Data.distance = 0;
+		Data.kills = 0;
+		this.gameSpeed = .97; //variable die bepaalt met hoeveel de delay wordt verminderd
+		this.delay = Phaser.Timer.SECOND * 2;
+		this.side = 'up';
+	}
+
+	initBackground(){
+		this.city = new BackgroundCity(this.game, 0, 0, 750, 500, 'city');
+		this.game.add.existing(this.city);
+	}
+
+	initPlayer(){
+		this.player = new Player(this.game, 50, this.game.height/2 - 43, this.flipSound, Data.hasRainbow);
+		this.game.add.existing(this.player);
+	}
+
+	initCoins(){
+		this.coins = this.game.add.group();
+		this.coinTimer = this.game.time.events.loop(Phaser.Timer.SECOND * 5, this.spawnCoin, this);
+	}
+
+	initDistance(){
+		this.distanceTimer = this.game.time.events.loop(Phaser.Timer.SECOND / 1.2, this.increaseDistance, this);
+		this.distanceTextBox = new Text(this.game, this.game.width/2, 50, 'gamefont', Data.distance + ' km', 34);
+		this.game.add.existing(this.distanceTextBox);
+	}
+
+	initScore(){
+		this.scoreTextBox = new Text(this.game, this.game.width/2 + 300, 65, 'gamefont', Data.coins + ' coins', 18, 'center');
+		this.game.add.existing(this.scoreTextBox);
+		this.scoreImg = this.game.add.sprite(this.game.width/2 + 300, 35, 'displayScore');
+		Utils.center(this.scoreImg);
+	}
+
+	initBullets(){
+		this.bulletTextBox = new Text(this.game, this.game.width/2 - 300, 65, 'gamefont', Data.bullets + ' bullets', 18, 'center');
+		this.game.add.existing(this.bulletTextBox);
+		this.bulletImg = this.game.add.sprite(this.game.width/2 - 300, 35, 'displayBullets');
+		Utils.center(this.bulletImg);
+		this.allBullets = this.game.add.group();
+	}
+
+	initKills(){
+		this.killsTextBox = new Text(this.game, this.game.width/2 + 157, 65, 'gamefont', Data.kills + ' kills', 18, 'center');
+		this.game.add.existing(this.killsTextBox);
+		this.killsImg = this.game.add.sprite(this.game.width/2 + 157, 35, 'displayKills');
+		Utils.center(this.killsImg);
+	}
+
+	initMeteors(){
+		this.meteorTextBox = new Text(this.game, this.game.width/2 - 157, 65, 'gamefont', Data.meteor + ' meteors', 18, 'center');
+		this.game.add.existing(this.meteorTextBox);
+		this.meteorsImg = this.game.add.sprite(this.game.width/2 - 157, 35, 'displayMeteors');
+		Utils.center(this.meteorsImg);
+		this.meteorGroup = this.game.add.group();
+		this.meteorGroup.enableBody = true;
+	}
+
+	initEnemies(){
+		// All enemies
+		this.allEnemies = this.game.add.group();
+		this.enemyTimer = this.game.time.events.loop(this.delay, this.spawnEnemy, this);
+
+		// testblack
+		this.blackEnemies = this.game.add.group();
+		this.blackEnemies.enableBody = true;
+		this.allEnemies.add(this.blackEnemies);
+
+		this.whiteEnemies = this.game.add.group();
+		this.whiteEnemies.enableBody = true;
+		this.allEnemies.add(this.whiteEnemies);
+
+		this.orangeEnemies = this.game.add.group();
+		this.orangeEnemies.enableBody = true;
+		this.allEnemies.add(this.orangeEnemies);
+
+		this.redEnemies = this.game.add.group();
+		this.redEnemies.enableBody = true;
+		this.allEnemies.add(this.redEnemies);
+	}
+
+	initExplosions(){
+		this.explosionGroup = this.game.add.group();
+	}
+
+	initSoundButton(){
+		this.soundButton = this.game.add.button(30, this.game.height - 45, 'unmuteButton', this.soundMuteToggleHandler, this);
+		this.game.add.existing(this.soundButton);
 	}
 }
