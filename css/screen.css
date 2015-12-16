@@ -113,3 +113,7 @@ input:focus {
 .hide {
 	display: none;
 }
+
+.score {
+	padding-right: 0;
+}
