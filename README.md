@@ -33,14 +33,39 @@ waarmee je later zaken kan kopen in de shop.
 
 ##### Phaser
 Deze game is gemaakt in Phaser.js (een Javascript library om vlotter browser based games te schrijven).
+Voor documentatie en meer info kan je op [de website van Phaser](http://phaser.io/) terrecht. 
 
 ##### Webpack
 We gebruiken Webpack om vlot onze bestanden te kunnen indelen. Verder gebruiken we Babel om onze JS te transpilen naar meer
 compatiebele JS. Deze gebruiken we via de Terminal.
 
+
 ##### PHP & databases
 Onze database staat online. Je kan eventueel een sql dump downloaden om de structuur daarvan te raadplegen. Er worden AJAX calls gebruikt om het spel vlot te doen werken, dit met behulp van JSON.
 
+
+## Hoe project opzetten
+1. Clone/download dit project naar je locale computer.
+  * open terminal en typ het volgende commando
+  ```
+  git pull https://github.com/berndbousard/cp3-game/
+  ```
+2. navigeer naar deze map via teminal
+  * gebruik hiervoor het volgende commando
+    ```
+    cd padNaarMap
+    ```
+3. installeer alle dependencies die nodig zijn om het project te runnen
+  * gebruik hiervoor het volgende commando
+    ```
+    npm install
+    ```
+4. laat webpack je project in de gaten houden en transpilen wanneer er een codewijziging is gebeurd
+  * gebruik hiervoor het volgende commando
+    ```
+    webpack -w
+    ```
+5. importeer de database in je localhost om scores te kunnen wegschrijven/ophalen
 
 ## De code
 De code wordt opgesplitst in states, met daarin verwijzing naar klasses:
@@ -65,15 +90,6 @@ Verder worden je munten, bullets, meteorieten en kills bijgehouden. Deze data wo
 ##### Shop
 Je kan in de shop bullets, meteorieten en ook een rainbow suit kopen.
 
-
 ## PSD/AI files
-Om aan de resources te kunnen van onze assets kan je deze link raadplegen.
+Voor eventuele PSD bestanden van de assets kan je terrecht op onze shared dropbox folder omdat we dit net iets flexibeler vinden om grote assets te syncen.
 https://www.dropbox.com/sh/ytmj8p38x312811/AAAmECA1IaeSjoJFOXry_N7ja?dl=0
-
-
-
-## Hoe project opzetten?
-* 
-
-<!-- database, hoe je project opzet -->
-
