@@ -69,21 +69,32 @@ export default class Play extends Phaser.State {
 
 		// distance score text
 		this.distanceTimer = this.game.time.events.loop(Phaser.Timer.SECOND / 1.2, this.increaseDistance, this);
-		this.distanceTextBox = new Text(this.game, this.game.width/2, 50, 'gamefont', Data.distance + ' km', 30);
+		this.distanceTextBox = new Text(this.game, this.game.width/2, 50, 'gamefont', Data.distance + ' km', 34);
 		this.game.add.existing(this.distanceTextBox);
 
-		// score text
-		this.scoreTextBox = new Text(this.game, this.game.width/2 + 300, 50, 'gamefont', Data.coins + '\ncoins', 20, 'center');
+		// display for score
+		this.scoreTextBox = new Text(this.game, this.game.width/2 + 300, 65, 'gamefont', Data.coins + ' coins', 18, 'center');
 		this.game.add.existing(this.scoreTextBox);
+		this.scoreImg = this.game.add.sprite(this.game.width/2 + 300, 35, 'displayScore');
+		Utils.center(this.scoreImg);
 
-		this.bulletTextBox = new Text(this.game, this.game.width/2 - 300, 50, 'gamefont', Data.bullets + '\nbullets', 20, 'center');
+		// display for bullets
+		this.bulletTextBox = new Text(this.game, this.game.width/2 - 300, 65, 'gamefont', Data.bullets + ' bullets', 18, 'center');
 		this.game.add.existing(this.bulletTextBox);
+		this.bulletImg = this.game.add.sprite(this.game.width/2 - 300, 35, 'displayBullets');
+		Utils.center(this.bulletImg);
 
-		this.killsTextBox = new Text(this.game, this.game.width/2 - 150, 50, 'gamefont', Data.kills + '\nkills', 20, 'center');
+		// display for kills
+		this.killsTextBox = new Text(this.game, this.game.width/2 + 157, 65, 'gamefont', Data.kills + ' kills', 18, 'center');
 		this.game.add.existing(this.killsTextBox);
+		this.killsImg = this.game.add.sprite(this.game.width/2 + 157, 35, 'displayKills');
+		Utils.center(this.killsImg);
 
-		this.meteorTextBox = new Text(this.game, this.game.width/2 + 150, 50, 'gamefont', Data.meteor + '\nmeteor', 20, 'center');
+		// display for meteors
+		this.meteorTextBox = new Text(this.game, this.game.width/2 - 157, 65, 'gamefont', Data.meteor + ' meteors', 18, 'center');
 		this.game.add.existing(this.meteorTextBox);
+		this.meteorsImg = this.game.add.sprite(this.game.width/2 - 157, 35, 'displayMeteors');
+		Utils.center(this.meteorsImg);
 
 		// mute
 		this.soundButton = this.game.add.button(30, this.game.height - 45, 'unmuteButton', this.soundMuteToggleHandler, this);
@@ -121,9 +132,8 @@ export default class Play extends Phaser.State {
 
 	update(){
 		// console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length, 'red ' + this.redEnemies.length);
+		
 		// controls
-		console.log(this.explosionGroup.length);
-
 		if(this.cursors.down.isDown && !this.cursors.up.isDown){
 			this.side = 'down';
 			this.player.flipDown();
@@ -169,53 +179,54 @@ export default class Play extends Phaser.State {
 	spawnEnemy(){
 		let color = this.generateRandomColor();
 		let enemy, x, y;
-		// object pooling werkt, yes
-		
-		// this.enemyConfigs = {
-		// 	'black': {
-		// 		'group': this.blackEnemies,
-		// 		'class': EnemyBlack,
-		// 		'getY': enemy => 225,
-		// 		'getScale': enemy => 1
-		// 	},
-		// 	'orange': {
-		// 		'group': this.orangeEnemies,
-		// 		'class': EnemyOrange,
-		// 		'getScale': enemy => {
-		// 			if(Math.random() > .5){
-		// 				return -1;
-		// 			}
-		// 			return 1;
-		// 		},
-		// 		'getY': enemy => {
-		// 			if(enemy.scale === -1){
-		// 				return 275;
-		// 			}
-		// 			return 225;
-		// 		}
-		// 	},
-		// 	'white': {
-		// 		'group': this.whiteEnemies,
-		// 		'class': EnemyWhite,
-		// 		'getY': enemy => 275,
-		// 		'getScale': enemy => -1
-		// 	}	
-		// };
+			
+		/*
+		this.enemyConfigs = {
+			'black': {
+				'group': this.blackEnemies,
+				'class': EnemyBlack,
+				'getY': enemy => 225,
+				'getScale': enemy => 1
+			},
+			'orange': {
+				'group': this.orangeEnemies,
+				'class': EnemyOrange,
+				'getScale': enemy => {
+					if(Math.random() > .5){
+						return -1;
+					}
+					return 1;
+				},
+				'getY': enemy => {
+					if(enemy.scale === -1){
+						return 275;
+					}
+					return 225;
+				}
+			},
+			'white': {
+				'group': this.whiteEnemies,
+				'class': EnemyWhite,
+				'getY': enemy => 275,
+				'getScale': enemy => -1
+			}	
+		};
 
-		// const enemyConfig = this.enemyConfigs[color];
-		// if(enemyConfig) {
-		// 	enemy = enemyConfig.group.getFirstExists(false);
-		// 	if(!enemy){
-		// 		enemy = new enemyConfig.class(this.game, 0, 0);
-		// 		enemy.body.velocity.x = -200;
-		// 		enemyConfig.group.add(enemy);
-		// 	}
-		// 	enemy.scale.y = enemyConfig.getScale(enemy);
-		// 	y = enemyConfig.getY(enemy);
-		// 	x = this.randomInRange(750, 800);
-		// 	enemy.reset(x, y);
-		// 	console.log(x, y, enemy.scale);
-		// }
+		const enemyConfig = this.enemyConfigs[color];
+		if(enemyConfig) {
+			enemy = enemyConfig.group.getFirstExists(false);
+			if(!enemy){
+				enemy = new enemyConfig.class(this.game, 0, 0);
+				enemy.body.velocity.x = -200;
+				enemyConfig.group.add(enemy);
+			}
+			enemy.scale.y = enemyConfig.getScale(enemy);
+			y = enemyConfig.getY(enemy);
+			x = this.randomInRange(750, 800);
+			enemy.reset(x, y);
+			console.log(x, y, enemy.scale);
+		}
+		*/
 
 		switch(color){
 			case 'black':
@@ -267,6 +278,7 @@ export default class Play extends Phaser.State {
 				}
 				break;
 		}
+
 		x = this.randomInRange(750, 800);
 		enemy.reset(x, y);
 	}
@@ -301,10 +313,10 @@ export default class Play extends Phaser.State {
 		coin.exists = false;
 		Data.coins++;
 		Data.bullets += 5;
-		this.updateBulletText();
-		let suffix = this.createSuffixForScore();
-		this.updateScore(suffix);
 		this.coinSound.play();
+
+		this.updateScores("score");
+		this.updateScores("bullet");
 	}
 
 	enemyBulletCollisionHandler(bullet, enemy){
@@ -312,7 +324,7 @@ export default class Play extends Phaser.State {
 		if(enemy.lives < 1){
 			enemy.pendingDestroy = true;
 			Data.kills++;
-			this.killsTextBox.text = Data.kills + '\nkills';
+			this.updateScores("kill");
 		}
 		
 		// bullet.pendingDestroy = true;
@@ -324,7 +336,7 @@ export default class Play extends Phaser.State {
 	meteorEnemyCollisionHandler(meteor, enemy){
 		meteor.pendingDestroy = true;
 		Data.kills++;
-		this.killsTextBox.text = Data.kills + '\nkills';
+		this.updateScores("kill");
 		enemy.pendingDestroy = true;
 		this.enemyHitSound.play();
 	}
@@ -340,17 +352,9 @@ export default class Play extends Phaser.State {
 		this.explosionGroup.add(explosion);
 	}
 
-	createSuffixForScore(){
-		if(Data.coins === 1){
-			return ' coin';
-		}else{
-			return ' coins';
-		}
-	}
-
 	increaseDistance(){
 		Data.distance++;
-		this.updateDistance();
+		this.updateScores("distance");
 		if(Data.distance%2 === 0){
 			let delay = this.enemyTimer.delay * this.gameSpeed;
 			this.enemyTimer.delay = delay;
@@ -371,7 +375,7 @@ export default class Play extends Phaser.State {
 			this.allBullets.add(bullet);
 
 			Data.bullets--;
-			this.bulletTextBox.text = Data.bullets + '\nbullets';
+			this.updateScores("bullet");
 
 			this.playerShootSound.play();
 		}
@@ -382,7 +386,7 @@ export default class Play extends Phaser.State {
 			this.meteorSound.play();
 			this.spawnMeteor();
 			Data.meteor--;
-			this.updateMeteorText();
+			this.updateScores("meteor");
 		}
 	}
 	spawnMeteor(){
@@ -396,12 +400,6 @@ export default class Play extends Phaser.State {
 			meteor.reset(x, y);
 			this.meteorGroup.add(meteor);
 		}
-	}
-	updateMeteorText(){
-		this.meteorTextBox.text = Data.meteor + '\nmeteors';
-	}
-	updateScore(suffix){
-		this.scoreTextBox.text = Data.coins + suffix;
 	}
 
 	generateRandomColor(){
@@ -432,13 +430,43 @@ export default class Play extends Phaser.State {
 
 		this.backgroundSound.play();
 	}
-	updateBulletText(){
-		this.bulletTextBox.text = Data.bullets + '\nbullets';
-	}
-	updateCoinText(){
-		this.coinText.text = Data.coins + '\ncoins';
-	}
-	updateDistance(){
-		this.distanceTextBox.text = Data.distance + ' km';
+	updateScores(value){
+		switch(value){
+			case "score":
+			if(Data.coins === 1){
+				this.scoreTextBox.text = Data.coins + ' coin';
+			}else{
+				this.scoreTextBox.text = Data.coins + ' coins';
+			}
+			break;
+
+			case "bullet":
+			if(Data.bullets === 1){
+				this.bulletTextBox.text = Data.bullets + ' bullet';
+			}else{
+				this.bulletTextBox.text = Data.bullets + ' bullets';
+			}
+			break;
+
+			case "kill":
+			if(Data.kills === 1){
+				this.killsTextBox.text = Data.kills + ' kill';
+			}else{
+				this.killsTextBox.text = Data.kills + ' kills';
+			}
+			break;
+
+			case "meteor":
+			if(Data.meteor === 1){
+				this.meteorTextBox.text = Data.meteor + ' meteor';
+			}else{
+				this.meteorTextBox.text = Data.meteor + ' meteors';
+			}
+			break;
+
+			case "distance":
+			this.distanceTextBox.text = Data.distance + ' km';
+			break;
+		}
 	}
 }

@@ -149,6 +149,10 @@
 				this.game.load.image('rainbowButton', 'assets/rainbowButton.png');
 				this.game.load.image('muteButton', 'assets/muteButton.png');
 				this.game.load.image('unmuteButton', 'assets/unmuteButton.png');
+				this.game.load.image('displayScore', 'assets/displayScore.png');
+				this.game.load.image('displayBullets', 'assets/displayBullets.png');
+				this.game.load.image('displayKills', 'assets/displayKills.png');
+				this.game.load.image('displayMeteors', 'assets/displayMeteors.png');
 
 				this.game.load.bitmapFont('gamefont', 'assets/font/extra/gamefont.png', 'assets/font/extra/gamefont.fnt');
 
@@ -707,21 +711,32 @@
 
 				// distance score text
 				this.distanceTimer = this.game.time.events.loop(Phaser.Timer.SECOND / 1.2, this.increaseDistance, this);
-				this.distanceTextBox = new _Text2.default(this.game, this.game.width / 2, 50, 'gamefont', _Data2.default.distance + ' km', 30);
+				this.distanceTextBox = new _Text2.default(this.game, this.game.width / 2, 50, 'gamefont', _Data2.default.distance + ' km', 34);
 				this.game.add.existing(this.distanceTextBox);
 
-				// score text
-				this.scoreTextBox = new _Text2.default(this.game, this.game.width / 2 + 300, 50, 'gamefont', _Data2.default.coins + '\ncoins', 20, 'center');
+				// display for score
+				this.scoreTextBox = new _Text2.default(this.game, this.game.width / 2 + 300, 65, 'gamefont', _Data2.default.coins + ' coins', 18, 'center');
 				this.game.add.existing(this.scoreTextBox);
+				this.scoreImg = this.game.add.sprite(this.game.width / 2 + 300, 35, 'displayScore');
+				Utils.center(this.scoreImg);
 
-				this.bulletTextBox = new _Text2.default(this.game, this.game.width / 2 - 300, 50, 'gamefont', _Data2.default.bullets + '\nbullets', 20, 'center');
+				// display for bullets
+				this.bulletTextBox = new _Text2.default(this.game, this.game.width / 2 - 300, 65, 'gamefont', _Data2.default.bullets + ' bullets', 18, 'center');
 				this.game.add.existing(this.bulletTextBox);
+				this.bulletImg = this.game.add.sprite(this.game.width / 2 - 300, 35, 'displayBullets');
+				Utils.center(this.bulletImg);
 
-				this.killsTextBox = new _Text2.default(this.game, this.game.width / 2 - 150, 50, 'gamefont', _Data2.default.kills + '\nkills', 20, 'center');
+				// display for kills
+				this.killsTextBox = new _Text2.default(this.game, this.game.width / 2 + 157, 65, 'gamefont', _Data2.default.kills + ' kills', 18, 'center');
 				this.game.add.existing(this.killsTextBox);
+				this.killsImg = this.game.add.sprite(this.game.width / 2 + 157, 35, 'displayKills');
+				Utils.center(this.killsImg);
 
-				this.meteorTextBox = new _Text2.default(this.game, this.game.width / 2 + 150, 50, 'gamefont', _Data2.default.meteor + '\nmeteor', 20, 'center');
+				// display for meteors
+				this.meteorTextBox = new _Text2.default(this.game, this.game.width / 2 - 157, 65, 'gamefont', _Data2.default.meteor + ' meteors', 18, 'center');
 				this.game.add.existing(this.meteorTextBox);
+				this.meteorsImg = this.game.add.sprite(this.game.width / 2 - 157, 35, 'displayMeteors');
+				Utils.center(this.meteorsImg);
 
 				// mute
 				this.soundButton = this.game.add.button(30, this.game.height - 45, 'unmuteButton', this.soundMuteToggleHandler, this);
@@ -762,9 +777,8 @@
 				var _this2 = this;
 
 				// console.log('black ' + this.blackEnemies.length, 'white ' + this.whiteEnemies.length, 'orange ' + this.orangeEnemies.length, 'red ' + this.redEnemies.length);
-				// controls
-				console.log(this.explosionGroup.length);
 
+				// controls
 				if (this.cursors.down.isDown && !this.cursors.up.isDown) {
 					this.side = 'down';
 					this.player.flipDown();
@@ -814,53 +828,53 @@
 				var enemy = undefined,
 				    x = undefined,
 				    y = undefined;
-				// object pooling werkt, yes
 
-				// this.enemyConfigs = {
-				// 	'black': {
-				// 		'group': this.blackEnemies,
-				// 		'class': EnemyBlack,
-				// 		'getY': enemy => 225,
-				// 		'getScale': enemy => 1
-				// 	},
-				// 	'orange': {
-				// 		'group': this.orangeEnemies,
-				// 		'class': EnemyOrange,
-				// 		'getScale': enemy => {
-				// 			if(Math.random() > .5){
-				// 				return -1;
-				// 			}
-				// 			return 1;
-				// 		},
-				// 		'getY': enemy => {
-				// 			if(enemy.scale === -1){
-				// 				return 275;
-				// 			}
-				// 			return 225;
-				// 		}
-				// 	},
-				// 	'white': {
-				// 		'group': this.whiteEnemies,
-				// 		'class': EnemyWhite,
-				// 		'getY': enemy => 275,
-				// 		'getScale': enemy => -1
-				// 	}	
-				// };
-
-				// const enemyConfig = this.enemyConfigs[color];
-				// if(enemyConfig) {
-				// 	enemy = enemyConfig.group.getFirstExists(false);
-				// 	if(!enemy){
-				// 		enemy = new enemyConfig.class(this.game, 0, 0);
-				// 		enemy.body.velocity.x = -200;
-				// 		enemyConfig.group.add(enemy);
-				// 	}
-				// 	enemy.scale.y = enemyConfig.getScale(enemy);
-				// 	y = enemyConfig.getY(enemy);
-				// 	x = this.randomInRange(750, 800);
-				// 	enemy.reset(x, y);
-				// 	console.log(x, y, enemy.scale);
-				// }
+				/*
+	   this.enemyConfigs = {
+	   	'black': {
+	   		'group': this.blackEnemies,
+	   		'class': EnemyBlack,
+	   		'getY': enemy => 225,
+	   		'getScale': enemy => 1
+	   	},
+	   	'orange': {
+	   		'group': this.orangeEnemies,
+	   		'class': EnemyOrange,
+	   		'getScale': enemy => {
+	   			if(Math.random() > .5){
+	   				return -1;
+	   			}
+	   			return 1;
+	   		},
+	   		'getY': enemy => {
+	   			if(enemy.scale === -1){
+	   				return 275;
+	   			}
+	   			return 225;
+	   		}
+	   	},
+	   	'white': {
+	   		'group': this.whiteEnemies,
+	   		'class': EnemyWhite,
+	   		'getY': enemy => 275,
+	   		'getScale': enemy => -1
+	   	}	
+	   };
+	   	const enemyConfig = this.enemyConfigs[color];
+	   if(enemyConfig) {
+	   	enemy = enemyConfig.group.getFirstExists(false);
+	   	if(!enemy){
+	   		enemy = new enemyConfig.class(this.game, 0, 0);
+	   		enemy.body.velocity.x = -200;
+	   		enemyConfig.group.add(enemy);
+	   	}
+	   	enemy.scale.y = enemyConfig.getScale(enemy);
+	   	y = enemyConfig.getY(enemy);
+	   	x = this.randomInRange(750, 800);
+	   	enemy.reset(x, y);
+	   	console.log(x, y, enemy.scale);
+	   }
+	   */
 
 				switch (color) {
 					case 'black':
@@ -912,6 +926,7 @@
 						}
 						break;
 				}
+
 				x = this.randomInRange(750, 800);
 				enemy.reset(x, y);
 			}
@@ -951,10 +966,10 @@
 				coin.exists = false;
 				_Data2.default.coins++;
 				_Data2.default.bullets += 5;
-				this.updateBulletText();
-				var suffix = this.createSuffixForScore();
-				this.updateScore(suffix);
 				this.coinSound.play();
+
+				this.updateScores("score");
+				this.updateScores("bullet");
 			}
 		}, {
 			key: 'enemyBulletCollisionHandler',
@@ -963,7 +978,7 @@
 				if (enemy.lives < 1) {
 					enemy.pendingDestroy = true;
 					_Data2.default.kills++;
-					this.killsTextBox.text = _Data2.default.kills + '\nkills';
+					this.updateScores("kill");
 				}
 
 				// bullet.pendingDestroy = true;
@@ -976,7 +991,7 @@
 			value: function meteorEnemyCollisionHandler(meteor, enemy) {
 				meteor.pendingDestroy = true;
 				_Data2.default.kills++;
-				this.killsTextBox.text = _Data2.default.kills + '\nkills';
+				this.updateScores("kill");
 				enemy.pendingDestroy = true;
 				this.enemyHitSound.play();
 			}
@@ -993,19 +1008,10 @@
 				this.explosionGroup.add(explosion);
 			}
 		}, {
-			key: 'createSuffixForScore',
-			value: function createSuffixForScore() {
-				if (_Data2.default.coins === 1) {
-					return ' coin';
-				} else {
-					return ' coins';
-				}
-			}
-		}, {
 			key: 'increaseDistance',
 			value: function increaseDistance() {
 				_Data2.default.distance++;
-				this.updateDistance();
+				this.updateScores("distance");
 				if (_Data2.default.distance % 2 === 0) {
 					var delay = this.enemyTimer.delay * this.gameSpeed;
 					this.enemyTimer.delay = delay;
@@ -1027,7 +1033,7 @@
 					this.allBullets.add(bullet);
 
 					_Data2.default.bullets--;
-					this.bulletTextBox.text = _Data2.default.bullets + '\nbullets';
+					this.updateScores("bullet");
 
 					this.playerShootSound.play();
 				}
@@ -1040,7 +1046,7 @@
 					this.meteorSound.play();
 					this.spawnMeteor();
 					_Data2.default.meteor--;
-					this.updateMeteorText();
+					this.updateScores("meteor");
 				}
 			}
 		}, {
@@ -1056,16 +1062,6 @@
 					meteor.reset(x, y);
 					this.meteorGroup.add(meteor);
 				}
-			}
-		}, {
-			key: 'updateMeteorText',
-			value: function updateMeteorText() {
-				this.meteorTextBox.text = _Data2.default.meteor + '\nmeteors';
-			}
-		}, {
-			key: 'updateScore',
-			value: function updateScore(suffix) {
-				this.scoreTextBox.text = _Data2.default.coins + suffix;
 			}
 		}, {
 			key: 'generateRandomColor',
@@ -1103,19 +1099,45 @@
 				this.backgroundSound.play();
 			}
 		}, {
-			key: 'updateBulletText',
-			value: function updateBulletText() {
-				this.bulletTextBox.text = _Data2.default.bullets + '\nbullets';
-			}
-		}, {
-			key: 'updateCoinText',
-			value: function updateCoinText() {
-				this.coinText.text = _Data2.default.coins + '\ncoins';
-			}
-		}, {
-			key: 'updateDistance',
-			value: function updateDistance() {
-				this.distanceTextBox.text = _Data2.default.distance + ' km';
+			key: 'updateScores',
+			value: function updateScores(value) {
+				switch (value) {
+					case "score":
+						if (_Data2.default.coins === 1) {
+							this.scoreTextBox.text = _Data2.default.coins + ' coin';
+						} else {
+							this.scoreTextBox.text = _Data2.default.coins + ' coins';
+						}
+						break;
+
+					case "bullet":
+						if (_Data2.default.bullets === 1) {
+							this.bulletTextBox.text = _Data2.default.bullets + ' bullet';
+						} else {
+							this.bulletTextBox.text = _Data2.default.bullets + ' bullets';
+						}
+						break;
+
+					case "kill":
+						if (_Data2.default.kills === 1) {
+							this.killsTextBox.text = _Data2.default.kills + ' kill';
+						} else {
+							this.killsTextBox.text = _Data2.default.kills + ' kills';
+						}
+						break;
+
+					case "meteor":
+						if (_Data2.default.meteor === 1) {
+							this.meteorTextBox.text = _Data2.default.meteor + ' meteor';
+						} else {
+							this.meteorTextBox.text = _Data2.default.meteor + ' meteors';
+						}
+						break;
+
+					case "distance":
+						this.distanceTextBox.text = _Data2.default.distance + ' km';
+						break;
+				}
 			}
 		}]);
 
