@@ -653,7 +653,6 @@
 				this.initKills();
 				this.initMeteors();
 				this.initEnemies();
-				this.initBullets();
 				this.initExplosions();
 				this.initSoundButton();
 			}

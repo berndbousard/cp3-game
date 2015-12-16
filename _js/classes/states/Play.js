@@ -39,7 +39,6 @@ export default class Play extends Phaser.State {
 		this.initKills();
 		this.initMeteors();
 		this.initEnemies();
-		this.initBullets();
 		this.initExplosions();
 		this.initSoundButton();
 	}
