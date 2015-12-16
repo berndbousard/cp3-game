@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 import Preload from './classes/states/Preload';
 import Menu from './classes/states/Menu';
@@ -18,7 +18,7 @@ const init = () => {
 	game.state.add('Gameover', Gameover, false);
 	game.state.add('Info', Info, false);
 	game.state.add('Shop', Shop, false);
-}
+};
 
 init();
 

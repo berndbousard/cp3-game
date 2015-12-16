@@ -5,7 +5,6 @@ import Text from '../objects/Text';
 import * as Utils from '../objects/Utils';
 import Data from '../objects/Data';
 
-let confirm;
 let form;
 let leaderboardNameInput;
 let leaderboardSubmit;
@@ -14,7 +13,7 @@ let leaderboard;
 
 export default class Gameover extends Phaser.State {
 	preload(){
-		console.log('start gameover');
+		// console.log('start gameover');
 	}
 	
 	create(){
@@ -23,9 +22,9 @@ export default class Gameover extends Phaser.State {
 		this.soundSetup();
 
 		this.createForm();
-		leaderboardNameInput = document.getElementById("text");
-		leaderboardSubmit = document.getElementById("submit");
-		leaderboard = document.getElementById("form");
+		leaderboardNameInput = document.getElementById('text');
+		leaderboardSubmit = document.getElementById('submit');
+		leaderboard = document.getElementById('form');
 
 		// listener
 		// om enters op te vangen
@@ -73,7 +72,7 @@ export default class Gameover extends Phaser.State {
 	}
 
 	shutdown(){
-		console.log('end gameover');
+		// console.log('end gameover');
 		leaderboard.remove();
 		this.game.input.enabled = true;
 	}
@@ -121,7 +120,7 @@ export default class Gameover extends Phaser.State {
 		Utils.showElement(form);
 	}
 
-	submitInputHandler(name){
+	submitInputHandler(){
 		this.clickSound.play();
 		let req = new XMLHttpRequest();
 		req.addEventListener('load', () => {
@@ -141,8 +140,8 @@ export default class Gameover extends Phaser.State {
 
 	leaderboardSubmitHandler(){
 		if(!Utils.isEmpty(leaderboardNameInput)){
-			let name = leaderboardNameInput.value;
-			this.submitInputHandler(name);
+			// let name = leaderboardNameInput.value;
+			this.submitInputHandler();
 		}
 	}
 

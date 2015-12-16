@@ -7,7 +7,7 @@ import Data from '../objects/Data';
 
 export default class Shop extends Phaser.State {
 	preload(){
-		console.log("start shop");
+		// console.log("start shop");
 	}
 	
 	create(){
@@ -154,7 +154,7 @@ export default class Shop extends Phaser.State {
 	}
 
 	shutdown(){
-		console.log('end preload');
+		// console.log('end preload');
 	}
 
 	doErrorHandling(error){

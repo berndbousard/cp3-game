@@ -2,7 +2,7 @@ import * as Utils from '../objects/Utils';
 
 export default class Preload extends Phaser.State {
 	preload(){
-		console.log("start preload");
+		// console.log("start preload");
 
 		//show percentage
 		// game, x, y, font, text, size, align
@@ -73,7 +73,7 @@ export default class Preload extends Phaser.State {
 	}
 	
 	shutdown(){
-		console.log('end preload');
+		// console.log('end preload');
 		this.progressText.destroy();
 		this.progressText = null;
 	}

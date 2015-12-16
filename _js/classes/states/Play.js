@@ -17,7 +17,7 @@ import EnemyRed from '../objects/EnemyRed';
 
 export default class Play extends Phaser.State {
 	preload(){
-		console.log('start play');
+		// console.log('start play');
 	}
 	
 	create(){
@@ -173,7 +173,7 @@ export default class Play extends Phaser.State {
 	}
 
 	shutdown(){
-		console.log('end play');
+		// console.log('end play');
 		this.backgroundSound.destroy();
 	}
 
@@ -230,54 +230,54 @@ export default class Play extends Phaser.State {
 		*/
 
 		switch(color){
-			case 'black':
-				enemy = this.blackEnemies.getFirstExists(false);
-				if(!enemy){
-					enemy = new EnemyBlack(this.game, 0, 0);
-					this.blackEnemies.add(enemy);
-				}
-				y = 225;
-				break;
+		case 'black':
+			enemy = this.blackEnemies.getFirstExists(false);
+			if(!enemy){
+				enemy = new EnemyBlack(this.game, 0, 0);
+				this.blackEnemies.add(enemy);
+			}
+			y = 225;
+			break;
 
-			case 'white':
-				enemy = this.whiteEnemies.getFirstExists(false);
-				if(!enemy){
-					enemy = new EnemyWhite(this.game, 0, 0);
-					this.whiteEnemies.add(enemy);
-				}
+		case 'white':
+			enemy = this.whiteEnemies.getFirstExists(false);
+			if(!enemy){
+				enemy = new EnemyWhite(this.game, 0, 0);
+				this.whiteEnemies.add(enemy);
+			}
+			y = 275;
+			break;
+
+		case 'orange':
+			enemy = this.orangeEnemies.getFirstExists(false);
+			if(!enemy){
+				enemy = new EnemyOrange(this.game, 0, 0);
+				this.orangeEnemies.add(enemy);
+			}
+			if(Math.random() > .5){
+				enemy.scale.y = -1;
 				y = 275;
-				break;
+			}else{
+				enemy.scale.y = 1;
+				y = 225;
+			}
+			break;
 
-			case 'orange':
-				enemy = this.orangeEnemies.getFirstExists(false);
-				if(!enemy){
-					enemy = new EnemyOrange(this.game, 0, 0);
-					this.orangeEnemies.add(enemy);
-				}
-				if(Math.random() > .5){
-					enemy.scale.y = -1;
-					y = 275;
-				}else{
-					enemy.scale.y = 1;
-					y = 225;
-				}
-				break;
+		case 'red':
+			enemy = this.redEnemies.getFirstExists(false);
+			if(!enemy){
+				enemy = new EnemyRed(this.game, 0, 0);
+				this.redEnemies.add(enemy);
+			}
 
-			case 'red':
-				enemy = this.redEnemies.getFirstExists(false);
-				if(!enemy){
-					enemy = new EnemyRed(this.game, 0, 0);
-					this.redEnemies.add(enemy);
-				}
-
-				if(this.side == 'down'){
-					enemy.scale.y = -1;
-					y = 283;
-				}else{
-					enemy.scale.y = 1;
-					y = 217;
-				}
-				break;
+			if(this.side == 'down'){
+				enemy.scale.y = -1;
+				y = 283;
+			}else{
+				enemy.scale.y = 1;
+				y = 217;
+			}
+			break;
 		}
 
 		x = this.randomInRange(750, 800);
@@ -316,8 +316,8 @@ export default class Play extends Phaser.State {
 		Data.bullets += 5;
 		this.coinSound.play();
 
-		this.updateScores("score");
-		this.updateScores("bullet");
+		this.updateScores('score');
+		this.updateScores('bullet');
 	}
 
 	enemyBulletCollisionHandler(bullet, enemy){
@@ -325,7 +325,7 @@ export default class Play extends Phaser.State {
 		if(enemy.lives < 1){
 			enemy.pendingDestroy = true;
 			Data.kills++;
-			this.updateScores("kill");
+			this.updateScores('kill');
 		}
 		
 		// bullet.pendingDestroy = true;
@@ -337,7 +337,7 @@ export default class Play extends Phaser.State {
 	meteorEnemyCollisionHandler(meteor, enemy){
 		meteor.pendingDestroy = true;
 		Data.kills++;
-		this.updateScores("kill");
+		this.updateScores('kill');
 		enemy.pendingDestroy = true;
 		this.enemyHitSound.play();
 	}
@@ -355,7 +355,7 @@ export default class Play extends Phaser.State {
 
 	increaseDistance(){
 		Data.distance++;
-		this.updateScores("distance");
+		this.updateScores('distance');
 		if(Data.distance%2 === 0){
 			let delay = this.enemyTimer.delay * this.gameSpeed;
 			this.enemyTimer.delay = delay;
@@ -376,7 +376,7 @@ export default class Play extends Phaser.State {
 			this.allBullets.add(bullet);
 
 			Data.bullets--;
-			this.updateScores("bullet");
+			this.updateScores('bullet');
 
 			this.playerShootSound.play();
 		}
@@ -388,7 +388,7 @@ export default class Play extends Phaser.State {
 			this.meteorSound.play();
 			this.spawnMeteor();
 			Data.meteor--;
-			this.updateScores("meteor");
+			this.updateScores('meteor');
 		}
 	}
 
@@ -438,41 +438,41 @@ export default class Play extends Phaser.State {
 
 	updateScores(value){
 		switch(value){
-			case "score":
-				if(Data.coins === 1){
-					this.scoreTextBox.text = Data.coins + ' coin';
-				}else{
-					this.scoreTextBox.text = Data.coins + ' coins';
-				}
-				break;
+		case 'score':
+			if(Data.coins === 1){
+				this.scoreTextBox.text = Data.coins + ' coin';
+			}else{
+				this.scoreTextBox.text = Data.coins + ' coins';
+			}
+			break;
 
-			case "bullet":
-				if(Data.bullets === 1){
-					this.bulletTextBox.text = Data.bullets + ' bullet';
-				}else{
-					this.bulletTextBox.text = Data.bullets + ' bullets';
-				}
-				break;
+		case 'bullet':
+			if(Data.bullets === 1){
+				this.bulletTextBox.text = Data.bullets + ' bullet';
+			}else{
+				this.bulletTextBox.text = Data.bullets + ' bullets';
+			}
+			break;
 
-			case "kill":
-				if(Data.kills === 1){
-					this.killsTextBox.text = Data.kills + ' kill';
-				}else{
-					this.killsTextBox.text = Data.kills + ' kills';
-				}
-				break;
+		case 'kill':
+			if(Data.kills === 1){
+				this.killsTextBox.text = Data.kills + ' kill';
+			}else{
+				this.killsTextBox.text = Data.kills + ' kills';
+			}
+			break;
 
-			case "meteor":
-				if(Data.meteor === 1){
-					this.meteorTextBox.text = Data.meteor + ' meteor';
-				}else{
-					this.meteorTextBox.text = Data.meteor + ' meteors';
-				}
-				break;
+		case 'meteor':
+			if(Data.meteor === 1){
+				this.meteorTextBox.text = Data.meteor + ' meteor';
+			}else{
+				this.meteorTextBox.text = Data.meteor + ' meteors';
+			}
+			break;
 
-			case "distance":
-				this.distanceTextBox.text = Data.distance + ' km';
-				break;
+		case 'distance':
+			this.distanceTextBox.text = Data.distance + ' km';
+			break;
 		}
 	}
 }

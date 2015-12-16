@@ -2,11 +2,10 @@ import Text from '../objects/Text';
 import Sound from '../objects/Sound';
 import * as Utils from '../objects/Utils';
 import KeysImage from '../objects/KeysImage';
-import Player from '../objects/Player';
 
 export default class Info extends Phaser.State {
 	preload(){
-		console.log('start info');
+		// console.log('start info');
 	}
 
 	create(){
@@ -14,7 +13,7 @@ export default class Info extends Phaser.State {
 		// To create multi-line text insert \r, \n or \r\n escape codes into the text string.
 		// dit font heeft geen . tekens dus als je een punt typt komt er een error, geen punten dus ;)
 		// new BitmapText(game, x, y, font, text, size)`
-		let textBoxText = "Het doel\nHet doel van het spel is om zo ver mogelijk te raken\nDit doe je door zoveel mogelijk enemies te ontwijken\n\nControls\nGebruik de pijltjestoetsen om te\nwisselen tussen bovenaan en onderaan\n\nGebruik de spatiebalk om te schieten\n\nGebruik de M om meteoren te laten regenen";
+		let textBoxText = 'Het doel\nHet doel van het spel is om zo ver mogelijk te raken\nDit doe je door zoveel mogelijk enemies te ontwijken\n\nControls\nGebruik de pijltjestoetsen om te\nwisselen tussen bovenaan en onderaan\n\nGebruik de spatiebalk om te schieten\n\nGebruik de M om meteoren te laten regenen';
 		this.textBox = new Text(this.game, this.game.width/2, this.game.height/2 - 40, 'gamefont', textBoxText, 20);
 		Utils.center(this.textBox);
 		this.game.add.existing(this.textBox);
@@ -42,7 +41,7 @@ export default class Info extends Phaser.State {
 	}
 
 	shutdown(){
-		console.log('end info');	
+		// console.log('end info');	
 	}
 
 	startClickHandler() {

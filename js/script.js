@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var _Preload = __webpack_require__(1);
 
@@ -54,7 +54,7 @@
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
-	var _Play = __webpack_require__(9);
+	var _Play = __webpack_require__(8);
 
 	var _Play2 = _interopRequireDefault(_Play);
 
@@ -125,7 +125,7 @@
 		_createClass(Preload, [{
 			key: 'preload',
 			value: function preload() {
-				console.log("start preload");
+				// console.log("start preload");
 
 				//show percentage
 				// game, x, y, font, text, size, align
@@ -198,7 +198,7 @@
 		}, {
 			key: 'shutdown',
 			value: function shutdown() {
-				console.log('end preload');
+				// console.log('end preload');
 				this.progressText.destroy();
 				this.progressText = null;
 			}
@@ -298,7 +298,7 @@
 		_createClass(Menu, [{
 			key: 'preload',
 			value: function preload() {
-				console.log("start menu");
+				// console.log('start menu');
 			}
 		}, {
 			key: 'create',
@@ -321,7 +321,7 @@
 				Utils.center(this.playerImg);
 
 				// text
-				var titleBoxText = "CITYFLIP";
+				var titleBoxText = 'CITYFLIP';
 				this.titleBox = new _Text2.default(this.game, this.game.width / 2 + 5, this.game.height / 2 - 22, 'gamefont', titleBoxText, 60);
 				Utils.center(this.titleBox);
 				this.game.add.existing(this.titleBox);
@@ -350,7 +350,7 @@
 		}, {
 			key: 'shutdown',
 			value: function shutdown() {
-				console.log("end menu");
+				// console.log('end menu');
 			}
 		}, {
 			key: 'startClickHandler',
@@ -493,7 +493,7 @@
 	var Sound = (function (_Phaser$Sound) {
 		_inherits(Sound, _Phaser$Sound);
 
-		function Sound(game, key, volume, loop) {
+		function Sound(game, key) {
 			_classCallCheck(this, Sound);
 
 			return _possibleConstructorReturn(this, Object.getPrototypeOf(Sound).call(this, game, key, 1, false));
@@ -540,32 +540,6 @@
 
 /***/ },
 /* 8 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var Data = function Data(game) {
-		_classCallCheck(this, Data);
-
-		game.data = {};
-		this.coins = 1;
-		this.distance = 0;
-		this.bullets = 5;
-		this.kills = 0;
-		this.meteor = 1;
-		this.hasRainbow;
-	};
-
-	exports.default = Data;
-
-/***/ },
-/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -576,7 +550,7 @@
 		value: true
 	});
 
-	var _Player = __webpack_require__(10);
+	var _Player = __webpack_require__(9);
 
 	var _Player2 = _interopRequireDefault(_Player);
 
@@ -584,7 +558,7 @@
 
 	var _BackgroundCity2 = _interopRequireDefault(_BackgroundCity);
 
-	var _Meteor = __webpack_require__(12);
+	var _Meteor = __webpack_require__(11);
 
 	var _Meteor2 = _interopRequireDefault(_Meteor);
 
@@ -592,7 +566,7 @@
 
 	var _Text2 = _interopRequireDefault(_Text);
 
-	var _Coin = __webpack_require__(13);
+	var _Coin = __webpack_require__(12);
 
 	var _Coin2 = _interopRequireDefault(_Coin);
 
@@ -600,7 +574,7 @@
 
 	var _Sound2 = _interopRequireDefault(_Sound);
 
-	var _Bullet = __webpack_require__(11);
+	var _Bullet = __webpack_require__(10);
 
 	var _Bullet2 = _interopRequireDefault(_Bullet);
 
@@ -608,7 +582,7 @@
 
 	var Utils = _interopRequireWildcard(_Utils);
 
-	var _Data = __webpack_require__(8);
+	var _Data = __webpack_require__(13);
 
 	var _Data2 = _interopRequireDefault(_Data);
 
@@ -654,7 +628,7 @@
 		_createClass(Play, [{
 			key: 'preload',
 			value: function preload() {
-				console.log('start play');
+				// console.log('start play');
 			}
 		}, {
 			key: 'create',
@@ -815,7 +789,7 @@
 		}, {
 			key: 'shutdown',
 			value: function shutdown() {
-				console.log('end play');
+				// console.log('end play');
 				this.backgroundSound.destroy();
 			}
 		}, {
@@ -965,8 +939,8 @@
 				_Data2.default.bullets += 5;
 				this.coinSound.play();
 
-				this.updateScores("score");
-				this.updateScores("bullet");
+				this.updateScores('score');
+				this.updateScores('bullet');
 			}
 		}, {
 			key: 'enemyBulletCollisionHandler',
@@ -975,7 +949,7 @@
 				if (enemy.lives < 1) {
 					enemy.pendingDestroy = true;
 					_Data2.default.kills++;
-					this.updateScores("kill");
+					this.updateScores('kill');
 				}
 
 				// bullet.pendingDestroy = true;
@@ -988,7 +962,7 @@
 			value: function meteorEnemyCollisionHandler(meteor, enemy) {
 				meteor.pendingDestroy = true;
 				_Data2.default.kills++;
-				this.updateScores("kill");
+				this.updateScores('kill');
 				enemy.pendingDestroy = true;
 				this.enemyHitSound.play();
 			}
@@ -1008,7 +982,7 @@
 			key: 'increaseDistance',
 			value: function increaseDistance() {
 				_Data2.default.distance++;
-				this.updateScores("distance");
+				this.updateScores('distance');
 				if (_Data2.default.distance % 2 === 0) {
 					var delay = this.enemyTimer.delay * this.gameSpeed;
 					this.enemyTimer.delay = delay;
@@ -1030,7 +1004,7 @@
 					this.allBullets.add(bullet);
 
 					_Data2.default.bullets--;
-					this.updateScores("bullet");
+					this.updateScores('bullet');
 
 					this.playerShootSound.play();
 				}
@@ -1043,7 +1017,7 @@
 					this.meteorSound.play();
 					this.spawnMeteor();
 					_Data2.default.meteor--;
-					this.updateScores("meteor");
+					this.updateScores('meteor');
 				}
 			}
 		}, {
@@ -1099,7 +1073,7 @@
 			key: 'updateScores',
 			value: function updateScores(value) {
 				switch (value) {
-					case "score":
+					case 'score':
 						if (_Data2.default.coins === 1) {
 							this.scoreTextBox.text = _Data2.default.coins + ' coin';
 						} else {
@@ -1107,7 +1081,7 @@
 						}
 						break;
 
-					case "bullet":
+					case 'bullet':
 						if (_Data2.default.bullets === 1) {
 							this.bulletTextBox.text = _Data2.default.bullets + ' bullet';
 						} else {
@@ -1115,7 +1089,7 @@
 						}
 						break;
 
-					case "kill":
+					case 'kill':
 						if (_Data2.default.kills === 1) {
 							this.killsTextBox.text = _Data2.default.kills + ' kill';
 						} else {
@@ -1123,7 +1097,7 @@
 						}
 						break;
 
-					case "meteor":
+					case 'meteor':
 						if (_Data2.default.meteor === 1) {
 							this.meteorTextBox.text = _Data2.default.meteor + ' meteor';
 						} else {
@@ -1131,7 +1105,7 @@
 						}
 						break;
 
-					case "distance":
+					case 'distance':
 						this.distanceTextBox.text = _Data2.default.distance + ' km';
 						break;
 				}
@@ -1144,7 +1118,7 @@
 	exports.default = Play;
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1155,7 +1129,7 @@
 		value: true
 	});
 
-	var _Bullet = __webpack_require__(11);
+	var _Bullet = __webpack_require__(10);
 
 	var _Bullet2 = _interopRequireDefault(_Bullet);
 
@@ -1252,7 +1226,7 @@
 	exports.default = Player;
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1304,7 +1278,7 @@
 	exports.default = Bullet;
 
 /***/ },
-/* 12 */
+/* 11 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1356,7 +1330,7 @@
 	exports.default = Meteor;
 
 /***/ },
-/* 13 */
+/* 12 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1410,6 +1384,32 @@
 	})(Phaser.Sprite);
 
 	exports.default = Coin;
+
+/***/ },
+/* 13 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Data = function Data(game) {
+		_classCallCheck(this, Data);
+
+		game.data = {};
+		this.coins = 1;
+		this.distance = 0;
+		this.bullets = 5;
+		this.kills = 0;
+		this.meteor = 1;
+		this.hasRainbow;
+	};
+
+	exports.default = Data;
 
 /***/ },
 /* 14 */
@@ -1818,7 +1818,7 @@
 		_createClass(Leaderboard, [{
 			key: 'preload',
 			value: function preload() {
-				console.log('start leaderboard');
+				// console.log('start leaderboard');
 			}
 		}, {
 			key: 'create',
@@ -1846,7 +1846,7 @@
 		}, {
 			key: 'shutdown',
 			value: function shutdown() {
-				console.log('end leaderboard');
+				// console.log('end leaderboard');
 				if (leaderboardTabel) {
 					Utils.hideElement(leaderboardTabel);
 				}
@@ -1867,9 +1867,9 @@
 				var topRowThForDistance = document.createElement('th');
 				var topRowThForName = document.createElement('th');
 
-				topRowThForScore.innerText = "Coins";
-				topRowThForName.innerText = "Name";
-				topRowThForDistance.innerText = "Distance";
+				topRowThForScore.innerText = 'Coins';
+				topRowThForName.innerText = 'Name';
+				topRowThForDistance.innerText = 'Distance';
 
 				topRowThForScore.classList.add('score');
 
@@ -1978,7 +1978,7 @@
 
 	var Utils = _interopRequireWildcard(_Utils);
 
-	var _Data = __webpack_require__(8);
+	var _Data = __webpack_require__(13);
 
 	var _Data2 = _interopRequireDefault(_Data);
 
@@ -1992,7 +1992,6 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var confirm = undefined;
 	var form = undefined;
 	var leaderboardNameInput = undefined;
 	var leaderboardSubmit = undefined;
@@ -2010,7 +2009,7 @@
 		_createClass(Gameover, [{
 			key: 'preload',
 			value: function preload() {
-				console.log('start gameover');
+				// console.log('start gameover');
 			}
 		}, {
 			key: 'create',
@@ -2021,9 +2020,9 @@
 				this.soundSetup();
 
 				this.createForm();
-				leaderboardNameInput = document.getElementById("text");
-				leaderboardSubmit = document.getElementById("submit");
-				leaderboard = document.getElementById("form");
+				leaderboardNameInput = document.getElementById('text');
+				leaderboardSubmit = document.getElementById('submit');
+				leaderboard = document.getElementById('form');
 
 				// listener
 				// om enters op te vangen
@@ -2072,7 +2071,7 @@
 		}, {
 			key: 'shutdown',
 			value: function shutdown() {
-				console.log('end gameover');
+				// console.log('end gameover');
 				leaderboard.remove();
 				this.game.input.enabled = true;
 			}
@@ -2122,7 +2121,7 @@
 			}
 		}, {
 			key: 'submitInputHandler',
-			value: function submitInputHandler(name) {
+			value: function submitInputHandler() {
 				var _this3 = this;
 
 				this.clickSound.play();
@@ -2145,8 +2144,8 @@
 			key: 'leaderboardSubmitHandler',
 			value: function leaderboardSubmitHandler() {
 				if (!Utils.isEmpty(leaderboardNameInput)) {
-					var name = leaderboardNameInput.value;
-					this.submitInputHandler(name);
+					// let name = leaderboardNameInput.value;
+					this.submitInputHandler();
 				}
 			}
 		}, {
@@ -2213,10 +2212,6 @@
 
 	var _KeysImage2 = _interopRequireDefault(_KeysImage);
 
-	var _Player = __webpack_require__(10);
-
-	var _Player2 = _interopRequireDefault(_Player);
-
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -2239,7 +2234,7 @@
 		_createClass(Info, [{
 			key: 'preload',
 			value: function preload() {
-				console.log('start info');
+				// console.log('start info');
 			}
 		}, {
 			key: 'create',
@@ -2248,7 +2243,7 @@
 				// To create multi-line text insert \r, \n or \r\n escape codes into the text string.
 				// dit font heeft geen . tekens dus als je een punt typt komt er een error, geen punten dus ;)
 				// new BitmapText(game, x, y, font, text, size)`
-				var textBoxText = "Het doel\nHet doel van het spel is om zo ver mogelijk te raken\nDit doe je door zoveel mogelijk enemies te ontwijken\n\nControls\nGebruik de pijltjestoetsen om te\nwisselen tussen bovenaan en onderaan\n\nGebruik de spatiebalk om te schieten\n\nGebruik de M om meteoren te laten regenen";
+				var textBoxText = 'Het doel\nHet doel van het spel is om zo ver mogelijk te raken\nDit doe je door zoveel mogelijk enemies te ontwijken\n\nControls\nGebruik de pijltjestoetsen om te\nwisselen tussen bovenaan en onderaan\n\nGebruik de spatiebalk om te schieten\n\nGebruik de M om meteoren te laten regenen';
 				this.textBox = new _Text2.default(this.game, this.game.width / 2, this.game.height / 2 - 40, 'gamefont', textBoxText, 20);
 				Utils.center(this.textBox);
 				this.game.add.existing(this.textBox);
@@ -2276,7 +2271,7 @@
 		}, {
 			key: 'shutdown',
 			value: function shutdown() {
-				console.log('end info');
+				// console.log('end info');	
 			}
 		}, {
 			key: 'startClickHandler',
@@ -2371,7 +2366,7 @@
 
 	var _Sound2 = _interopRequireDefault(_Sound);
 
-	var _Data = __webpack_require__(8);
+	var _Data = __webpack_require__(13);
 
 	var _Data2 = _interopRequireDefault(_Data);
 
@@ -2397,7 +2392,7 @@
 		_createClass(Shop, [{
 			key: 'preload',
 			value: function preload() {
-				console.log("start shop");
+				// console.log("start shop");
 			}
 		}, {
 			key: 'create',
@@ -2551,7 +2546,7 @@
 		}, {
 			key: 'shutdown',
 			value: function shutdown() {
-				console.log('end preload');
+				// console.log('end preload');
 			}
 		}, {
 			key: 'doErrorHandling',

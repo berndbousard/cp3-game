@@ -8,7 +8,7 @@ let leaderboardTabel;
 
 export default class Leaderboard extends Phaser.State {
 	preload(){
-		console.log('start leaderboard');
+		// console.log('start leaderboard');
 	}
 
 	create(){
@@ -35,7 +35,7 @@ export default class Leaderboard extends Phaser.State {
 	}
 
 	shutdown(){
-		console.log('end leaderboard');
+		// console.log('end leaderboard');
 		if(leaderboardTabel){
 			Utils.hideElement(leaderboardTabel);
 		}
@@ -53,9 +53,9 @@ export default class Leaderboard extends Phaser.State {
 		let topRowThForDistance = document.createElement('th');
 		let topRowThForName = document.createElement('th');
 
-		topRowThForScore.innerText = "Coins";
-		topRowThForName.innerText = "Name";
-		topRowThForDistance.innerText = "Distance";
+		topRowThForScore.innerText = 'Coins';
+		topRowThForName.innerText = 'Name';
+		topRowThForDistance.innerText = 'Distance';
 
 		topRowThForScore.classList.add('score');
 

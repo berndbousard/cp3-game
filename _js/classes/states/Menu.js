@@ -7,8 +7,9 @@ import * as Utils from '../objects/Utils';
 
 export default class Menu extends Phaser.State {
 	preload(){
-		console.log("start menu");
+		// console.log('start menu');
 	}
+
 	create(){
 		this.soundSetup();
 
@@ -28,7 +29,7 @@ export default class Menu extends Phaser.State {
 		Utils.center(this.playerImg);
 
 		// text
-		let titleBoxText = "CITYFLIP";
+		let titleBoxText = 'CITYFLIP';
 		this.titleBox = new Text(this.game, this.game.width/2+5, this.game.height/2-22, 'gamefont', titleBoxText, 60);
 		Utils.center(this.titleBox);
 		this.game.add.existing(this.titleBox);
@@ -48,13 +49,13 @@ export default class Menu extends Phaser.State {
 		this.infoButton = this.game.add.button(this.game.width/2 + 100, this.game.height/2 + 150, 'infoButton', this.infoClickHandler, this);
 		Utils.center(this.infoButton);
 
-		this.startButton = this.game.add.button(this.game.width/2, this.game.height/2 + 150, 'shopButton', this.shopClickHandler, this)
+		this.startButton = this.game.add.button(this.game.width/2, this.game.height/2 + 150, 'shopButton', this.shopClickHandler, this);
 		Utils.center(this.startButton);
 	}
 	update(){
 	}
 	shutdown(){
-		console.log("end menu");
+		// console.log('end menu');
 	}
 	startClickHandler(){
 		this.clickSound.play();
